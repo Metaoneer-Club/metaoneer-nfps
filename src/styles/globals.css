@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .pause {
+    animation-play-state: paused;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #444;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: #777;
+}
