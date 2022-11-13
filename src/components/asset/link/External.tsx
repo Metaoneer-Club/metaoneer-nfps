@@ -9,14 +9,12 @@ interface Props {
 
 const External: FC<Props> = ({ className, url, children }) => {
   return (
-    <a
-      target="_blank"
-      href={url}
-      className={clsx("hover:text-primary-active", className)}
-      rel="noreferrer"
+    <div
+      onClick={() => window.open(url)}
+      className={clsx("hover:text-primary-active cursor-pointer", className)}
     >
       {children}
-    </a>
+    </div>
   );
 };
 

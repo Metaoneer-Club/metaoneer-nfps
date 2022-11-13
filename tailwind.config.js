@@ -4,6 +4,13 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
+      truncate: {
+        lines: {
+          3: "3",
+          5: "5",
+          8: "8",
+        },
+      },
       colors: {
         dark: "#1e1e2d",
         primary: "#009ef7",
@@ -30,5 +37,8 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [
+    require("tailwindcss-truncate-multiline")(),
+    require("@tailwindcss/forms"),
+  ],
 };

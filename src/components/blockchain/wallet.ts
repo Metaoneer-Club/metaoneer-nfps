@@ -22,3 +22,18 @@ export const setMetamaskAccount = async () => {
     network: ethereum.networkVersion,
   };
 };
+
+export const changeNetwork = async (chainId: number) => {
+  const { ethereum } = window;
+
+  if (ethereum) {
+    await ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: web3.utils.toHex(chainId) }],
+    });
+    return true;
+  } else {
+    window.open("https://metamask.io/download.html");
+    return false;
+  }
+};

@@ -7,7 +7,7 @@ const metaData = {
   description: "NFT Funding Pay Soultion ",
   url: "https://nfps.metaoneer.club/",
   robots: "follow, index",
-  image: "images/banner.png",
+  image: "media/logos/logo.png",
 };
 
 const SEO = () => {

@@ -1,7 +1,10 @@
 import React, { FC } from "react";
-import Image from "next/image";
-import { External } from "~/components/asset/link";
+import Link from "next/link";
 import { v1 } from "uuid";
+
+/* Component */
+import { External } from "components/asset/link";
+import { AutoImage } from "utils";
 
 interface ALink {
   name: string;
@@ -19,7 +22,7 @@ const Footer: FC = () => {
             </li>
             {navItems.map((v) => (
               <li key={v1()} className="m-2">
-                <External url={v.url}>{v.name}</External>
+                <Link href={v.url}>{v.name}</Link>
               </li>
             ))}
           </ul>
@@ -57,7 +60,7 @@ const Footer: FC = () => {
           <div>
             <div className="flex items-center">
               <div className="relative w-6 h-6 mr-2">
-                <Image src="/favicon.ico" alt="logo" fill sizes="100vw" />
+                <AutoImage src="/favicon.ico" alt="logo" />
               </div>
               <h2 className="font-bold">METAONEER</h2>
             </div>
@@ -72,12 +75,10 @@ const Footer: FC = () => {
                 <li key={v1()} className="m-2">
                   <External url={v.url}>
                     <div className="relative w-9 h-9 transition hover:scale-110">
-                      <Image
+                      <AutoImage
                         src={`/media/logos/${v.name.toLowerCase()}.svg`}
-                        alt={v.name}
                         className="rounded-full"
-                        fill
-                        sizes="100vw"
+                        alt={v.name}
                       />
                     </div>
                   </External>
@@ -101,8 +102,8 @@ const navItems: ALink[] = [
     url: "/shop",
   },
   {
-    name: "RANKING",
-    url: "/ranking",
+    name: "CREATOR",
+    url: "/creator",
   },
 ];
 

@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Card: FC<Props> = ({ className, children }) => {
-  return <div className={clsx("", className)}>{children}</div>;
+  return <div className={clsx("rounded", className)}>{children}</div>;
 };
 
 export { Card };
