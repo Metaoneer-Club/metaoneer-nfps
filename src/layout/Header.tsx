@@ -44,8 +44,8 @@ const Header: FC<Props> = ({ active }) => {
       setIsToast(true);
       return;
     }
-    // router.push("/create");
-    window.open("https://ticket.payment.metaoneer.club/");
+
+    router.push("/create");
   };
 
   const walletConnectHandler = async () => {
@@ -55,14 +55,15 @@ const Header: FC<Props> = ({ active }) => {
     if (ethereum) {
       await ethereum.enable().catch(() => setIsLoading(false));
       const res = await setMetamaskAccount();
-      if (res.network !== 1001)
-        await changeNetwork(1001).catch(() => setIsLoading(false));
+      if (res.network !== 97)
+        await changeNetwork(97).catch(() => setIsLoading(false));
       setWallet(res);
       setIsLoading(false);
 
       ethereum.on("accountsChanged", async () => {
         const changed = await setMetamaskAccount();
-        if (res.network !== 1001) await changeNetwork(1001);
+        if (res.network !== 97)
+          await changeNetwork(97).catch(() => setIsLoading(false));
         setWallet(changed);
         setIsLoading(false);
       });
@@ -80,34 +81,36 @@ const Header: FC<Props> = ({ active }) => {
 
   return (
     <>
-      {/* <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
+      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
         <div className="flex max-w-[1200px] px-6 py-3 mx-auto items-center justify-end">
           <button
             ref={buttonRef}
             type="button"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="text-sm dark:text-slate-50 animate__animated animate__faster"
-          >
-            {theme === "light" ? "🌞 Light" : "🌙 Dark"}
+            className="text-sm dark:text-slate-50 animate__animated animate__faster">
+            <span className="flex items-center">
+              <AutoSVG
+                className="w-4 h-4 mr-2"
+                src={`/media/icons/theme-${theme}.svg`}
+              />
+              {theme === "light" ? "Light" : "Dark"}
+            </span>
           </button>
         </div>
-      </div> */}
+      </div>
       <div
         className={clsx(
           active ? "shadow" : "shadow-lg",
           "sticky bg-white dark:bg-gray-900 w-full top-0 left-0 z-10"
-        )}
-      >
+        )}>
         <header
           className={clsx(
             active ? "py-2" : "py-5",
             "flex max-w-[1200px] px-6 mx-auto transition-all items-center"
-          )}
-        >
+          )}>
           <div
             className="flex items-center mr-24 cursor-pointer"
-            onClick={() => router.push("/")}
-          >
+            onClick={() => router.push("/")}>
             <div className="relative w-[180px] h-16">
               <AutoImage src="/media/logos/logo.png" alt="logo" />
             </div>
@@ -122,24 +125,8 @@ const Header: FC<Props> = ({ active }) => {
                       "mx-4",
                       v.url === router.asPath &&
                         "underline underline-offset-4 decoration-2"
-                    )}
-                  >
-                    {v.url !== "/creator" ? (
-                      <Link href={v.url}>{v.name}</Link>
-                    ) : (
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setToastContent({
-                            content: "Comming Soon!",
-                            type: "primary",
-                          });
-                          setIsToast(true);
-                        }}
-                      >
-                        {v.name}
-                      </div>
-                    )}
+                    )}>
+                    <Link href={v.url}>{v.name}</Link>
                   </li>
                 ))}
               </ul>
@@ -148,8 +135,7 @@ const Header: FC<Props> = ({ active }) => {
               <div className="flex mr-4 items-center">
                 <Button
                   className="group flex items-center text-sm border shadow hover:bg-dark hover:text-white"
-                  onClick={moveCreateHandler}
-                >
+                  onClick={moveCreateHandler}>
                   <div className="relative w-6 h-6 mr-1 transition-transform group-hover:rotate-[360deg]">
                     <AutoSVG
                       src="/media/icons/block.svg"
@@ -162,8 +148,7 @@ const Header: FC<Props> = ({ active }) => {
               <Button
                 className="flex items-center text-sm border shadow rounded-2xl py-3.5"
                 onClick={walletConnectHandler}
-                disabled={isLoading || Boolean(wallet.address)}
-              >
+                disabled={isLoading || Boolean(wallet.address)}>
                 {isLoading ? (
                   <>
                     <span className="mr-2">Connecting...</span>

@@ -62,14 +62,14 @@ const Layout: FC<Props> = ({ children }) => {
   }, [isToast, setIsToast]);
 
   return (
-    <div className="dark:bg-dark">
+    <>
       <SEO />
       <Header active={scrollActive} />
       {children}
       <ScrollTop active={scrollActive} />
       {isToast && <ToastWidget />}
       <Footer />
-    </div>
+    </>
   );
 };
 

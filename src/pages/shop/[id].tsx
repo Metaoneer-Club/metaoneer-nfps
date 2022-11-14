@@ -3,8 +3,8 @@ import React from "react";
 
 /* Component */
 import { Card } from "components/asset/card";
-import { AutoImage, shortAddress } from "utils";
 import { Button } from "components/asset/button";
+import { AutoImage, shortAddress } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
@@ -17,7 +17,7 @@ const Product = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <div className="max-w-[1200px] mx-auto pt-20">
+      <div className="max-w-[1200px] mx-auto pt-20 pb-40">
         <div className="text-3xl text-center font-bold flex items-center">
           <span className="px-4 py-2 border rounded-xl text-lg bg-primary-active text-white mr-6">
             Category
@@ -62,8 +62,7 @@ const Product = () => {
                     type: "primary",
                   });
                   setIsToast(true);
-                }}
-              >
+                }}>
                 Buy
               </Button>
             </div>
@@ -89,7 +88,7 @@ const Product = () => {
           </Card>
           <Card className="self-start border mt-4 bg-white rounded-xl">
             <h3 className="text-xs font-bold text-gray-600 px-6 pt-4">
-              Seller Information
+              Creator Information
             </h3>
             <div className="flex items-center mt-3 px-6 pb-4 border-b">
               <div className="relative w-7 h-7 mr-2">

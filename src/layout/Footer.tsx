@@ -15,8 +15,8 @@ const Footer: FC = () => {
   return (
     <div className="bg-zinc-800 text-neutral-300">
       <footer className="max-w-[1200px] mx-auto py-10">
-        <nav className="flex items-start text-sm">
-          <ul className="w-1/5">
+        <nav className="grid grid-cols-5 items-start text-sm">
+          <ul>
             <li className="mb-4 m-2 text-base text-white">
               <strong>Section</strong>
             </li>
@@ -26,7 +26,7 @@ const Footer: FC = () => {
               </li>
             ))}
           </ul>
-          <ul className="w-1/5">
+          <ul>
             <li className="mb-4 m-2 text-base text-white">
               <strong>Contact</strong>
             </li>
@@ -36,7 +36,7 @@ const Footer: FC = () => {
               </li>
             ))}
           </ul>
-          <ul className="w-1/5">
+          <ul>
             <li className="mb-4 m-2 text-base text-white">
               <strong>Others</strong>
             </li>
@@ -46,7 +46,7 @@ const Footer: FC = () => {
               </li>
             ))}
           </ul>
-          <ul className="w-1/5">
+          <ul>
             <li className="mb-4 m-2 text-base text-white">
               <strong>Docs</strong>
             </li>
