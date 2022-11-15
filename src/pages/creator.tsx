@@ -1,16 +1,33 @@
 import React from "react";
 import { NextPage } from "next";
 import Link from "next/link";
+import { AutoImage, shortAddress } from "~/utils";
 
 const Creator: NextPage = () => {
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <section className="text-gray-600 px-4 pt-14">
-        <div className="flex flex-col justify-center h-full">
-          <div className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
-            <header className="px-5 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-gray-800">Creator</h2>
-            </header>
+    <div className="min-h-screen bg-slate-50">
+      <section className="max-w-[1200px] mx-auto text-gray-600 pt-12 pb-40">
+        <div>
+          <div className="px-4 md:px-10 py-4 md:py-7 border shadow bg-white rounded-xl">
+            <div className="flex items-center justify-between">
+              <p
+                tabIndex={0}
+                className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
+              >
+                Creator
+              </p>
+              <div className="py-3 px-4 flex items-center text-sm font-medium leading-nonecursor-pointer rounded">
+                <p className="mr-2">Sort By:</p>
+                <select className="rounded focus:text-indigo-600 focus:outline-none bg-transparent ml-1">
+                  <option className="text-sm text-indigo-800">Hotest</option>
+                  <option className="text-sm text-indigo-800">
+                    Product Count
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 bg-white border shadow rounded-xl">
             <div className="p-3">
               <div className="overflow-x-auto">
                 <table className="table-auto w-full">
@@ -23,159 +40,57 @@ const Creator: NextPage = () => {
                         <div className="font-semibold text-left">Email</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-left">Spent</div>
+                        <div className="font-semibold text-left">Wallet</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-center">Country</div>
+                        <div className="font-semibold text-center">
+                          Product Count
+                        </div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-center">Sales</div>
                       </th>
                     </tr>
                   </thead>
                   <tbody className="text-sm divide-y divide-gray-100">
-                    <tr>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
-                            <img
-                              className="rounded-full"
-                              src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-05.jpg"
-                              width="40"
-                              height="40"
-                              alt="Alex Shatov"
-                            />
+                    {members.map((v, i) => (
+                      <tr key={v.name}>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="relative w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
+                              <AutoImage
+                                className="rounded-full"
+                                src={`/team/${v.name}.png`}
+                                alt={v.name}
+                              />
+                            </div>
+                            <div className="font-medium text-gray-800">
+                              {v.name}
+                            </div>
                           </div>
-                          <div className="font-medium text-gray-800">
-                            Alex Shatov
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-left">{v.email}</div>
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-sm text-left">
+                            {shortAddress(
+                              "0x12A60872B053C009452cdb95178144c8fFbDeA4D"
+                            )}
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">alexshatov@gmail.com</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">
-                          $2,890.66
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">??</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
-                            <img
-                              className="rounded-full"
-                              src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-06.jpg"
-                              width="40"
-                              height="40"
-                              alt="Philip Harbach"
-                            />
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-center font-medium text-indigo-600">
+                            {(i * 7) % 4}
                           </div>
-                          <div className="font-medium text-gray-800">
-                            Philip Harbach
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-center font-medium text-indigo-600">
+                            {((i * 7) % 4) * 11}
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">philip.h@gmail.com</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">
-                          $2,767.04
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">??</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
-                            <img
-                              className="rounded-full"
-                              src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-07.jpg"
-                              width="40"
-                              height="40"
-                              alt="Mirko Fisuk"
-                            />
-                          </div>
-                          <div className="font-medium text-gray-800">
-                            Mirko Fisuk
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">mirkofisuk@gmail.com</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">
-                          $2,996.00
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">??</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
-                            <img
-                              className="rounded-full"
-                              src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-08.jpg"
-                              width="40"
-                              height="40"
-                              alt="Olga Semklo"
-                            />
-                          </div>
-                          <div className="font-medium text-gray-800">
-                            Olga Semklo
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">olga.s@cool.design</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">
-                          $1,220.66
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">??</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
-                            <img
-                              className="rounded-full"
-                              src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-09.jpg"
-                              width="40"
-                              height="40"
-                              alt="Burak Long"
-                            />
-                          </div>
-                          <div className="font-medium text-gray-800">
-                            Burak Long
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">longburak@gmail.com</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">
-                          $1,890.66
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">??</div>
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -186,5 +101,24 @@ const Creator: NextPage = () => {
     </div>
   );
 };
+
+const members = [
+  {
+    name: "Ramp",
+    email: "ksyi@metaoneer.club",
+  },
+  {
+    name: "SungBae",
+    email: "scpark@metaoneer.club",
+  },
+  {
+    name: "Ursla",
+    email: "jhlee@metaoneer.club",
+  },
+  {
+    name: "Orbit",
+    email: "wthwang@metaoneer.club",
+  },
+];
 
 export default Creator;

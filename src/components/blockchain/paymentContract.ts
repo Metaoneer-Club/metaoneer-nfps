@@ -1,4 +1,6 @@
-import { web3 } from "components/blockchain/web3";
+import { web3, WALLET_NETWORK } from "components/blockchain/web3";
+
+type CA = "0xB535450F3Ca1a711931594Dcfca075B918D996AC" | "";
 
 const abi: any = [
   {
@@ -32,6 +34,29 @@ const abi: any = [
     type: "event",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_key",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "_title",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_count",
+        type: "uint256",
+      },
+    ],
+    name: "payment",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -63,16 +88,64 @@ const abi: any = [
     type: "event",
   },
   {
-    inputs: [],
-    name: "NFT",
+    inputs: [
+      {
+        internalType: "string",
+        name: "_title",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_count",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_limit",
+        type: "uint256",
+      },
+    ],
+    name: "prepareKeyRegister",
     outputs: [
       {
-        internalType: "contract ITESTNFT",
+        internalType: "uint256",
         name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
         type: "address",
       },
     ],
-    stateMutability: "view",
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -106,14 +179,19 @@ const abi: any = [
         type: "uint256",
       },
       {
+        internalType: "uint256",
+        name: "count",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "owner",
         type: "address",
       },
       {
-        internalType: "bool",
+        internalType: "uint256",
         name: "limit",
-        type: "bool",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -202,6 +280,19 @@ const abi: any = [
   },
   {
     inputs: [],
+    name: "NFT",
+    outputs: [
+      {
+        internalType: "contract ITESTNFT",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "owner",
     outputs: [
       {
@@ -211,58 +302,6 @@ const abi: any = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_key",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "_title",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "_count",
-        type: "uint256",
-      },
-    ],
-    name: "payment",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "_title",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "_price",
-        type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "limit",
-        type: "bool",
-      },
-    ],
-    name: "prepareKeyRegister",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
     type: "function",
   },
   {
@@ -291,54 +330,33 @@ const abi: any = [
         type: "uint256",
       },
       {
+        internalType: "uint256",
+        name: "count",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "owner",
         type: "address",
       },
       {
-        internalType: "bool",
+        internalType: "uint256",
         name: "limit",
-        type: "bool",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
     type: "function",
   },
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "withdraw",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
 ];
 
-let paymentContract: any;
+let paymentContract: any, CONTRACT_ADDRESS: CA;
 if (typeof window !== "undefined") {
-  paymentContract = new web3.eth.Contract(
-    abi,
-    "0x6a46e3306b5E51965f175E6E15B5cc7D17bA82F5"
-  );
+  CONTRACT_ADDRESS =
+    WALLET_NETWORK === "56"
+      ? "0xB535450F3Ca1a711931594Dcfca075B918D996AC"
+      : "0xB535450F3Ca1a711931594Dcfca075B918D996AC";
+  paymentContract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
 }
 
-export { paymentContract };
+export { paymentContract, CONTRACT_ADDRESS };

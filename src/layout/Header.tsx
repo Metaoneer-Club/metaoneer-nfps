@@ -13,6 +13,7 @@ import { AutoImage, AutoSVG, shortAddress } from "utils";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { walletState } from "stores";
 import { isToastState, toastContentState } from "stores/toast";
+import Dropdown from "~/components/dropdown/Dropdown";
 
 interface Props {
   active: boolean;
@@ -24,6 +25,7 @@ const Header: FC<Props> = ({ active }) => {
   const [wallet, setWallet] = useRecoilState(walletState);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDrop, setIsDrop] = useState(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -79,9 +81,19 @@ const Header: FC<Props> = ({ active }) => {
     setIsLoading(false);
   };
 
+  const walletDisconnectHandler = () => {
+    setWallet({
+      address: "",
+      network: 0,
+      balance: 0,
+    });
+
+    router.push("/");
+  };
+
   return (
     <>
-      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
+      {/* <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
         <div className="flex max-w-[1200px] px-6 py-3 mx-auto items-center justify-end">
           <button
             ref={buttonRef}
@@ -97,20 +109,23 @@ const Header: FC<Props> = ({ active }) => {
             </span>
           </button>
         </div>
-      </div>
+      </div> */}
       <div
         className={clsx(
           active ? "shadow" : "shadow-lg",
           "sticky bg-white dark:bg-gray-900 w-full top-0 left-0 z-10"
-        )}>
+        )}
+      >
         <header
           className={clsx(
             active ? "py-2" : "py-5",
             "flex max-w-[1200px] px-6 mx-auto transition-all items-center"
-          )}>
+          )}
+        >
           <div
             className="flex items-center mr-24 cursor-pointer"
-            onClick={() => router.push("/")}>
+            onClick={() => router.push("/")}
+          >
             <div className="relative w-[180px] h-16">
               <AutoImage src="/media/logos/logo.png" alt="logo" />
             </div>
@@ -125,7 +140,8 @@ const Header: FC<Props> = ({ active }) => {
                       "mx-4",
                       v.url === router.asPath &&
                         "underline underline-offset-4 decoration-2"
-                    )}>
+                    )}
+                  >
                     <Link href={v.url}>{v.name}</Link>
                   </li>
                 ))}
@@ -135,7 +151,8 @@ const Header: FC<Props> = ({ active }) => {
               <div className="flex mr-4 items-center">
                 <Button
                   className="group flex items-center text-sm border shadow hover:bg-dark hover:text-white"
-                  onClick={moveCreateHandler}>
+                  onClick={moveCreateHandler}
+                >
                   <div className="relative w-6 h-6 mr-1 transition-transform group-hover:rotate-[360deg]">
                     <AutoSVG
                       src="/media/icons/block.svg"
@@ -145,24 +162,53 @@ const Header: FC<Props> = ({ active }) => {
                   <span className="pr-1">To Create</span>
                 </Button>
               </div>
-              <Button
-                className="flex items-center text-sm border shadow rounded-2xl py-3.5"
-                onClick={walletConnectHandler}
-                disabled={isLoading || Boolean(wallet.address)}>
-                {isLoading ? (
-                  <>
-                    <span className="mr-2">Connecting...</span>
-                    <div className="animate-spin ">
+
+              <div className="relative">
+                <Button
+                  className="flex items-center w-40 text-sm border shadow rounded-2xl py-3.5 group hover:bg-dark hover:text-white"
+                  onClick={() => {
+                    if (Boolean(!wallet.address)) walletConnectHandler();
+                    setIsDrop(!isDrop);
+                  }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center mx-auto">
+                      <span className="mr-2">Connecting...</span>
+                      <div className="animate-spin ">
+                        <AutoSVG
+                          src="/media/icons/spinner.svg"
+                          className="w-5 h-5"
+                        />
+                      </div>
+                    </div>
+                  ) : wallet.address ? (
+                    <div className="flex items-center mx-auto">
+                      {shortAddress(wallet.address)}
                       <AutoSVG
-                        src="/media/icons/spinner.svg"
-                        className="w-5 h-5"
+                        className="h-5 w-5 text-gray-800 transition-colors group-hover:text-white ml-1"
+                        src="/media/icons/dropdown.svg"
                       />
                     </div>
-                  </>
+                  ) : (
+                    <span className="flex itens-center mx-auto">
+                      <AutoSVG
+                        className="h-5 w-5 text-gray-800 mr-2"
+                        src="/media/social-logos/metamask.svg"
+                      />
+                      Connect
+                    </span>
+                  )}
+                </Button>
+                {wallet.address && isDrop ? (
+                  <Dropdown
+                    close={() => setIsDrop(false)}
+                    onLogOut={walletDisconnectHandler}
+                  />
                 ) : (
-                  <span>{shortAddress(wallet.address) || "Connect"}</span>
+                  ""
                 )}
-              </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -186,6 +232,10 @@ const navItems: {
   {
     name: "CREATOR",
     url: "/creator",
+  },
+  {
+    name: "LOG",
+    url: "/log",
   },
 ];
 

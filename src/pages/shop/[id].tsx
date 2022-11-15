@@ -4,7 +4,7 @@ import React from "react";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { AutoImage, shortAddress } from "utils";
+import { AutoImage, AutoSVG, shortAddress } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
@@ -16,13 +16,37 @@ const Product = () => {
   const setToastContent = useSetRecoilState(toastContentState);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="max-w-[1200px] mx-auto pt-20 pb-40">
-        <div className="text-3xl text-center font-bold flex items-center">
-          <span className="px-4 py-2 border rounded-xl text-lg bg-primary-active text-white mr-6">
-            Category
-          </span>
-          <span>Example Title {router.query.id}</span>
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-[1200px] mx-auto pt-16 pb-40">
+        <div className="flex justify-between items-center">
+          <div className="text-3xl text-center font-bold flex items-center">
+            <span className="px-4 py-2 border rounded-xl text-lg bg-primary-active text-white mr-6">
+              Category
+            </span>
+            <span>Example Title {router.query.id}</span>
+          </div>
+          <div className="flex">
+            <Button
+              className="flex items-center bg-white shadow hover:bg-dark hover:text-white mr-4"
+              onClick={() => {
+                if (Number(router.query.id) > 0)
+                  router.push(`/shop/${Number(router.query.id) - 1}`);
+              }}
+            >
+              <AutoSVG className="mr-2" src="/media/icons/arrow-left.svg" />
+              <span>Prev</span>
+            </Button>
+            <Button
+              className="flex items-center bg-white shadow hover:bg-dark hover:text-white"
+              onClick={() => {
+                if (Number(router.query.id) < 20)
+                  router.push(`/shop/${Number(router.query.id) + 1}`);
+              }}
+            >
+              <span>Next</span>
+              <AutoSVG className="ml-2" src="/media/icons/arrow-right.svg" />
+            </Button>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-6 pt-10">
           <div className="col-span-2">
@@ -62,7 +86,8 @@ const Product = () => {
                     type: "primary",
                   });
                   setIsToast(true);
-                }}>
+                }}
+              >
                 Buy
               </Button>
             </div>

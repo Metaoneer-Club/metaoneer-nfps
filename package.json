@@ -1,5 +1,5 @@
 {
-  "name": "bims",
+  "name": "nfps",
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
@@ -12,6 +12,7 @@
     "animate.css": "^4.1.1",
     "axios": "^1.1.3",
     "clsx": "^1.2.1",
+    "metaoneer-payment": "^0.2.5",
     "next": "13.0.2",
     "next-themes": "^0.2.1",
     "react": "18.2.0",

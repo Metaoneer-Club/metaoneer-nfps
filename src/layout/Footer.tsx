@@ -105,6 +105,10 @@ const navItems: ALink[] = [
     name: "CREATOR",
     url: "/creator",
   },
+  {
+    name: "LOG",
+    url: "/log",
+  },
 ];
 
 const contactItems: ALink[] = [
