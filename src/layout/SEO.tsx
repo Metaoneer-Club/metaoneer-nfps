@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 const metaData = {
   title: "Metaoneer NFPS",
   siteName: "Metaoneer NFPS",
-  description: "NFT Funding Pay Solution ",
+  description: "NFT Funding Payment Solution ",
   url: "https://nfps.metaoneer.club/",
   robots: "follow, index",
   image: "banner.png",

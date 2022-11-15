@@ -34,7 +34,9 @@ const Layout: FC<Props> = ({ children }) => {
     const scrollListener = () => {
       window.addEventListener("scroll", handleScroll);
     };
-    scrollListener();
+    setTimeout(() => {
+      scrollListener();
+    }, 20);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
