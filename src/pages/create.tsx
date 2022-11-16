@@ -20,6 +20,9 @@ const Create: NextPage = () => {
   const [title, setTitle, onChangeTitle] = useInput<string>("");
   const [content, setContent, onChangeContent] = useInput<string>("");
   const [price, setPrice, onChangePrice] = useInput<number>(0);
+  const [limit, setLimit] = useInput<boolean>(false);
+  const [limitCount, setLimitCount, onChangeLimitCount] = useInput<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const registerHandler = async () => {
     if (title.length === 0) {
@@ -27,9 +30,15 @@ const Create: NextPage = () => {
       return;
     }
 
+    if (price === 0) {
+      alert("Please enter your Price.");
+      return;
+    }
+
+    setIsLoading(true);
     try {
       await paymentContract.methods
-        .prepareKeyRegister(title, content, hexBalance(price))
+        .prepareKeyRegister(title, hexBalance(price), limitCount, Number(limit))
         .send({
           from: wallet.address,
           gas: 10000000,
@@ -42,12 +51,16 @@ const Create: NextPage = () => {
       setCurrentKey(lastKey);
     } catch (err) {
       alert("Error! Please check for sufficient gas or network");
+      setIsLoading(false);
       return;
+    } finally {
+      setTitle("");
+      setContent("");
+      setPrice(0);
+      setLimit(false);
+      setLimitCount(0);
+      setIsLoading(false);
     }
-
-    setTitle("");
-    setContent("");
-    setPrice(0);
   };
 
   return (
@@ -71,9 +84,7 @@ const Create: NextPage = () => {
                 <div className="bg-indigo-400 border border-indigo-400 w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full">
                   2
                 </div>
-                <div className="mt-2 text-center text-sm">
-                  Enter product information
-                </div>
+                <div className="mt-2 text-center text-sm">Check your demo.</div>
               </div>
               <div className="col-span-1 flex items-center">
                 <hr className="w-3/4 mx-auto"></hr>
@@ -83,12 +94,31 @@ const Create: NextPage = () => {
                   3
                 </div>
                 <div className="mt-2 text-center text-sm">
-                  Enter product information
+                  <div>
+                    Done!<br></br> Check your NFT.
+                  </div>
                 </div>
               </div>
             </div>
 
-            {isTap === 0 ? <Create01 registerHandler={registerHandler} /> : ""}
+            {isTap === 0 ? (
+              <Create01
+                isLoading={isLoading}
+                title={title}
+                content={content}
+                price={price}
+                limit={limit}
+                limitCount={limitCount}
+                onChangeTitle={onChangeTitle}
+                onChangeContent={onChangeContent}
+                onChangePrice={onChangePrice}
+                setLimit={setLimit}
+                onChangeLimitCount={onChangeLimitCount}
+                registerHandler={registerHandler}
+              />
+            ) : (
+              ""
+            )}
             {isTap === 1 ? <Create02 registerHandler={registerHandler} /> : ""}
             {isTap === 2 ? <Create03 registerHandler={registerHandler} /> : ""}
           </div>
