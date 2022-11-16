@@ -12,6 +12,7 @@ import { hexBalance } from "utils";
 /* State */
 import { useRecoilValue } from "recoil";
 import { walletState } from "stores";
+import clsx from "clsx";
 
 const Create: NextPage = () => {
   const wallet = useRecoilValue(walletState);
@@ -66,11 +67,18 @@ const Create: NextPage = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
-        <div className="grid grid-cols-6 content-center font-manrope">
-          <div className="rounded-xl col-start-2 col-span-4 border shadow bg-white">
+        <div className="grid grid-cols-7 content-center font-manrope">
+          <div className="rounded-xl col-start-2 col-span-5 border shadow bg-white">
             <div className="grid grid-cols-8 gx-4 break-words font-bold border-b p-8">
               <div className="col-span-2 items-center justify-center">
-                <div className="bg-indigo-700 border border-indigo-700 w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full">
+                <div
+                  className={clsx(
+                    "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
+                    isTap === 0
+                      ? "bg-indigo-700 border-indigo-700"
+                      : "bg-indigo-400 border-indigo-400"
+                  )}
+                >
                   1
                 </div>
                 <div className="mt-2 text-center text-sm">
@@ -81,7 +89,14 @@ const Create: NextPage = () => {
                 <hr className="w-3/4 mx-auto"></hr>
               </div>
               <div className="col-span-2 items-center justify-center">
-                <div className="bg-indigo-400 border border-indigo-400 w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full">
+                <div
+                  className={clsx(
+                    "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
+                    isTap === 1
+                      ? "bg-indigo-700 border-indigo-700"
+                      : "bg-indigo-400 border-indigo-400"
+                  )}
+                >
                   2
                 </div>
                 <div className="mt-2 text-center text-sm">Check your demo.</div>
@@ -90,7 +105,14 @@ const Create: NextPage = () => {
                 <hr className="w-3/4 mx-auto"></hr>
               </div>
               <div className="col-span-2 items-center justify-center">
-                <div className="bg-indigo-400 border border-indigo-400 w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full">
+                <div
+                  className={clsx(
+                    "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
+                    isTap === 2
+                      ? "bg-indigo-700 border-indigo-700"
+                      : "bg-indigo-400 border-indigo-400"
+                  )}
+                >
                   3
                 </div>
                 <div className="mt-2 text-center text-sm">
@@ -103,7 +125,6 @@ const Create: NextPage = () => {
 
             {isTap === 0 ? (
               <Create01
-                isLoading={isLoading}
                 title={title}
                 content={content}
                 price={price}
@@ -112,14 +133,22 @@ const Create: NextPage = () => {
                 onChangeTitle={onChangeTitle}
                 onChangeContent={onChangeContent}
                 onChangePrice={onChangePrice}
-                setLimit={setLimit}
                 onChangeLimitCount={onChangeLimitCount}
+                setLimit={setLimit}
+                setIsTap={setIsTap}
+              />
+            ) : (
+              ""
+            )}
+            {isTap === 1 ? (
+              <Create02
+                isLoading={isLoading}
+                setIsTap={setIsTap}
                 registerHandler={registerHandler}
               />
             ) : (
               ""
             )}
-            {isTap === 1 ? <Create02 registerHandler={registerHandler} /> : ""}
             {isTap === 2 ? <Create03 registerHandler={registerHandler} /> : ""}
           </div>
         </div>

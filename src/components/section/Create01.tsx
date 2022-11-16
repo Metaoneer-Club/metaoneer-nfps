@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  MouseEventHandler,
-  SetStateAction,
-} from "react";
+import React, { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
 
 /* Component */
 import { Button } from "components/asset/button";
@@ -12,7 +6,6 @@ import { AutoImage, AutoSVG, shortAddress } from "utils";
 import clsx from "clsx";
 
 interface Props {
-  isLoading: boolean;
   title: string;
   content: string;
   price: number;
@@ -21,13 +14,12 @@ interface Props {
   onChangeTitle: (e?: ChangeEvent) => void;
   onChangeContent: (e?: ChangeEvent) => void;
   onChangePrice: (e?: ChangeEvent) => void;
-  setLimit: Dispatch<SetStateAction<boolean>>;
   onChangeLimitCount: (e?: ChangeEvent) => void;
-  registerHandler: MouseEventHandler<HTMLButtonElement>;
+  setLimit: Dispatch<SetStateAction<boolean>>;
+  setIsTap: Dispatch<SetStateAction<number>>;
 }
 
 const Create01: FC<Props> = ({
-  isLoading,
   title,
   content,
   price,
@@ -36,9 +28,9 @@ const Create01: FC<Props> = ({
   onChangeTitle,
   onChangeContent,
   onChangePrice,
-  setLimit,
   onChangeLimitCount,
-  registerHandler,
+  setLimit,
+  setIsTap,
 }) => {
   return (
     <div>
@@ -174,23 +166,13 @@ const Create01: FC<Props> = ({
 
       <div className="p-8">
         <Button
-          className={clsx(
-            "w-full rounded py-4 text-center font-bold text-white",
-            isLoading ? "bg-gray-400" : "bg-indigo-700 hover:bg-indigo-900"
-          )}
-          onClick={registerHandler}
-          disabled={isLoading}
+          className="w-full rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900"
+          onClick={() => {
+            window.scrollTo(0, 0);
+            setIsTap(1);
+          }}
         >
-          {isLoading ? (
-            <span className="flex items-center justify-center">
-              Please Wait...
-              <div className="animate-spin ml-2">
-                <AutoSVG src="/media/icons/spinner.svg" className="w-6 h-6" />
-              </div>
-            </span>
-          ) : (
-            <span>Create</span>
-          )}
+          <span>CONTINUE</span>
         </Button>
       </div>
     </div>

@@ -32,7 +32,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="grid gap-10 grid-cols-2 mt-10">
-          {productItems.map((v: Product, i) => (
+          {productItems.map((v: Product) => (
             <ProductCard
               key={v.src}
               className="flex bg-dark text-center text-white h-56"
@@ -54,7 +54,7 @@ const Home: NextPage = () => {
                     <strong className="text-lg text-danger-active">
                       {v.price}
                     </strong>{" "}
-                    klay
+                    BNB
                   </p>
                   <p>
                     <strong className="text-lg text-danger-active">
@@ -106,7 +106,7 @@ const Home: NextPage = () => {
                     <strong className="text-lg text-danger-active">
                       {v.price}
                     </strong>{" "}
-                    klay
+                    BNB
                   </p>
                 </div>
                 <Button
