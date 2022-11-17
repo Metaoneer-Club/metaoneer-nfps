@@ -74,7 +74,7 @@ const Shop: NextPage = () => {
                   </div>
                   <div className="mt-2 px-4 pb-4">
                     <label className="text-gray-600 text-xs">
-                      <span>Travel</span>
+                      <span>NFT</span>
                       <span className="mx-1">|</span>
                       <span>
                         {shortAddress(

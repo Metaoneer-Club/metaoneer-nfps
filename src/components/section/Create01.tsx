@@ -2,10 +2,16 @@ import React, { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
 
 /* Component */
 import { Button } from "components/asset/button";
+import { Wallet } from "components/blockchain";
 import { AutoImage, AutoSVG, shortAddress } from "utils";
 import clsx from "clsx";
 
+/* State */
+import { isToastState, toastContentState } from "stores";
+import { useSetRecoilState } from "recoil";
+
 interface Props {
+  wallet: Wallet;
   title: string;
   content: string;
   price: number;
@@ -20,6 +26,7 @@ interface Props {
 }
 
 const Create01: FC<Props> = ({
+  wallet,
   title,
   content,
   price,
@@ -32,6 +39,9 @@ const Create01: FC<Props> = ({
   setLimit,
   setIsTap,
 }) => {
+  const setIsToast = useSetRecoilState(isToastState);
+  const setToastContent = useSetRecoilState(toastContentState);
+
   return (
     <div>
       <div className="mt-8 px-8">
@@ -39,7 +49,13 @@ const Create01: FC<Props> = ({
           <div className="flex items-center font-semibold">
             <span className="mr-4">Upload Image</span>
             <div
-              onClick={() => alert("Comming Soon!")}
+              onClick={() => {
+                setToastContent({
+                  content: "Comming Soon!",
+                  type: "primary",
+                });
+                setIsToast(true);
+              }}
               className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2"
             >
               <AutoSVG
@@ -51,7 +67,7 @@ const Create01: FC<Props> = ({
           </div>
           <div className="relative w-full h-80 mt-2">
             <AutoImage
-              src="temp.png"
+              src="/temp.png"
               className="object-cover rounded"
               alt="temp"
             />
@@ -130,7 +146,12 @@ const Create01: FC<Props> = ({
         </div>
 
         {limit ? (
-          <div className="mt-6">
+          <div
+            className={clsx(
+              "mt-6 animate__animated animate__fast",
+              limit ? "animate__fadeIn" : "animate__fadeOut"
+            )}
+          >
             <div className="font-semibold">Limit Count</div>
             <div>
               <input
@@ -156,7 +177,7 @@ const Create01: FC<Props> = ({
                   className="w-5 h-5 mx-2"
                 />
                 <span className="font-semibold">
-                  {shortAddress("0x12A60872B053C009452cdb95178144c8fFbDeA4D")}
+                  {shortAddress(wallet.address)}
                 </span>
               </div>
             </div>

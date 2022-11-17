@@ -5,22 +5,38 @@ import React, {
   SetStateAction,
   useState,
 } from "react";
+import clsx from "clsx";
 
 /* Component */
 import { Button } from "components/asset/button";
+import { ProductCard } from "components//asset/card/ProductCard";
+import { Wallet } from "components/blockchain";
+import { Card } from "components/asset/card";
+import { Badge } from "components/asset/badge";
 import { AutoImage, AutoSVG, shortAddress } from "utils";
-import clsx from "clsx";
-import { ProductCard } from "../asset/card/ProductCard";
-import { Card } from "../asset/card";
 
 interface Props {
+  wallet: Wallet;
   isLoading: boolean;
   setIsTap: Dispatch<SetStateAction<number>>;
   registerHandler: MouseEventHandler<HTMLButtonElement>;
 }
 
-const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
-  const [isOpen, setIsOpen] = useState<number>(-1);
+const Create02: FC<Props> = ({
+  wallet,
+  isLoading,
+  setIsTap,
+  registerHandler,
+}) => {
+  const [isOpen, setIsOpen] = useState<number>(0);
+
+  const openHandler = (tapIndex: number) => {
+    if (isOpen === tapIndex) {
+      setIsOpen(-1);
+    } else {
+      setIsOpen(tapIndex);
+    }
+  };
 
   return (
     <div>
@@ -28,15 +44,15 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
         <div>
           <div
             className={clsx(
-              "flex justify-between font-semibold transition-all duration-300 border-2 p-2",
-              isOpen === 0
-                ? "rounded bg-dark text-white border-dark"
-                : "rounded-t"
+              "flex justify-between font-semibold shadow p-4 transition-colors",
+              isOpen === 0 && "rounded bg-dark text-white"
             )}
+            onClick={() => {
+              openHandler(0);
+            }}
           >
             <span>Demo in Main</span>
             <div
-              onClick={() => (isOpen === 0 ? setIsOpen(-1) : setIsOpen(0))}
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 0 && "rotate-0"
@@ -46,27 +62,23 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
             </div>
           </div>
           {isOpen === 0 ? (
-            <ProductCard className="my-2 flex bg-dark text-center text-white h-56">
+            <ProductCard
+              className={clsx(
+                "my-2 flex bg-dark text-center text-white h-56 animate__animated animate__fast",
+                isOpen === 0 ? "animate__fadeIn" : "animate__fadeOut"
+              )}
+            >
               <div className="relative w-1/2 h-full">
                 <AutoImage
-                  src="/dummy/forest.jpg"
-                  alt="Awesome Forest"
+                  src={dummy.src}
+                  alt={dummy.title}
                   className="rounded-l-xl object-cover"
                 />
               </div>
               <div className="w-1/2 p-6">
-                <h2 className="font-bold">Awesome Forest</h2>
+                <h2 className="font-bold">{dummy.title}</h2>
                 <p className="mt-2 text-gray-400 text-xs break-words truncate-3-lines">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry{"'"}s
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book. It has survived not only five centuries, but
-                  also the leap into electronic typesetting, remaining
-                  essentially unchanged. It was popularised in the 1960s with
-                  the release of Letraset sheets containing Lorem Ipsum
-                  passages, and more recently with desktop publishing software
-                  like Aldus PageMaker including versions of Lorem Ipsu.
+                  {dummy.content}
                 </p>
                 <div className="flex mt-4 items-center justify-between mx-7">
                   <p>
@@ -95,13 +107,13 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
         <div>
           <div
             className={clsx(
-              "flex justify-between font-semibold transition-all duration-300 border-2 p-2",
-              isOpen === 1 && "rounded bg-dark text-white border-dark"
+              "flex justify-between font-semibold shadow p-4 transition-colors",
+              isOpen === 1 && "rounded bg-dark text-white"
             )}
+            onClick={() => openHandler(1)}
           >
             <span>Demo in Product List</span>
             <div
-              onClick={() => (isOpen === 1 ? setIsOpen(-1) : setIsOpen(1))}
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 1 && "rotate-0"
@@ -111,18 +123,53 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
             </div>
           </div>
 
-          {isOpen === 1 ? <div>hi</div> : ""}
+          {isOpen === 1 ? (
+            <div
+              className={clsx(
+                "w-72 mx-auto group cursor-pointer my-2 animate__animated animate__fast",
+                isOpen === 1 ? "animate__fadeIn" : "animate__fadeOut"
+              )}
+            >
+              <Card className="border rounded-lg min-h-96 bg-white">
+                <div className="relative h-56 rounded-t overflow-hidden">
+                  <AutoImage
+                    src={dummy.src}
+                    alt={dummy.title}
+                    className="object-cover transition group-hover:scale-110"
+                  />
+                </div>
+                <div className="mt-2 px-4 pb-4">
+                  <label className="text-gray-600 text-xs">
+                    <span>NFT</span>
+                    <span className="mx-1">|</span>
+                    <span>{shortAddress(wallet.address)}</span>
+                  </label>
+                  <h2 className="mt-1 truncate">{dummy.title}</h2>
+                  <p className="mt-2 text-gray-500 text-xs break-words truncate-3-lines">
+                    {dummy.content}
+                  </p>
+                  <div className="mt-3 flex items-center">
+                    <Badge className="bg-danger">Limit</Badge>
+                    <Badge className="bg-danger">Hot</Badge>
+                    <Badge className="bg-primary">12 / 50</Badge>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div>
           <div
             className={clsx(
-              "flex justify-between font-semibold transition-all duration-300 border-2 p-2",
-              isOpen === 2 && "rounded bg-dark text-white border-dark"
+              "flex justify-between font-semibold shadow p-4 transition-colors",
+              isOpen === 2 && "rounded bg-dark text-white"
             )}
+            onClick={() => openHandler(2)}
           >
             <span>Demo in Product Detail</span>
             <div
-              onClick={() => (isOpen === 2 ? setIsOpen(-1) : setIsOpen(2))}
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 2 && "rotate-0"
@@ -132,21 +179,26 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
             </div>
           </div>
           {isOpen === 2 ? (
-            <div className="my-2">
+            <div
+              className={clsx(
+                "my-2 animate__animated animate__fast",
+                isOpen === 2 ? "animate__fadeIn" : "animate__fadeOut"
+              )}
+            >
               <div className="flex justify-between items-center">
                 <div className="text-2xl text-center font-bold flex items-center">
                   <span className="px-4 py-2 text-sm border rounded-xl bg-primary-active text-white mr-6">
                     NFT
                   </span>
-                  <span>Awesome Forest</span>
+                  <span>{dummy.title}</span>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-6 pt-3">
                 <div className="col-span-2">
                   <div className="relative w-full h-64">
                     <AutoImage
-                      src="/dummy/forest.jpg"
-                      alt="bnb"
+                      src={dummy.src}
+                      alt={dummy.title}
                       className="object-cover rounded-xl"
                     />
                   </div>
@@ -189,17 +241,8 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
                   <label className="text-xs font-bold text-gray-600">
                     Description
                   </label>
-                  <p className="mt-1 text-sm leading-relaxed">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry{"'"}
-                    s standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book. It has survived not only five centuries,
-                    but also the leap into electronic typesetting, remaining
-                    essentially unchanged. It was popularised in the 1960s with
-                    the release of Letraset sheets containing Lorem Ipsum
-                    passages, and more recently with desktop publishing software
-                    like Aldus PageMaker including versions of Lorem Ipsu.
+                  <p className="mt-1 text-xs leading-relaxed">
+                    {dummy.content}
                   </p>
                 </Card>
                 <Card className="self-start border mt-1 bg-white rounded-xl">
@@ -215,9 +258,7 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
                       />
                     </div>
                     <div className="text-xs">
-                      {shortAddress(
-                        "0x12A60872B053C009452cdb95178144c8fFbDeA4D"
-                      )}
+                      {shortAddress(wallet.address)}
                     </div>
                   </div>
                   <div className="grid grid-cols-3 text-center">
@@ -252,7 +293,7 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
                   className="w-5 h-5 mx-2"
                 />
                 <span className="font-semibold">
-                  {shortAddress("0x12A60872B053C009452cdb95178144c8fFbDeA4D")}
+                  {shortAddress(wallet.address)}
                 </span>
               </div>
             </div>
@@ -264,6 +305,7 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
         <Button
           className="rounded py-4 text-center font-bold border border-danger text-white bg-danger hover:bg-danger-active"
           onClick={() => setIsTap(0)}
+          disabled={isLoading}
         >
           <span>BACK</span>
         </Button>
@@ -289,6 +331,13 @@ const Create02: FC<Props> = ({ isLoading, setIsTap, registerHandler }) => {
       </div>
     </div>
   );
+};
+
+const dummy = {
+  title: "Awesome Binance",
+  src: "/temp.png",
+  content:
+    "BNB Smart Chain (BSC) supports the most popular programming languages, flexible tools, and comes with clear and canonical documentation. You can quickly start and deploy your application on a blockchain designed with real use in mind.",
 };
 
 export { Create02 };

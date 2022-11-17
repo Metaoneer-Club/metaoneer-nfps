@@ -10,8 +10,8 @@ import { Create01, Create02, Create03 } from "components/section";
 import { hexBalance } from "utils";
 
 /* State */
-import { useRecoilValue } from "recoil";
-import { walletState } from "stores";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isToastState, toastContentState, walletState } from "stores";
 import clsx from "clsx";
 
 const Create: NextPage = () => {
@@ -24,15 +24,34 @@ const Create: NextPage = () => {
   const [limit, setLimit] = useInput<boolean>(false);
   const [limitCount, setLimitCount, onChangeLimitCount] = useInput<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const setIsToast = useSetRecoilState(isToastState);
+  const setToastContent = useSetRecoilState(toastContentState);
 
   const registerHandler = async () => {
     if (title.length === 0) {
-      alert("Please enter your title.");
+      setToastContent({
+        content: "Please enter your title.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return;
+    }
+
+    if (content.length === 0) {
+      setToastContent({
+        content: "Please enter your description.",
+        type: "danger",
+      });
+      setIsToast(true);
       return;
     }
 
     if (price === 0) {
-      alert("Please enter your Price.");
+      setToastContent({
+        content: "Please enter your price.",
+        type: "danger",
+      });
+      setIsToast(true);
       return;
     }
 
@@ -44,14 +63,22 @@ const Create: NextPage = () => {
           from: wallet.address,
           gas: 10000000,
         });
-
       const lastKey = await paymentContract.methods
         .lastKey(wallet.address)
         .call();
-      alert("Successfully registered");
       setCurrentKey(lastKey);
+
+      setToastContent({
+        content: "Successfully registered.",
+        type: "success",
+      });
+      setIsToast(true);
     } catch (err) {
-      alert("Error! Please check for sufficient gas or network");
+      setToastContent({
+        content: "Error! Please check for sufficient gas or network.",
+        type: "danger",
+      });
+      setIsToast(true);
       setIsLoading(false);
       return;
     } finally {
@@ -61,6 +88,8 @@ const Create: NextPage = () => {
       setLimit(false);
       setLimitCount(0);
       setIsLoading(false);
+      setIsTap(2);
+      window.scrollTo(0, 0);
     }
   };
 
@@ -81,7 +110,7 @@ const Create: NextPage = () => {
                 >
                   1
                 </div>
-                <div className="mt-2 text-center text-sm">
+                <div className="mt-2 text-center text-sm py-2">
                   Enter product information.
                 </div>
               </div>
@@ -99,7 +128,9 @@ const Create: NextPage = () => {
                 >
                   2
                 </div>
-                <div className="mt-2 text-center text-sm">Check your demo.</div>
+                <div className="mt-2 text-center text-sm py-2">
+                  Check your demo.
+                </div>
               </div>
               <div className="col-span-1 flex items-center">
                 <hr className="w-3/4 mx-auto"></hr>
@@ -125,6 +156,7 @@ const Create: NextPage = () => {
 
             {isTap === 0 ? (
               <Create01
+                wallet={wallet}
                 title={title}
                 content={content}
                 price={price}
@@ -142,6 +174,7 @@ const Create: NextPage = () => {
             )}
             {isTap === 1 ? (
               <Create02
+                wallet={wallet}
                 isLoading={isLoading}
                 setIsTap={setIsTap}
                 registerHandler={registerHandler}
@@ -149,7 +182,7 @@ const Create: NextPage = () => {
             ) : (
               ""
             )}
-            {isTap === 2 ? <Create03 registerHandler={registerHandler} /> : ""}
+            {isTap === 2 ? <Create03 currentKey={currentKey} /> : ""}
           </div>
         </div>
       </div>

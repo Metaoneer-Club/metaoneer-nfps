@@ -20,7 +20,7 @@ const ToastWidget: FC = () => {
       onClick={() => setIsToast(false)}
       className={`fixed cursor-pointer top-24 left-1/2 transform text-white -translate-x-1/2 w-80 p-2 shadow rounded-lg z-40 animate__animated ${
         fade ? "animate__fadeIn" : "animate__fadeOut"
-      } animate__animated animate__fast a bg-${
+      } animate__animated animate__fast bg-${
         toastContent.type || "primary"
       } items-center`}
     >
