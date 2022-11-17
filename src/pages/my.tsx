@@ -46,8 +46,9 @@ const MyPage: NextPage = () => {
       const keyAry: KeyData[] = [];
       for (let id = 0; id < keyList.length; id++) {
         const promise = async (index: number) => {
+          console.log(index);
           const keypool = await paymentContract.methods
-            .prepareKeypool(index)
+            .prepareKeypool(keyList[index])
             .call();
           keyAry.push(keypool);
         };
@@ -58,7 +59,7 @@ const MyPage: NextPage = () => {
       setProducts(keyAry);
     };
     callProducts();
-  }, [wallet.address]);
+  }, [router, setIsToast, setToastContent, wallet.address]);
 
   return (
     <div className="min-h-screen bg-slate-50">
