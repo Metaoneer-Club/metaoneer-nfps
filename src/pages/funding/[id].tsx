@@ -40,25 +40,25 @@ const Product = () => {
                 className="flex items-center bg-white shadow hover:bg-dark hover:text-white mr-4"
                 onClick={() => {
                   if (Number(router.query.id) > 0)
-                    router.push(`/shop/${Number(router.query.id) - 1}`);
+                    router.push(`/funding/${Number(router.query.id) - 1}`);
                 }}
               >
                 <AutoSVG className="mr-2" src="/media/icons/arrow-left.svg" />
-                <span>Prev</span>
+                <span className="pr-1">이전</span>
               </Button>
               <Button
                 className="flex items-center bg-white shadow hover:bg-dark hover:text-white"
                 onClick={() => {
                   if (Number(router.query.id) < 20)
-                    router.push(`/shop/${Number(router.query.id) + 1}`);
+                    router.push(`/funding/${Number(router.query.id) + 1}`);
                 }}
               >
-                <span>Next</span>
+                <span className="pl-1">다음</span>
                 <AutoSVG className="ml-2" src="/media/icons/arrow-right.svg" />
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-6 pt-10">
+          <div className="grid grid-cols-3 gap-6 pt-6">
             <div className="col-span-2">
               <div className="relative w-full h-96">
                 <AutoImage

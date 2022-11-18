@@ -1,10 +1,11 @@
 import React, { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
+import clsx from "clsx";
 
 /* Component */
 import { Button } from "components/asset/button";
 import { Wallet } from "components/blockchain";
+import { Editor } from "components/editor/Editor";
 import { AutoImage, AutoSVG, shortAddress } from "utils";
-import clsx from "clsx";
 
 /* State */
 import { isToastState, toastContentState } from "stores";
@@ -13,12 +14,12 @@ import { useSetRecoilState } from "recoil";
 interface Props {
   wallet: Wallet;
   title: string;
-  content: string;
+  content: string | undefined;
   price: number;
   limit: boolean;
   limitCount: number;
   onChangeTitle: (e?: ChangeEvent) => void;
-  onChangeContent: (e?: ChangeEvent) => void;
+  onChangeContent: Dispatch<SetStateAction<string | undefined>>;
   onChangePrice: (e?: ChangeEvent) => void;
   onChangeLimitCount: (e?: ChangeEvent) => void;
   setLimit: Dispatch<SetStateAction<boolean>>;
@@ -78,9 +79,9 @@ const Create01: FC<Props> = ({
           <div className="font-semibold">Title</div>
           <div>
             <input
-              className="mt-1 w-full rounded border border-gray-400 p-2"
+              className="form-input mt-1 w-full rounded border border-gray-400 p-2"
               type="text"
-              defaultValue={title}
+              value={title}
               onChange={onChangeTitle}
               placeholder="Example Title"
             />
@@ -88,22 +89,15 @@ const Create01: FC<Props> = ({
         </div>
         <div className="mt-6">
           <div className="font-semibold">Description</div>
-          <div>
-            <textarea
-              className="mt-1 w-full rounded border border-gray-400 p-2"
-              defaultValue={content}
-              onChange={onChangeContent}
-              placeholder="Example Description"
-            />
-          </div>
+          <Editor content={content} onChangeContent={onChangeContent} />
         </div>
         <div className="mt-6">
           <div className="font-semibold">Price</div>
           <div>
             <input
-              className="mt-1 w-full rounded border border-gray-400 p-2"
+              className="form-input mt-1 w-full rounded border border-gray-400 p-2"
               type="number"
-              defaultValue={price}
+              value={price}
               onChange={onChangePrice}
               placeholder="0.1"
             />
@@ -155,9 +149,9 @@ const Create01: FC<Props> = ({
             <div className="font-semibold">Limit Count</div>
             <div>
               <input
-                className="mt-1 w-full rounded border border-gray-400 p-2"
+                className="form-input mt-1 w-full rounded border border-gray-400 p-2"
                 type="number"
-                defaultValue={limitCount}
+                value={limitCount}
                 onChange={onChangeLimitCount}
                 placeholder="10"
               />
@@ -177,7 +171,8 @@ const Create01: FC<Props> = ({
                   className="w-5 h-5 mx-2"
                 />
                 <span className="font-semibold">
-                  {shortAddress(wallet.address)}
+                  {shortAddress(wallet.address) ||
+                    "Please connect your wallet first."}
                 </span>
               </div>
             </div>

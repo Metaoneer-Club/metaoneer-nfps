@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 /* Component */
-import { Badge } from "components/asset/badge";
-import { Card } from "components/asset/card";
-import { AutoImage, shortAddress } from "utils";
-import { paymentContract } from "~/components/blockchain";
+import { paymentContract } from "components/blockchain";
+import { ProductCard } from "components/card/ProductCard";
+import { AutoImage } from "utils";
 
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
@@ -24,6 +23,7 @@ const MyPage: NextPage = () => {
   const router = useRouter();
   const wallet = useRecoilValue(walletState);
   const [products, setProducts] = useState<KeyData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -57,6 +57,7 @@ const MyPage: NextPage = () => {
       await Promise.all(promises);
 
       setProducts(keyAry);
+      setIsLoading(false);
     };
     callProducts();
   }, [router, setIsToast, setToastContent, wallet.address]);
@@ -75,106 +76,55 @@ const MyPage: NextPage = () => {
             </div>
             <div className="text-center mt-2 text-3xl font-bold">Orbit</div>
             <div className="text-center mt-2 font-light text-sm">
-              @orbit__dev
+              @Orbit__dev
             </div>
             <div className="text-center font-normal text-lg">Metaoneer</div>
             <div className="px-6 text-center mt-2 font-light text-sm">
               <p>Front-end Developer</p>
             </div>
-            <hr className="mt-8" />
-            <div className="flex p-4">
-              <div className="w-1/2 text-center">
-                <span className="font-bold">1.8 k</span> Followers
+            <hr className="mt-4" />
+            <div className="flex text-center">
+              <div className="w-1/2 p-4 border-r">
+                <span className="font-bold">{products.length || 0}</span>{" "}
+                Products
               </div>
-              <div className="w-0 border border-gray-300"></div>
-              <div className="w-1/2 text-center">
-                <span className="font-bold">2.0 k</span> Following
+              <div className="w-1/2 p-4">
+                <span className="font-bold">2.0 k</span> Sales
               </div>
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-6 mt-12">
-          <>
-            {products?.map((v: KeyData) => (
-              <div
-                key={v.key}
-                className="group cursor-pointer"
-                onClick={() => router.push(`/shop/${v.key}`)}
-              >
-                <Card className="border rounded-lg min-h-96 bg-white">
-                  <div className="relative h-56 rounded-t overflow-hidden">
-                    <AutoImage
-                      src="/temp.png"
-                      alt={v.title}
-                      className="object-cover transition group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="mt-2 px-4 pb-4">
-                    <label className="text-gray-600 text-xs">
-                      <span>NFT</span>
-                      <span className="mx-1">|</span>
-                      <span>{shortAddress(v.owner)}</span>
-                    </label>
-                    <h2 className="mt-1 truncate">{v.title}</h2>
-                    <p className="mt-2 text-gray-500 text-xs break-words truncate-3-lines">
-                      BNB Smart Chain (BSC) supports the most popular
-                      programming languages, flexible tools, and comes with
-                      clear and canonical documentation. You can quickly start
-                      and deploy your application on a blockchain designed with
-                      real use in mind.
-                    </p>
-                    <div className="mt-3 flex items-center">
-                      <Badge className="bg-danger">Limit</Badge>
-                      <Badge className="bg-danger">Hot</Badge>
-                      <Badge className="bg-primary">12 / 50</Badge>
-                    </div>
-                  </div>
-                </Card>
+        <>
+          {isLoading ? (
+            <div className="text-center mt-8">
+              <div className="relative w-12 h-12 animate-spin mx-auto">
+                <AutoImage src="/media/icons/spinner.svg" alt="loading" />
               </div>
-            ))}
-          </>
-          {[...Array(20)].map((v, i) => (
-            <div
-              key={i}
-              className="group cursor-pointer"
-              onClick={() => router.push(`/shop/${i}`)}
-            >
-              <Card className="border rounded-lg min-h-96 bg-white">
-                <div className="relative h-56 rounded-t overflow-hidden">
-                  <AutoImage
-                    src="/temp.png"
-                    alt={"" + i}
-                    className="object-cover transition group-hover:scale-110"
-                  />
-                </div>
-                <div className="mt-2 px-4 pb-4">
-                  <label className="text-gray-600 text-xs">
-                    <span>NFT</span>
-                    <span className="mx-1">|</span>
-                    <span>
-                      {shortAddress(
-                        "0x12A60872B053C009452cdb95178144c8fFbDeA4D"
-                      )}
-                    </span>
-                  </label>
-                  <h2 className="mt-1 truncate">Example Title {i}</h2>
-                  <p className="mt-2 text-gray-500 text-xs break-words truncate-3-lines">
-                    BNB Smart Chain (BSC) supports the most popular programming
-                    languages, flexible tools, and comes with clear and
-                    canonical documentation. You can quickly start and deploy
-                    your application on a blockchain designed with real use in
-                    mind.
-                  </p>
-                  <div className="mt-3 flex items-center">
-                    <Badge className="bg-danger">Limit</Badge>
-                    <Badge className="bg-danger">Hot</Badge>
-                    <Badge className="bg-primary">12 / 50</Badge>
-                  </div>
-                </div>
-              </Card>
+              <h2 className="mt-4">로딩중 입니다...</h2>
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="grid grid-cols-4 gap-6 mt-12">
+              {products?.map((v: KeyData) => (
+                <ProductCard
+                  key={v.key}
+                  keyID={v.key}
+                  title={v.title}
+                  content="BNB Smart Chain (BSC) supports the most popular
+              programming languages, flexible tools, and comes with
+              clear and canonical documentation. You can quickly start
+              and deploy your application on a blockchain designed with
+              real use in mind."
+                  imgURI="/temp.png"
+                  category="NFT"
+                  creator={v.owner}
+                  progress={66}
+                  amount={300}
+                  expired={new Date()}
+                />
+              ))}
+            </div>
+          )}
+        </>
       </div>
     </div>
   );

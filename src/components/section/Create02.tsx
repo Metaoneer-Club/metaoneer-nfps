@@ -303,17 +303,14 @@ const Create02: FC<Props> = ({
 
       <div className="grid grid-cols-3 gap-4 p-8">
         <Button
-          className="rounded py-4 text-center font-bold border border-danger text-white bg-danger hover:bg-danger-active"
+          className="rounded py-4 text-center font-bold text-white disabled:bg-rose-400 bg-danger hover:bg-danger-active"
           onClick={() => setIsTap(0)}
           disabled={isLoading}
         >
           <span>BACK</span>
         </Button>
         <Button
-          className={clsx(
-            "col-span-2 rounded py-4 text-center font-bold text-white",
-            isLoading ? "bg-indigo-400" : "bg-indigo-700 hover:bg-indigo-900"
-          )}
+          className="col-span-2 rounded py-4 text-center font-bold text-white disabled:bg-indigo-400 bg-indigo-700 hover:bg-indigo-900"
           onClick={registerHandler}
           disabled={isLoading}
         >

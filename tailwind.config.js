@@ -39,6 +39,8 @@ module.exports = {
   variants: {},
   plugins: [
     require("tailwindcss-truncate-multiline")(),
-    require("@tailwindcss/forms"),
+    require("@tailwindcss/forms")({
+      strategy: "class",
+    }),
   ],
 };

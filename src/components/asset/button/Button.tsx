@@ -15,7 +15,8 @@ const Button: FC<Props> = ({ className, children, onClick, disabled }) => {
       onClick={onClick}
       disabled={disabled}
       className={clsx(
-        "p-3 text-center rounded-lg translate duration-300 active:scale-90",
+        "p-3 text-center rounded-lg translate duration-300",
+        !disabled && "active:scale-90",
         className
       )}
     >

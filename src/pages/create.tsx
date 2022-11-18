@@ -19,7 +19,9 @@ const Create: NextPage = () => {
   const [isTap, setIsTap] = useState<number>(0);
   const [currentKey, setCurrentKey] = useState<string>("");
   const [title, setTitle, onChangeTitle] = useInput<string>("");
-  const [content, setContent, onChangeContent] = useInput<string>("");
+  const [content, setContent] = useState<string | undefined>(
+    "### 여기에 입력해 주세요."
+  );
   const [price, setPrice, onChangePrice] = useInput<number>(0);
   const [limit, setLimit] = useInput<boolean>(false);
   const [limitCount, setLimitCount, onChangeLimitCount] = useInput<number>(0);
@@ -37,7 +39,7 @@ const Create: NextPage = () => {
       return;
     }
 
-    if (content.length === 0) {
+    if (content?.length === 0) {
       setToastContent({
         content: "Please enter your description.",
         type: "danger",
@@ -163,7 +165,7 @@ const Create: NextPage = () => {
                 limit={limit}
                 limitCount={limitCount}
                 onChangeTitle={onChangeTitle}
-                onChangeContent={onChangeContent}
+                onChangeContent={setContent}
                 onChangePrice={onChangePrice}
                 onChangeLimitCount={onChangeLimitCount}
                 setLimit={setLimit}

@@ -1,6 +1,8 @@
 import React, { FC, MouseEventHandler } from "react";
-import Link from "next/link";
-import { AutoSVG } from "~/utils";
+import { useRouter } from "next/router";
+
+/* Component */
+import { AutoSVG } from "utils";
 
 interface Props {
   close: MouseEventHandler<HTMLDivElement>;
@@ -8,16 +10,24 @@ interface Props {
 }
 
 const Dropdown: FC<Props> = ({ close, onLogOut }) => {
+  const router = useRouter();
   return (
     <>
       <div onClick={close} className="fixed inset-0 h-full w-full z-10"></div>
       <div className="absolute right-0 mt-2 w-44 text-sm border bg-white rounded-md shadow-xl z-20">
-        <Link href="/my">
-          <span className="flex items-center justify-center px-4 py-3 text-gray-700 rounded-t hover:bg-primary-light hover:text-primary">
+        <button
+          type="button"
+          onClick={(e: any) => {
+            router.push("/my");
+            close(e);
+          }}
+          className="w-full px-4 py-3 text-gray-700  rounded-t hover:bg-primary-light hover:text-primary"
+        >
+          <span className="flex items-center justify-center">
             <AutoSVG src="/media/icons/star.svg" className="w-5 h-5 mr-2" />
             My Product
           </span>
-        </Link>
+        </button>
         <button
           type="button"
           onClick={onLogOut}
@@ -33,4 +43,4 @@ const Dropdown: FC<Props> = ({ close, onLogOut }) => {
   );
 };
 
-export default Dropdown;
+export { Dropdown };
