@@ -32,9 +32,7 @@ const Shop: NextPage = () => {
               value={statusFilter}
               className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32"
             >
-              <option selected value={0}>
-                펀딩 비율
-              </option>
+              <option value={0}>펀딩 비율</option>
               <option value={1}>펀딩 비용</option>
               <option value={2}>펀딩 생성</option>
             </select>
@@ -47,7 +45,7 @@ const Shop: NextPage = () => {
               className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2"
             >
               {filterItems[statusFilter].option.map((opt, i) => (
-                <option key={opt} value={i} selected={i === 0}>
+                <option key={opt} value={i}>
                   {opt}
                 </option>
               ))}

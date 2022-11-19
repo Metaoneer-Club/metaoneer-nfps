@@ -20,23 +20,25 @@ const Create: NextPage = () => {
   const [currentKey, setCurrentKey] = useState<string>("");
   const [title, setTitle, onChangeTitle] = useInput<string>("");
   const [content, setContent] = useState<string | undefined>(
-    "### 여기에 입력해 주세요."
+    "### 여기에 설명을 입력해 주세요."
   );
   const [price, setPrice, onChangePrice] = useInput<number>(0);
   const [limit, setLimit] = useInput<boolean>(false);
   const [limitCount, setLimitCount, onChangeLimitCount] = useInput<number>(0);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
-  const registerHandler = async () => {
+  const checkRule = () => {
     if (title.length === 0) {
       setToastContent({
         content: "Please enter your title.",
         type: "danger",
       });
       setIsToast(true);
-      return;
+      return false;
     }
 
     if (content?.length === 0) {
@@ -45,7 +47,7 @@ const Create: NextPage = () => {
         type: "danger",
       });
       setIsToast(true);
-      return;
+      return false;
     }
 
     if (price === 0) {
@@ -54,8 +56,21 @@ const Create: NextPage = () => {
         type: "danger",
       });
       setIsToast(true);
-      return;
+      return false;
     }
+
+    return true;
+  };
+
+  const continueHandler = () => {
+    if (checkRule()) {
+      window.scrollTo(0, 0);
+      setIsTap(1);
+    }
+  };
+
+  const registerHandler = async () => {
+    if (!checkRule()) return;
 
     setIsLoading(true);
     try {
@@ -77,22 +92,22 @@ const Create: NextPage = () => {
       setIsToast(true);
     } catch (err) {
       setToastContent({
-        content: "Error! Please check for sufficient gas or network.",
+        content: "[Error] Please check for sufficient gas or network.",
         type: "danger",
       });
       setIsToast(true);
       setIsLoading(false);
       return;
-    } finally {
-      setTitle("");
-      setContent("");
-      setPrice(0);
-      setLimit(false);
-      setLimitCount(0);
-      setIsLoading(false);
-      setIsTap(2);
-      window.scrollTo(0, 0);
     }
+
+    setTitle("");
+    setContent("");
+    setPrice(0);
+    setLimit(false);
+    setLimitCount(0);
+    setIsLoading(false);
+    setIsTap(2);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -113,7 +128,7 @@ const Create: NextPage = () => {
                   1
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
-                  Enter product information.
+                  프로젝트 정보를 입력해 주세요.
                 </div>
               </div>
               <div className="col-span-1 flex items-center">
@@ -131,7 +146,7 @@ const Create: NextPage = () => {
                   2
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
-                  Check your demo.
+                  프로젝트 데모를 확인해 주세요.
                 </div>
               </div>
               <div className="col-span-1 flex items-center">
@@ -150,7 +165,7 @@ const Create: NextPage = () => {
                 </div>
                 <div className="mt-2 text-center text-sm">
                   <div>
-                    Done!<br></br> Check your NFT.
+                    NFT 생성 완료!<br></br> 프로젝트를 확인해 보세요.
                   </div>
                 </div>
               </div>
@@ -164,12 +179,16 @@ const Create: NextPage = () => {
                 price={price}
                 limit={limit}
                 limitCount={limitCount}
+                startDate={startDate}
+                endDate={endDate}
                 onChangeTitle={onChangeTitle}
                 onChangeContent={setContent}
                 onChangePrice={onChangePrice}
                 onChangeLimitCount={onChangeLimitCount}
                 setLimit={setLimit}
-                setIsTap={setIsTap}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+                continueHandler={continueHandler}
               />
             ) : (
               ""

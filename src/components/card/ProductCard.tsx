@@ -6,7 +6,7 @@ import { Card } from "components/asset/card";
 import { AutoImage, shortAddress } from "utils";
 
 export interface Product {
-  keyID: number;
+  keyID?: number;
   title: string;
   content: string;
   imgURI: string;
@@ -34,7 +34,9 @@ const ProductCard: FC<Product> = ({
     <div>
       <div
         className="group cursor-pointer"
-        onClick={() => router.push(`/funding/${keyID}`)}
+        onClick={() =>
+          Number.isInteger(keyID) && router.push(`/funding/${keyID}`)
+        }
       >
         <Card className="border rounded-lg min-h-96 bg-white group-hover:shadow-lg">
           <div className="relative h-56 rounded-t overflow-hidden">

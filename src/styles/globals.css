@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 @layer utilities {
+  @import url("./calendar.css");
+
   .pause {
     animation-play-state: paused;
   }

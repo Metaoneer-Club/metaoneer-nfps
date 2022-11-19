@@ -8,6 +8,7 @@ import { AutoImage } from "utils";
 
 interface ALink {
   name: string;
+  src?: string;
   url: string;
 }
 
@@ -51,7 +52,7 @@ const Footer: FC = () => {
               <strong>Docs</strong>
             </li>
             <li key={v1()} className="m-2">
-              <External url="https://docs.metaoneer.club">Document</External>
+              <External url="https://docs.metaoneer.club">문서</External>
             </li>
           </ul>
         </nav>
@@ -76,7 +77,7 @@ const Footer: FC = () => {
                   <External url={v.url}>
                     <div className="relative w-9 h-9 transition hover:scale-110">
                       <AutoImage
-                        src={`/media/logos/${v.name.toLowerCase()}.svg`}
+                        src={`/media/logos/${v.src?.toLowerCase()}.svg`}
                         className="rounded-full"
                         alt={v.name}
                       />
@@ -94,41 +95,40 @@ const Footer: FC = () => {
 
 const navItems: ALink[] = [
   {
-    name: "HOME",
+    name: "홈",
     url: "/",
   },
   {
-    name: "SHOP",
-    url: "/shop",
+    name: "펀딩",
+    url: "/funding",
   },
   {
-    name: "CREATOR",
-    url: "/creator",
-  },
-  {
-    name: "LOG",
-    url: "/log",
+    name: "투표",
+    url: "/vote",
   },
 ];
 
 const contactItems: ALink[] = [
   {
-    name: "Email",
+    name: "이메일",
+    src: "email",
     url: "mailto:contact@metaoneer.club",
   },
   {
-    name: "Telegram",
+    name: "텔레그램",
+    src: "telegram",
     url: "https://t.me/Ramp_me",
   },
   {
-    name: "Discord",
+    name: "디스코드",
+    src: "discord",
     url: "https://discord.gg/zeGnHn6byA",
   },
 ];
 
 const otherItems: ALink[] = [
   {
-    name: "Official Website",
+    name: "공식 홈페이지",
     url: "https://metaoneer.club",
   },
   {
@@ -136,7 +136,7 @@ const otherItems: ALink[] = [
     url: "https://bims.metaoneer.club",
   },
   {
-    name: "Payment Module",
+    name: "npm 결제 모듈",
     url: "https://www.npmjs.com/package/metaoneer-payment",
   },
 ];

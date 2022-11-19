@@ -9,11 +9,12 @@ import clsx from "clsx";
 
 /* Component */
 import { Button } from "components/asset/button";
-import { ProductCard } from "components//asset/card/ProductCard";
-import { Wallet } from "components/blockchain";
+import { ProductCard } from "components/card/ProductCard";
 import { Card } from "components/asset/card";
 import { Badge } from "components/asset/badge";
+import { Wallet } from "components/blockchain";
 import { AutoImage, AutoSVG, shortAddress } from "utils";
+import { MainCard } from "../card/MainCard";
 
 interface Props {
   wallet: Wallet;
@@ -44,14 +45,14 @@ const Create02: FC<Props> = ({
         <div>
           <div
             className={clsx(
-              "flex justify-between font-semibold shadow p-4 transition-colors",
+              "flex justify-between shadow p-4 transition-colors",
               isOpen === 0 && "rounded bg-dark text-white"
             )}
             onClick={() => {
               openHandler(0);
             }}
           >
-            <span>Demo in Main</span>
+            <span>홈 화면 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
@@ -62,44 +63,23 @@ const Create02: FC<Props> = ({
             </div>
           </div>
           {isOpen === 0 ? (
-            <ProductCard
+            <div
               className={clsx(
-                "my-2 flex bg-dark text-center text-white h-56 animate__animated animate__fast",
+                "my-2 w-4/5 mx-auto h-56 animate__animated animate__fast",
                 isOpen === 0 ? "animate__fadeIn" : "animate__fadeOut"
               )}
             >
-              <div className="relative w-1/2 h-full">
-                <AutoImage
-                  src={dummy.src}
-                  alt={dummy.title}
-                  className="rounded-l-xl object-cover"
-                />
-              </div>
-              <div className="w-1/2 p-6">
-                <h2 className="font-bold">{dummy.title}</h2>
-                <p className="mt-2 text-gray-400 text-xs break-words truncate-3-lines">
-                  {dummy.content}
-                </p>
-                <div className="flex mt-4 items-center justify-between mx-7">
-                  <p>
-                    <strong className="text-lg text-danger-active">100</strong>{" "}
-                    BNB
-                  </p>
-                  <p>
-                    <strong className="text-lg text-danger-active">12</strong>
-                    <span className="mx-1">/</span>
-                    <strong className="text-lg">50</strong>
-                    <span className="mx-1">ea</span>
-                  </p>
-                </div>
-                <Button
-                  className="mt-3 w-full border text-sm hover:bg-white hover:text-dark"
-                  onClick={() => {}}
-                >
-                  See More
-                </Button>
-              </div>
-            </ProductCard>
+              <MainCard
+                title={dummy.title}
+                content={dummy.content}
+                imgURI={dummy.src}
+                category="NFT"
+                creator="0x12A60872B053C009452cdb95178144c8fFbDeA4D"
+                progress={66}
+                amount={300}
+                expired={new Date()}
+              />
+            </div>
           ) : (
             ""
           )}
@@ -107,12 +87,12 @@ const Create02: FC<Props> = ({
         <div>
           <div
             className={clsx(
-              "flex justify-between font-semibold shadow p-4 transition-colors",
+              "flex justify-between shadow p-4 transition-colors",
               isOpen === 1 && "rounded bg-dark text-white"
             )}
             onClick={() => openHandler(1)}
           >
-            <span>Demo in Product List</span>
+            <span>펀딩 목록 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
@@ -130,31 +110,16 @@ const Create02: FC<Props> = ({
                 isOpen === 1 ? "animate__fadeIn" : "animate__fadeOut"
               )}
             >
-              <Card className="border rounded-lg min-h-96 bg-white">
-                <div className="relative h-56 rounded-t overflow-hidden">
-                  <AutoImage
-                    src={dummy.src}
-                    alt={dummy.title}
-                    className="object-cover transition group-hover:scale-110"
-                  />
-                </div>
-                <div className="mt-2 px-4 pb-4">
-                  <label className="text-gray-600 text-xs">
-                    <span>NFT</span>
-                    <span className="mx-1">|</span>
-                    <span>{shortAddress(wallet.address)}</span>
-                  </label>
-                  <h2 className="mt-1 truncate">{dummy.title}</h2>
-                  <p className="mt-2 text-gray-500 text-xs break-words truncate-3-lines">
-                    {dummy.content}
-                  </p>
-                  <div className="mt-3 flex items-center">
-                    <Badge className="bg-danger">Limit</Badge>
-                    <Badge className="bg-danger">Hot</Badge>
-                    <Badge className="bg-primary">12 / 50</Badge>
-                  </div>
-                </div>
-              </Card>
+              <ProductCard
+                category="NFT"
+                title={dummy.title}
+                content={dummy.content}
+                imgURI={dummy.src}
+                creator="0x12A60872B053C009452cdb95178144c8fFbDeA4D"
+                progress={66}
+                amount={300}
+                expired={new Date()}
+              />
             </div>
           ) : (
             ""
@@ -163,12 +128,12 @@ const Create02: FC<Props> = ({
         <div>
           <div
             className={clsx(
-              "flex justify-between font-semibold shadow p-4 transition-colors",
+              "flex justify-between shadow p-4 transition-colors",
               isOpen === 2 && "rounded bg-dark text-white"
             )}
             onClick={() => openHandler(2)}
           >
-            <span>Demo in Product Detail</span>
+            <span>펀딩 세부정보 화면 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
@@ -284,7 +249,7 @@ const Create02: FC<Props> = ({
         </div>
 
         <div className="mt-6">
-          <div className="font-semibold">Address</div>
+          <div className="font-semibold">지갑 주소</div>
           <div className="mt-2">
             <div className="flex items-center bg-neutral-100 p-3 rounded border border-gray-400">
               <div className="flex items-center gap-x-2">
@@ -307,7 +272,7 @@ const Create02: FC<Props> = ({
           onClick={() => setIsTap(0)}
           disabled={isLoading}
         >
-          <span>BACK</span>
+          <span>이전 챕터로</span>
         </Button>
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white disabled:bg-indigo-400 bg-indigo-700 hover:bg-indigo-900"
@@ -322,7 +287,7 @@ const Create02: FC<Props> = ({
               </div>
             </span>
           ) : (
-            <span>CREATE</span>
+            <span>프로젝트 생성 완료</span>
           )}
         </Button>
       </div>

@@ -25,7 +25,7 @@ const Dropdown: FC<Props> = ({ close, onLogOut }) => {
         >
           <span className="flex items-center justify-center">
             <AutoSVG src="/media/icons/star.svg" className="w-5 h-5 mr-2" />
-            My Product
+            <span>내 프로젝트</span>
           </span>
         </button>
         <button
@@ -35,7 +35,7 @@ const Dropdown: FC<Props> = ({ close, onLogOut }) => {
         >
           <span className="flex items-center justify-center">
             <AutoSVG src="/media/icons/close.svg" className="w-5 h-5 mr-2" />
-            Disconnect
+            <span>연결 해제</span>
           </span>
         </button>
       </div>

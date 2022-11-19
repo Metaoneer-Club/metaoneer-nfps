@@ -54,7 +54,9 @@ const MainCard: FC<Product> = ({
         </div>
         <Button
           className="mt-3 w-full border text-sm group-hover:border-danger group-hover:text-danger"
-          onClick={() => router.push(`/funding/${keyID}`)}
+          onClick={() =>
+            Number.isInteger(keyID) && router.push(`/funding/${keyID}`)
+          }
         >
           See More
         </Button>

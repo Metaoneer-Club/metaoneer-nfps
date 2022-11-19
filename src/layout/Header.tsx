@@ -124,7 +124,11 @@ const Header: FC<Props> = ({ active }) => {
             onClick={() => router.push("/")}
           >
             <div className="relative w-[180px] h-16">
-              <AutoImage src="/media/logos/logo.png" alt="logo" />
+              <AutoImage
+                src="/media/logos/logo.png"
+                alt="logo"
+                priority={true}
+              />
             </div>
           </div>
           <div className="w-full flex items-center justify-between">
