@@ -1,21 +1,28 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Payments from "metaoneer-payment";
 
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { AutoImage, AutoSVG, shortAddress } from "utils";
+import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
-import { isToastState, toastContentState } from "stores/toast";
+import { isToastState, toastContentState } from "stores";
+import clsx from "clsx";
 
 const Product = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [tabIndex, setTabIndex] = useState<number>(0);
+  const [blockNumber, setBlockNumber] = useState<number>(864000);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
+
+  setTimeout(() => {
+    blockNumber > 0 && setBlockNumber(blockNumber - 1);
+  }, 3000);
 
   return (
     <>
@@ -31,9 +38,9 @@ const Product = () => {
           <div className="flex justify-between items-center">
             <div className="text-3xl text-center font-bold flex items-center">
               <span className="px-4 py-2 border rounded-xl text-lg bg-primary-active text-white mr-6">
-                Category
+                NFT
               </span>
-              <span>Example Title {router.query.id}</span>
+              <span>프로젝트 제목 {router.query.id}</span>
             </div>
             <div className="flex">
               <Button
@@ -58,8 +65,8 @@ const Product = () => {
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-6 pt-6">
-            <div className="col-span-2">
+          <div className="grid grid-cols-5 gap-6 pt-6">
+            <div className="col-span-3">
               <div className="relative w-full h-96">
                 <AutoImage
                   src="/temp.png"
@@ -68,28 +75,72 @@ const Product = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col p-8 rounded-xl border bg-white">
-              <div>
-                <label className="text-sm font-bold text-gray-600">Intro</label>
-                <p className="mt-2 truncate">Example Intro</p>
+            <div className="col-span-2 flex flex-col text-center rounded-xl border bg-white">
+              <div className="grid grid-cols-2 gap-4 p-6 items-center">
+                <div className="mt-4">
+                  <label className="text-gray-600">펀딩 금액</label>
+                  <p className="mt-2">
+                    <span className="text-3xl mr-1">{accounting(1802)}</span>
+                    <span className="text-gray-600">BNB</span>
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <label className="text-gray-600">후원자 수</label>
+                  <p className="mt-2">
+                    <span className="text-3xl mr-1">{accounting(143)}</span>
+                    <span className="text-gray-600">명</span>
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <label className="text-gray-600">남은 기간</label>
+                  <p className="text-gray-600 mt-1">
+                    <span className="text-black text-3xl mr-1">30</span>일
+                    <div className="mt-2">
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        href="https://bscscan.com/blocks"
+                        className="text-gray-500 hover:text-blue-500 hover:underline"
+                      >
+                        {accounting(blockNumber)}
+                      </a>
+                      <span className="text-sm ml-1">블록</span>
+                    </div>
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <label className="text-gray-600">펀딩 달성률</label>
+                  <p className="mt-2">
+                    <span className="text-blue-600 text-3xl mr-1">90</span>%
+                  </p>
+                  <div className="mt-3 flex items-center">
+                    <div className="w-full h-3 bg-blue-200 rounded-sm">
+                      <div
+                        style={{
+                          // width: progress >= 100 ? "100%" : `${progress}%`,
+                          width: "90%",
+                        }}
+                        className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="pt-8">
-                <label className="text-sm font-bold text-gray-600">Price</label>
-                <p className="mt-2">
-                  <strong className="text-xl mr-2">3</strong>klay
-                </p>
+              <div className="grid grid-cols-5 gap-4 px-8 py-3">
+                <div className="col-span-2 text-sm text-center">
+                  <p>펀딩 목표액</p>
+                  <p className="mt-1">펀딩 기간</p>
+                  <p className="mt-1">현재 단계</p>
+                </div>
+                <div className="col-span-3 text-left text-gray-600 text-sm">
+                  <p>{accounting(2000)} BNB</p>
+                  <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
+                  <p className="mt-1">펀딩 진행중</p>
+                </div>
               </div>
-              <div className="pt-8">
-                <label className="text-sm font-bold text-gray-600">Limit</label>
-                <p className="mt-2">
-                  <strong className="text-xl text-danger">12</strong>
-                  <span className="mx-2">/</span>
-                  <strong className="text-xl">50</strong>
-                </p>
-              </div>
-              <div className="mt-auto w-full">
+              <div className="p-8 pt-4 mt-auto w-full">
                 <Button
-                  className="bg-primary text-white w-full hover:bg-primary-active"
+                  className="bg-blue-600 text-white w-full hover:bg-blue-700"
                   onClick={() => {
                     if (Number(router.query.id) < 9) {
                       setIsOpen(true);
@@ -102,57 +153,86 @@ const Product = () => {
                     }
                   }}
                 >
-                  Buy
+                  펀딩하기
                 </Button>
               </div>
             </div>
-            <Card className="col-span-2 mt-4 border p-6 bg-white rounded-xl">
-              <label className="text-sm font-bold text-gray-600">
-                Description
-              </label>
-              <p className="mt-4 leading-relaxed">
-                BNB Smart Chain (BSC) supports the most popular programming
-                languages, flexible tools, and comes with clear and canonical
-                documentation. You can quickly start and deploy your application
-                on a blockchain designed with real use in mind. BNB Smart Chain
-                (BSC) supports the most popular programming languages, flexible
-                tools, and comes with clear and canonical documentation. You can
-                quickly start and deploy your application on a blockchain
-                designed with real use in mind. BNB Smart Chain (BSC) supports
-                the most popular programming languages, flexible tools, and
-                comes with clear and canonical documentation. You can quickly
-                start and deploy your application on a blockchain designed with
-                real use in mind.
-              </p>
-            </Card>
-            <Card className="self-start border mt-4 bg-white rounded-xl">
-              <h3 className="text-xs font-bold text-gray-600 px-6 pt-4">
-                Creator Information
+          </div>
+          <div className="grid grid-cols-3 gap-6 pt-4">
+            <div className="col-span-2 -mt-10">
+              <nav className="inline-flex flex-row bg-white border border-b-0 rounded rounded-b-none">
+                <button
+                  type="button"
+                  onClick={() => setTabIndex(0)}
+                  className={clsx(
+                    "text-gray-600 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                    tabIndex === 0 && "font-medium border-b-2 border-blue-500"
+                  )}
+                >
+                  프로젝트 소개
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTabIndex(1)}
+                  className={clsx(
+                    "text-gray-600 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                    tabIndex === 1 && "font-medium border-b-2 border-blue-500"
+                  )}
+                >
+                  마일스톤
+                </button>
+              </nav>
+              <Card className="border p-6 bg-white rounded-xl">
+                {tabIndex === 0 ? (
+                  <p className="leading-relaxed">
+                    BNB Smart Chain (BSC) supports the most popular programming
+                    languages, flexible tools, and comes with clear and
+                    canonical documentation. You can quickly start and deploy
+                    your application on a blockchain designed with real use in
+                    mind. BNB Smart Chain (BSC) supports the most popular
+                    programming languages, flexible tools, and comes with clear
+                    and canonical documentation. You can quickly start and
+                    deploy your application on a blockchain designed with real
+                    use in mind. BNB Smart Chain (BSC) supports the most popular
+                    programming languages, flexible tools, and comes with clear
+                    and canonical documentation. You can quickly start and
+                    deploy your application on a blockchain designed with real
+                    use in mind.
+                  </p>
+                ) : (
+                  ""
+                )}
+              </Card>
+            </div>
+            <Card className="self-start border mt-5 bg-white rounded-xl">
+              <h3 className="text-xs font-medium text-gray-600 px-6 pt-4">
+                프로젝트 생성자 정보
               </h3>
-              <div className="flex items-center mt-3 px-6 pb-4 border-b">
-                <div className="relative w-7 h-7 mr-2">
-                  <AutoImage
-                    className="rounded-full border"
-                    src="/media/avatars/blank.svg"
-                    alt="icon"
-                  />
+              <div className="mt-3 px-6 pb-4 border-b">
+                <div className="flex items-center">
+                  <div className="relative w-7 h-7 mr-2">
+                    <AutoImage
+                      className="rounded-full border"
+                      src="/media/avatars/blank.svg"
+                      alt="icon"
+                    />
+                  </div>
+                  <div className="text-xs">
+                    {shortAddress("0x12A60872B053C009452cdb95178144c8fFbDeA4D")}
+                  </div>
                 </div>
-                <div className="text-xs">
-                  {shortAddress("0x12A60872B053C009452cdb95178144c8fFbDeA4D")}
-                </div>
+                <p className="mt-2 text-xs">
+                  BNB 체인의 랜드마크가 되겠습니다!
+                </p>
               </div>
-              <div className="grid grid-cols-3 text-center">
+              <div className="grid grid-cols-2 text-center">
                 <div className="border-r">
-                  <p className="text-xs my-2">All</p>
+                  <p className="text-xs my-2">프로젝트 수</p>
                   <p className="pb-3">5</p>
                 </div>
-                <div className="border-r">
-                  <p className="text-xs my-2">Limit</p>
-                  <p className="pb-3">4</p>
-                </div>
                 <div>
-                  <p className="text-xs my-2">Unlimit</p>
-                  <p className="pb-3">1</p>
+                  <p className="text-xs my-2">받은 펀딩 금액</p>
+                  <p className="pb-3">400 BNB</p>
                 </div>
               </div>
             </Card>

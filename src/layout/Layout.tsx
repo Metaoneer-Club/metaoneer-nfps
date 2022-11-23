@@ -1,5 +1,8 @@
 import React, { FC, ReactNode, useEffect, useState } from "react";
 
+/* Hook */
+import useAuth from "hooks/useAuth";
+
 /* Component */
 import SEO from "layout/SEO";
 import { Header } from "layout/Header";
@@ -17,6 +20,7 @@ interface Props {
 }
 
 const Layout: FC<Props> = ({ children }) => {
+  const auth = useAuth();
   const [scrollY, setScrollY] = useState(0);
   const [scrollActive, setScrollActive] = useState(false);
   const [isToast, setIsToast] = useRecoilState(isToastState);

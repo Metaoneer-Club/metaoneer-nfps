@@ -7,3 +7,7 @@ export const replaceBalance = (balance: number) => {
 export const hexBalance = (balance: number) => {
   return web3.utils.toBN(balance * 10 ** 18);
 };
+
+export const accounting = (balance: number) => {
+  return balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};

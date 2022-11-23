@@ -37,3 +37,11 @@ export const changeNetwork = async (chainId: number) => {
     return false;
   }
 };
+
+export const signCaller = async (account: string) => {
+  const sign = await web3.eth.personal.sign("", account, "").catch(() => {
+    throw new Error("Sign has been Canceled.");
+  });
+
+  return sign;
+};

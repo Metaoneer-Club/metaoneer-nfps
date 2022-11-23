@@ -3,13 +3,15 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 
 /* Component */
-import { paymentContract } from "components/blockchain";
+import { paymentContract, signCaller } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
 import { AutoImage, AutoSVG } from "utils";
 
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { AddProfileAPI, CheckProfileAPI } from "~/api";
+import { InitialUserData } from "~/api/APIModel";
 
 interface KeyData {
   key: number;
@@ -38,6 +40,7 @@ const MyPage: NextPage = () => {
         router.push("/");
         return;
       }
+
       const keyList = await paymentContract.methods
         .myKeyList(wallet.address)
         .call();
@@ -46,7 +49,6 @@ const MyPage: NextPage = () => {
       const keyAry: KeyData[] = [];
       for (let id = 0; id < keyList.length; id++) {
         const promise = async (index: number) => {
-          console.log(index);
           const keypool = await paymentContract.methods
             .prepareKeypool(keyList[index])
             .call();
@@ -62,15 +64,33 @@ const MyPage: NextPage = () => {
     callProducts();
   }, [router, setIsToast, setToastContent, wallet.address]);
 
+  const editProfileHandler = async () => {
+    const sign = await signCaller(wallet.address);
+    console.log(sign);
+
+    const test = await AddProfileAPI({
+      nonce: "TEST",
+      address: wallet.address,
+      chain_id: wallet.network,
+      signature: sign,
+      nickname: "Orbit",
+      content: "하이용",
+    });
+    console.log(test);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-[1200px] mx-auto pt-28 pb-40">
         <div className="font-sans w-full flex justify-center items-center">
           <div className="relative w-96 mx-auto bg-white shadow-xl hover:shadow">
-            <div className="absolute cursor-pointer right-0 p-2">
+            <div
+              onClick={editProfileHandler}
+              className="absolute cursor-pointer right-0 p-2"
+            >
               <AutoSVG
                 src="/media/icons/edit.svg"
-                className="bg-primary-light text-primary hover:text-primary-active rounded w-8 h-8 p-1"
+                className="bg-gray-200 text-dark hover:text-primary-active rounded w-8 h-8 p-1"
               />
             </div>
             <div className="relative w-32 h-32 mx-auto -mt-20 border-8 border-white rounded-full overflow-hidden">
