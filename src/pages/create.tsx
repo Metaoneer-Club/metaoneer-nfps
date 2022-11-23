@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NextPage } from "next/types";
+import clsx from "clsx";
 
 /* Hook */
 import useInput from "hooks/useInput";
@@ -12,7 +13,6 @@ import { hexBalance } from "utils";
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isToastState, toastContentState, walletState } from "stores";
-import clsx from "clsx";
 
 const Create: NextPage = () => {
   const wallet = useRecoilValue(walletState);
@@ -23,8 +23,6 @@ const Create: NextPage = () => {
     "### 여기에 설명을 입력해 주세요."
   );
   const [price, setPrice, onChangePrice] = useInput<number>(0);
-  const [limit, setLimit] = useInput<boolean>(false);
-  const [limitCount, setLimitCount, onChangeLimitCount] = useInput<number>(0);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +32,7 @@ const Create: NextPage = () => {
   const checkRule = () => {
     if (title.length === 0) {
       setToastContent({
-        content: "Please enter your title.",
+        content: "프로젝트 제목을 입력해 주세요.",
         type: "danger",
       });
       setIsToast(true);
@@ -43,7 +41,7 @@ const Create: NextPage = () => {
 
     if (content?.length === 0) {
       setToastContent({
-        content: "Please enter your description.",
+        content: "프로젝트 설명을 입력해 주세요.",
         type: "danger",
       });
       setIsToast(true);
@@ -52,7 +50,7 @@ const Create: NextPage = () => {
 
     if (price === 0) {
       setToastContent({
-        content: "Please enter your price.",
+        content: "펀딩 목표비용을 입력해 주세요.",
         type: "danger",
       });
       setIsToast(true);
@@ -75,7 +73,7 @@ const Create: NextPage = () => {
     setIsLoading(true);
     try {
       await paymentContract.methods
-        .prepareKeyRegister(title, hexBalance(price), limitCount, Number(limit))
+        .prepareKeyRegister(title, hexBalance(price))
         .send({
           from: wallet.address,
           gas: 10000000,
@@ -103,8 +101,6 @@ const Create: NextPage = () => {
     setTitle("");
     setContent("");
     setPrice(0);
-    setLimit(false);
-    setLimitCount(0);
     setIsLoading(false);
     setIsTap(2);
     window.scrollTo(0, 0);
@@ -123,8 +119,7 @@ const Create: NextPage = () => {
                     isTap === 0
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
+                  )}>
                   1
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -141,8 +136,7 @@ const Create: NextPage = () => {
                     isTap === 1
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
+                  )}>
                   2
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -159,8 +153,7 @@ const Create: NextPage = () => {
                     isTap === 2
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
+                  )}>
                   3
                 </div>
                 <div className="mt-2 text-center text-sm">
@@ -177,15 +170,11 @@ const Create: NextPage = () => {
                 title={title}
                 content={content}
                 price={price}
-                limit={limit}
-                limitCount={limitCount}
                 startDate={startDate}
                 endDate={endDate}
                 onChangeTitle={onChangeTitle}
                 onChangeContent={setContent}
                 onChangePrice={onChangePrice}
-                onChangeLimitCount={onChangeLimitCount}
-                setLimit={setLimit}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
                 continueHandler={continueHandler}

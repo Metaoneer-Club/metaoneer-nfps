@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 /* Component */
 import { paymentContract } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
-import { AutoImage } from "utils";
+import { AutoImage, AutoSVG } from "utils";
 
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
@@ -66,7 +66,13 @@ const MyPage: NextPage = () => {
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-[1200px] mx-auto pt-28 pb-40">
         <div className="font-sans w-full flex justify-center items-center">
-          <div className="w-96 mx-auto bg-white shadow-xl hover:shadow">
+          <div className="relative w-96 mx-auto bg-white shadow-xl hover:shadow">
+            <div className="absolute cursor-pointer right-0 p-2">
+              <AutoSVG
+                src="/media/icons/edit.svg"
+                className="bg-primary-light text-primary hover:text-primary-active rounded w-8 h-8 p-1"
+              />
+            </div>
             <div className="relative w-32 h-32 mx-auto -mt-20 border-8 border-white rounded-full overflow-hidden">
               <AutoImage
                 src="/team/Orbit.png"
@@ -86,10 +92,10 @@ const MyPage: NextPage = () => {
             <div className="flex text-center">
               <div className="w-1/2 p-4 border-r">
                 <span className="font-bold">{products.length || 0}</span>{" "}
-                Products
+                Project
               </div>
               <div className="w-1/2 p-4">
-                <span className="font-bold">2.0 k</span> Sales
+                <span className="font-bold">2.0 K</span> Funding
               </div>
             </div>
           </div>

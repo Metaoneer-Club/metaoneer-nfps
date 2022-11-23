@@ -1,32 +1,34 @@
-import React, { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
-import clsx from "clsx";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useState,
+} from "react";
 
 /* Component */
 import { Button } from "components/asset/button";
 import { Wallet } from "components/blockchain";
 import { Editor } from "components/editor/Editor";
-import { AutoImage, AutoSVG, shortAddress } from "utils";
+import { CalendarWidget } from "components/calendar/CalendarWidget";
+import { Milestone } from "components/milestone/Milestone";
+import { MilestoneModal } from "components/modal/MilestoneModal";
+import { AutoImage, AutoSVG, formatDate, shortAddress } from "utils";
 
 /* State */
-import { isToastState, toastContentState } from "stores";
-import { useSetRecoilState } from "recoil";
-import { CalendarWidget } from "../calendar/CalendarWidget";
-import moment from "moment";
+import { isToastState, milestoneState, toastContentState } from "stores";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 interface Props {
   wallet: Wallet;
   title: string;
   content: string | undefined;
   price: number;
-  limit: boolean;
-  limitCount: number;
   startDate: Date;
   endDate: Date;
   onChangeTitle: (e?: ChangeEvent) => void;
   onChangeContent: Dispatch<SetStateAction<string | undefined>>;
   onChangePrice: (e?: ChangeEvent) => void;
-  onChangeLimitCount: (e?: ChangeEvent) => void;
-  setLimit: Dispatch<SetStateAction<boolean>>;
   setStartDate: Dispatch<SetStateAction<Date>>;
   setEndDate: Dispatch<SetStateAction<Date>>;
   continueHandler: () => void;
@@ -37,40 +39,40 @@ const Create01: FC<Props> = ({
   title,
   content,
   price,
-  limit,
-  limitCount,
   startDate,
   endDate,
   onChangeTitle,
   onChangeContent,
   onChangePrice,
-  onChangeLimitCount,
-  setLimit,
   setStartDate,
   setEndDate,
   continueHandler,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const mileStoneArray = useRecoilValue(milestoneState);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
+  const commingSoonHandler = () => {
+    setToastContent({
+      content: "Comming Soon!",
+      type: "primary",
+    });
+    setIsToast(true);
+  };
+
   return (
     <div>
-      <div className="mt-8 px-8">
+      {isOpen ? <MilestoneModal close={setIsOpen} /> : ""}
+      <div className="mt-8 p-8 pt-0 border-b">
         <div>
           <div className="flex items-center font-semibold">
             <span className="mr-4">메인 이미지 업로드</span>
             <div
-              onClick={() => {
-                setToastContent({
-                  content: "Comming Soon!",
-                  type: "primary",
-                });
-                setIsToast(true);
-              }}
-              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2"
-            >
+              onClick={commingSoonHandler}
+              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2">
               <AutoSVG
-                className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300 hover:text-indigo-600"
+                className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300 group-hover:text-indigo-600"
                 src="/media/icons/arrow-top.svg"
               />
               <span>Upload</span>
@@ -123,7 +125,7 @@ const Create01: FC<Props> = ({
               <div>
                 <span className="font-semibold mr-2">펀딩 시작일</span>
                 <span className="text-sm text-gray-600">
-                  {moment(startDate).format("YYYY년 MM월 DD일")}
+                  {formatDate(startDate)}
                 </span>
               </div>
               <CalendarWidget date={startDate} setDate={setStartDate} />
@@ -132,68 +134,56 @@ const Create01: FC<Props> = ({
               <div>
                 <span className="font-semibold mr-2">펀딩 종료일</span>
                 <span className="text-sm text-gray-600">
-                  {moment(endDate).format("YYYY년 MM월 DD일")}
+                  {formatDate(endDate)}
                 </span>
               </div>
               <CalendarWidget date={endDate} setDate={setEndDate} />
             </div>
           </div>
         </div>
-
+      </div>
+      <div className="px-8">
         <div className="mt-6">
           <div className="flex items-center">
-            <div>
-              <span className="font-semibold mr-1">Limit</span>
-              <span className="text-xs text-gray-600">(Option)</span>
-            </div>
-            <AutoSVG src="/media/icons/arrow-right.svg" className="mx-2" />
-            <div
-              onClick={() => setLimit(!limit)}
-              className="flex items-center cursor-pointer group"
-            >
-              <span className="font-semibold text-sm">OFF</span>
-              <div
-                className={clsx(
-                  "rounded-xl w-12 h-5 p-0.5 mx-1 transition-colors duration-150",
-                  limit
-                    ? "bg-indigo-700 group-hover:bg-indigo-900"
-                    : "bg-gray-400 group-hover:bg-gray-600"
-                )}
-              >
-                <div
-                  className={clsx(
-                    "rounded-full w-4 h-4 bg-white transform mx-auto duration-300 ease-in-out",
-                    limit ? " translate-x-3" : "-translate-x-3"
-                  )}
-                ></div>
-              </div>
-              <span className="font-semibold text-sm ">ON</span>
-            </div>
+            <span className="font-semibold mr-2">마일스톤</span>
           </div>
-          <div className="text-gray-600 text-sm">
-            If this box is checked, there is a limit to the number of products.
-          </div>
-          {limit ? (
-            <div
-              className={clsx(
-                "mt-6 animate__animated animate__fast",
-                limit ? "animate__fadeIn" : "animate__fadeOut"
-              )}
-            >
-              <div className="font-semibold">Limit Count</div>
-              <div>
-                <input
-                  className="form-input mt-1 w-full rounded border border-gray-400 p-2"
-                  type="number"
-                  value={limitCount}
-                  onChange={onChangeLimitCount}
-                  placeholder="10"
-                />
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            {mileStoneArray.length !== 0 ? (
+              mileStoneArray.map((v) => (
+                <div key={v.keyID} className="items-start">
+                  <Milestone
+                    keyID={v.keyID}
+                    title={v.title}
+                    content={v.content}
+                    price={v.price}
+                    startDate={v.startDate}
+                    endDate={v.endDate}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="inline-flex text-sm mt-2 rounded-lg border p-3 items-center">
+                <AutoSVG className="mr-2" src="/media/icons/warning.svg" />
+                <span className="pr-1 ">마일스톤을 추가해 주세요.</span>
               </div>
-            </div>
-          ) : (
-            ""
-          )}
+            )}
+          </div>
+          <Button
+            onClick={() => setIsOpen(true)}
+            className="inline-flex mt-4 group cursor-pointer border shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white">
+            <AutoSVG className="w-6 h-6 mr-1" src="/media/icons/plus.svg" />
+            <span className="pr-1">마일스톤 추가</span>
+          </Button>
+          <div className="mt-4 text-gray-600 text-sm">
+            <p>
+              ※ 마일스톤은 달성 목표와 산출물의 발표 기간이 작성돼야 합니다.
+            </p>
+            <p>
+              ※ 매 발표 기간마다 펀딩 지속 여부를 투표하니 신중하게 작성해
+              주시기 바랍니다.
+            </p>
+            <p>※ 마일스톤은 수정할 수 있으나 변경 내역이 모두 기록됩니다.</p>
+          </div>
         </div>
 
         <div className="mt-6">
@@ -215,11 +205,17 @@ const Create01: FC<Props> = ({
         </div>
       </div>
 
-      <div className="p-8">
+      <div className="grid grid-cols-3 gap-4 p-8">
         <Button
-          className="w-full rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900"
+          className="rounded py-4 text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
+          onClick={commingSoonHandler}
+          disabled={!wallet.address}>
+          <span>임시 저장</span>
+        </Button>
+        <Button
+          className="col-span-2 rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
           onClick={continueHandler}
-        >
+          disabled={!wallet.address}>
           <span>다음 챕터로</span>
         </Button>
       </div>

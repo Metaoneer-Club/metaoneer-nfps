@@ -36,8 +36,7 @@ const ProductCard: FC<Product> = ({
         className="group cursor-pointer"
         onClick={() =>
           Number.isInteger(keyID) && router.push(`/funding/${keyID}`)
-        }
-      >
+        }>
         <Card className="border rounded-lg min-h-96 bg-white group-hover:shadow-lg">
           <div className="relative h-56 rounded-t overflow-hidden">
             <AutoImage

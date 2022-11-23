@@ -10,10 +10,9 @@ const Badge: FC<Props> = ({ className, children }) => {
   return (
     <div
       className={clsx(
-        `rounded font-bold text-white text-xs mr-2 p-1.5`,
+        `inline rounded font-bold text-white text-xs mr-2 p-1.5`,
         className
-      )}
-    >
+      )}>
       {children}
     </div>
   );

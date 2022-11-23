@@ -1,6 +1,8 @@
 import React, { Dispatch, FC, SetStateAction } from "react";
 import dynamic from "next/dynamic";
-import moment from "moment";
+
+/* Component */
+import { formatDay } from "utils";
 
 const Calendar = dynamic(() => import("react-calendar"), {
   ssr: false,
@@ -18,7 +20,7 @@ const CalendarWidget: FC<Props> = ({ date, setDate }) => {
         className="bg-white rounded w-full p-4 border border-gray-400"
         onChange={setDate}
         value={date}
-        formatDay={(locale, date) => moment(date).format("DD")}
+        formatDay={(locale, date) => formatDay(date)}
       />
     </div>
   );
