@@ -70,7 +70,8 @@ const Create01: FC<Props> = ({
             <span className="mr-4">메인 이미지 업로드</span>
             <div
               onClick={commingSoonHandler}
-              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2">
+              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2"
+            >
               <AutoSVG
                 className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300 group-hover:text-indigo-600"
                 src="/media/icons/arrow-top.svg"
@@ -149,7 +150,7 @@ const Create01: FC<Props> = ({
           </div>
           <div className="mt-4 grid grid-cols-2 gap-4">
             {mileStoneArray.length !== 0 ? (
-              mileStoneArray.map((v) => (
+              mileStoneArray.map((v, i) => (
                 <div key={v.keyID} className="items-start">
                   <Milestone
                     keyID={v.keyID}
@@ -170,7 +171,8 @@ const Create01: FC<Props> = ({
           </div>
           <Button
             onClick={() => setIsOpen(true)}
-            className="inline-flex mt-4 group cursor-pointer border shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white">
+            className="inline-flex mt-4 group cursor-pointer border shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white"
+          >
             <AutoSVG className="w-6 h-6 mr-1" src="/media/icons/plus.svg" />
             <span className="pr-1">마일스톤 추가</span>
           </Button>
@@ -209,13 +211,15 @@ const Create01: FC<Props> = ({
         <Button
           className="rounded py-4 text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
           onClick={commingSoonHandler}
-          disabled={!wallet.address}>
+          disabled={!wallet.address}
+        >
           <span>임시 저장</span>
         </Button>
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
           onClick={continueHandler}
-          disabled={!wallet.address}>
+          disabled={!wallet.address}
+        >
           <span>다음 챕터로</span>
         </Button>
       </div>

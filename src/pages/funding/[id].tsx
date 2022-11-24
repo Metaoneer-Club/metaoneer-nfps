@@ -1,6 +1,7 @@
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
 import Payments from "metaoneer-payment";
+import clsx from "clsx";
 
 /* Component */
 import { Card } from "components/asset/card";
@@ -10,13 +11,13 @@ import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
-import clsx from "clsx";
 
 const Product = () => {
   const router = useRouter();
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [blockNumber, setBlockNumber] = useState<number>(864000);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isVote, setIsVote] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -41,6 +42,13 @@ const Product = () => {
                 NFT
               </span>
               <span>프로젝트 제목 {router.query.id}</span>
+              <button
+                type="button"
+                className="text-sm mx-2 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+                onClick={() => setIsVote(!isVote)}
+              >
+                임시 버튼
+              </button>
             </div>
             <div className="flex">
               <Button
@@ -91,53 +99,132 @@ const Product = () => {
                     <span className="text-gray-600">명</span>
                   </p>
                 </div>
-                <div className="mt-4">
-                  <label className="text-gray-600">남은 기간</label>
-                  <p className="text-gray-600 mt-1">
-                    <span className="text-black text-3xl mr-1">30</span>일
-                    <div className="mt-2">
-                      <a
-                        target="_blank"
-                        rel="noreferrer"
-                        href="https://bscscan.com/blocks"
-                        className="text-gray-500 hover:text-blue-500 hover:underline"
-                      >
-                        {accounting(blockNumber)}
-                      </a>
-                      <span className="text-sm ml-1">블록</span>
+                {isVote ? (
+                  <>
+                    <div className="mt-8">
+                      <label className="text-gray-600">
+                        마일스톤 1 종료까지
+                      </label>
+                      <p className="text-gray-600 mt-1">
+                        <span className="text-black text-3xl mr-1">30</span>일
+                        <div className="mt-2">
+                          <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://bscscan.com/blocks"
+                            className="text-gray-500 hover:text-blue-500 hover:underline"
+                          >
+                            {accounting(blockNumber)}
+                          </a>
+                          <span className="text-sm ml-1">블록</span>
+                        </div>
+                      </p>
                     </div>
-                  </p>
-                </div>
-                <div className="mt-4">
-                  <label className="text-gray-600">펀딩 달성률</label>
-                  <p className="mt-2">
-                    <span className="text-blue-600 text-3xl mr-1">90</span>%
-                  </p>
-                  <div className="mt-3 flex items-center">
-                    <div className="w-full h-3 bg-blue-200 rounded-sm">
-                      <div
-                        style={{
-                          // width: progress >= 100 ? "100%" : `${progress}%`,
-                          width: "90%",
-                        }}
-                        className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
-                      />
+                    <div className="mt-8">
+                      <label className="text-gray-600">투표 현황</label>
+                      <div className="mt-2 flex justify-center items-center">
+                        <p className="text-blue-600 text-3xl mr-1">56</p>
+                        <p className="mx-2">:</p>
+                        <p className="text-red-600 text-3xl mr-1">28</p>
+                      </div>
+                      <div className="mt-3 flex items-center">
+                        <div className="w-full flex h-4 bg-blue-200 rounded-sm">
+                          <div
+                            style={{
+                              // width: progress >= 100 ? "100%" : `${progress}%`,
+                              width: "40%",
+                            }}
+                            className="h-full text-center text-[10px] text-white bg-blue-600 rounded-l-sm"
+                          >
+                            40%
+                          </div>
+                          <div
+                            style={{
+                              // width: progress >= 100 ? "100%" : `${progress}%`,
+                              width: "40%",
+                            }}
+                            className="h-full bg-gray-400"
+                          />
+                          <div
+                            style={{
+                              // width: progress >= 100 ? "100%" : `${progress}%`,
+                              width: "20%",
+                            }}
+                            className="h-full text-[10px] text-white bg-red-600 rounded-r-sm"
+                          >
+                            20%
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="mt-8">
+                      <label className="text-gray-600">펀딩 종료까지</label>
+                      <p className="text-gray-600 mt-1">
+                        <span className="text-black text-3xl mr-1">30</span>일
+                        <div className="mt-2">
+                          <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://bscscan.com/blocks"
+                            className="text-gray-500 hover:text-blue-500 hover:underline"
+                          >
+                            {accounting(blockNumber)}
+                          </a>
+                          <span className="text-sm ml-1">블록</span>
+                        </div>
+                      </p>
+                    </div>
+                    <div className="mt-8">
+                      <label className="text-gray-600">펀딩 달성률</label>
+                      <p className="mt-3">
+                        <span className="text-blue-600 text-3xl mr-1">90</span>%
+                      </p>
+                      <div className="mt-3 flex items-center">
+                        <div className="w-full h-3 mb-1 bg-blue-200 rounded-sm">
+                          <div
+                            style={{
+                              // width: progress >= 100 ? "100%" : `${progress}%`,
+                              width: "90%",
+                            }}
+                            className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {isVote ? (
+                <div className="grid grid-cols-5 gap-4 px-8 py-3">
+                  <div className="col-span-2 text-sm text-center">
+                    <p className="mt-1">이전 단계</p>
+                    <p className="mt-1">현재 단계</p>
+                    <p className="mt-1">다음 단계까지</p>
+                  </div>
+                  <div className="col-span-3 text-left text-gray-600 text-sm">
+                    <p className="mt-1">펀딩 완료</p>
+                    <p className="mt-1">마일스톤 1 진행중</p>
+                    <p className="mt-1">2022.12.04 ~ 2022.12.12</p>
                   </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-5 gap-4 px-8 py-3">
-                <div className="col-span-2 text-sm text-center">
-                  <p>펀딩 목표액</p>
-                  <p className="mt-1">펀딩 기간</p>
-                  <p className="mt-1">현재 단계</p>
+              ) : (
+                <div className="grid grid-cols-5 gap-4 px-8 py-3">
+                  <div className="col-span-2 text-sm text-center">
+                    <p>펀딩 목표액</p>
+                    <p className="mt-1">현재 단계</p>
+                    <p className="mt-1">펀딩 기간</p>
+                  </div>
+                  <div className="col-span-3 text-left text-gray-600 text-sm">
+                    <p>{accounting(2000)} BNB</p>
+                    <p className="mt-1">펀딩 진행중</p>
+                    <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
+                  </div>
                 </div>
-                <div className="col-span-3 text-left text-gray-600 text-sm">
-                  <p>{accounting(2000)} BNB</p>
-                  <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
-                  <p className="mt-1">펀딩 진행중</p>
-                </div>
-              </div>
+              )}
+
               <div className="p-8 pt-4 mt-auto w-full">
                 <Button
                   className="bg-blue-600 text-white w-full hover:bg-blue-700"
@@ -153,7 +240,7 @@ const Product = () => {
                     }
                   }}
                 >
-                  펀딩하기
+                  {isVote ? <span>투표하기</span> : <span>펀딩하기</span>}
                 </Button>
               </div>
             </div>
@@ -182,7 +269,7 @@ const Product = () => {
                   마일스톤
                 </button>
               </nav>
-              <Card className="border p-6 bg-white rounded-xl">
+              <Card className="border p-6 bg-white rounded-tl-none rounded-xl">
                 {tabIndex === 0 ? (
                   <p className="leading-relaxed">
                     BNB Smart Chain (BSC) supports the most popular programming

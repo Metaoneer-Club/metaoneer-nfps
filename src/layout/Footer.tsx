@@ -19,7 +19,7 @@ const Footer: FC = () => {
         <nav className="grid grid-cols-5 items-start text-sm">
           <ul>
             <li className="mb-4 m-2 text-base text-white">
-              <strong>Section</strong>
+              <strong>Navigation</strong>
             </li>
             {navItems.map((v) => (
               <li key={v1()} className="m-2">

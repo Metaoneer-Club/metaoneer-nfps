@@ -1,4 +1,10 @@
-import React, { FC, Dispatch, SetStateAction, useState } from "react";
+import React, {
+  FC,
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+} from "react";
 import clsx from "clsx";
 import { v1 } from "uuid";
 
@@ -8,6 +14,7 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Button } from "components/asset/button";
 import { CalendarWidget } from "components/calendar/CalendarWidget";
+import { InputWidget } from "components/input/InputWidget";
 import { AutoSVG, formatDate } from "utils";
 
 /* State */
@@ -15,6 +22,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   IMilestone,
   isToastState,
+  milestoneContentState,
   milestoneState,
   toastContentState,
 } from "stores";
@@ -24,16 +32,30 @@ interface Props {
 }
 
 const MilestoneModal: FC<Props> = ({ close }) => {
-  const [isOpenStart, setIsOpenStart] = useState(false);
-  const [isOpenEnd, setIsOpenEnd] = useState(false);
+  const [isOpenStart, setIsOpenStart] = useState<boolean>(false);
+  const [isOpenEnd, setIsOpenEnd] = useState<boolean>(false);
   const [title, setTitle, onChangeTitle] = useInput<string>("");
-  const [content, setContent, onChangeContent] = useInput<string>("");
   const [price, setPrice, onChangePrice] = useInput<number>(0);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [mileStoneArray, setMilestoneArray] = useRecoilState(milestoneState);
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [milestoneArray, setMilestoneArray] = useRecoilState(milestoneState);
+  const [milestoneContent, setMilestoneContent] = useRecoilState(
+    milestoneContentState
+  );
+  const [milestoneContentAry, setMilestoneContentAry] = useState<any>([]);
+  const [isPlus, setIsPlus] = useState(0);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
+
+  useEffect(() => {
+    let temp = Array.from(milestoneContent, ([index, data]) => ({
+      index,
+      data,
+    }));
+    setMilestoneContentAry(temp);
+  }, [milestoneContent, milestoneContent.size]);
+
+  console.log(milestoneContentAry);
 
   const startOpenHandler = (e: any) => {
     setStartDate(e);
@@ -55,9 +77,9 @@ const MilestoneModal: FC<Props> = ({ close }) => {
       return;
     }
 
-    if (content.length === 0) {
+    if (milestoneContentAry.length === 0) {
       setToastContent({
-        content: "마일스톤 내용을 입력해 주세요.",
+        content: "최소 1개의 산출물을 입력해 주세요.",
         type: "danger",
       });
       setIsToast(true);
@@ -67,15 +89,16 @@ const MilestoneModal: FC<Props> = ({ close }) => {
     const inputData: IMilestone = {
       keyID: `ms${v1()}`,
       title: title,
-      content: content,
+      content: milestoneContentAry,
       price: price,
       startDate: startDate,
       endDate: endDate,
     };
+    console.log(inputData);
 
-    setMilestoneArray([...mileStoneArray, inputData]);
+    setMilestoneArray([...milestoneArray, inputData]);
     setTitle("");
-    setContent("");
+    setMilestoneContent(new Map());
     setPrice(0);
     setStartDate(new Date());
     setEndDate(new Date());
@@ -94,12 +117,13 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                   src="/media/icons/polygon.svg"
                 />
                 <h1 className="text-gray-800 font-lg font-bold tracking-normal">
-                  마일스톤 {mileStoneArray.length + 1}
+                  마일스톤 {milestoneArray.length + 1}
                 </h1>
               </div>
               <label
                 htmlFor="name"
-                className="text-gray-800 text-sm font-bold leading-tight tracking-normal">
+                className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+              >
                 마일스톤 제목
               </label>
               <input
@@ -111,18 +135,43 @@ const MilestoneModal: FC<Props> = ({ close }) => {
               />
               <label
                 htmlFor="content"
-                className="text-gray-800 text-sm font-bold leading-tight tracking-normal">
+                className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+              >
                 마일스톤 산출물
               </label>
-              <textarea
-                value={content}
-                onChange={onChangeContent}
-                className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-20 flex items-center pl-3 pt-3 text-sm border-gray-400 rounded border"
-                placeholder="- M2E 앱 안드로이드 출시 (https://...)"
-              />
+              {[...Array(isPlus)]?.map((v, i) => (
+                <InputWidget key={v1()} keyID={v1()} index={i} />
+              ))}
+
+              <div className="flex items-center">
+                <Button
+                  onClick={() => setIsPlus(isPlus + 1)}
+                  className="inline-flex mt-2 mb-5 group cursor-pointer border shadow px-2 py-2 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-xs mr-2 hover:bg-indigo-700 text-white"
+                >
+                  <AutoSVG
+                    className="w-5 h-5 mr-1"
+                    src="/media/icons/plus.svg"
+                  />
+                  <span className="pr-1">산출물 추가</span>
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsPlus(0);
+                    setMilestoneContent(new Map());
+                  }}
+                  className="inline-flex mt-2 mb-5 group cursor-pointer border shadow px-2 py-2 rounded-lg bg-danger transition-all duration-300 items-center text-xs mr-2 hover:bg-danger-active text-white"
+                >
+                  <AutoSVG
+                    className="w-5 h-5 mr-1"
+                    src="/media/icons/circle.svg"
+                  />
+                  <span className="pr-1">초기화</span>
+                </Button>
+              </div>
               <label
                 htmlFor="name"
-                className="text-gray-800 text-sm font-bold leading-tight tracking-normal">
+                className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+              >
                 <span className="font-semibold mr-2">마일스톤 중도금</span>
                 <span className="text-xs text-gray-600">( 단위 : BNB )</span>
               </label>
@@ -130,7 +179,7 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                 type="number"
                 value={price}
                 onChange={onChangePrice}
-                className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
+                className="mb-5 mt-2 px-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
                 placeholder="10"
               />
               <label className="text-gray-800 text-sm font-bold leading-tight tracking-normal">
@@ -140,7 +189,8 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                 <div className={clsx("relative mt-2", !isOpenStart && "mb-5")}>
                   <div
                     className="absolute right-0 text-gray-600 flex items-center pr-3 h-full cursor-pointer "
-                    onClick={() => setIsOpenStart(!isOpenStart)}>
+                    onClick={() => setIsOpenStart(!isOpenStart)}
+                  >
                     <AutoSVG
                       className={
                         isOpenStart
@@ -175,7 +225,8 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                 <div className={clsx("relative mt-2", !isOpenEnd && "mb-5")}>
                   <div
                     className="absolute right-0 text-gray-600 flex items-center pr-3 h-full cursor-pointer"
-                    onClick={() => setIsOpenEnd(!isOpenEnd)}>
+                    onClick={() => setIsOpenEnd(!isOpenEnd)}
+                  >
                     <AutoSVG
                       className={
                         isOpenEnd
@@ -204,12 +255,17 @@ const MilestoneModal: FC<Props> = ({ close }) => {
             <div className="mt-8 flex justify-center text-sm">
               <Button
                 className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
-                onClick={() => close(false)}>
+                onClick={() => {
+                  close(false);
+                  setMilestoneContent(new Map());
+                }}
+              >
                 <span>취소</span>
               </Button>
               <Button
                 className="w-28 rounded text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
-                onClick={addMilestoneHandler}>
+                onClick={addMilestoneHandler}
+              >
                 <span>추가 완료</span>
               </Button>
             </div>

@@ -1,11 +1,13 @@
 import React, { FC } from "react";
 
 /* Component */
-import { AutoSVG, formatDate } from "utils";
+import { Badge } from "components/asset/badge";
+import { AutoSVG, formatDateSlash } from "utils";
 
 /* State */
 import { useRecoilState } from "recoil";
 import { IMilestone, milestoneState } from "stores";
+import { v1 } from "uuid";
 
 const Milestone: FC<IMilestone> = ({
   keyID,
@@ -24,29 +26,41 @@ const Milestone: FC<IMilestone> = ({
   return (
     <div className="relative">
       <div
-        className="absolute right-0 p-2 group cursor-pointer"
-        onClick={deleteHandler}>
+        className="absolute right-0 p-3 group cursor-pointer"
+        onClick={deleteHandler}
+      >
         <AutoSVG
           src="/media/icons/close.svg"
           className="group-hover:text-danger"
         />
       </div>
-      <div className="rounded-lg border shadow bg-white p-4">
-        <div className="mt-2 px-4 pb-4">
-          <h2 className="mt-1 text-lg font-bold truncate">{title}</h2>
-          <p className="mt-2 text-gray-500 text-sm break-words truncate-3-lines">
-            {content}
-          </p>
-          <div className="mt-3 mx-1 flex items-center text-sm">
-            <div>
-              <strong className="text-lg mr-2 text-indigo-600">{20}%</strong>
-              <span>{price} BNB</span>
+      <div className="rounded-lg border shadow bg-white">
+        <div className="px-6 py-4 border-b">
+          <div className="flex items-center">
+            <Badge className="w-16 text-center bg-blue-600 mr-3">시작 전</Badge>
+            <div className="w-full text-xl font-medium truncate">{title}</div>
+          </div>
+          <div className="text-gray-500 text-sm mt-4">
+            <div className="h-20 grid grid-cols-2 gap-x-4 px-4">
+              {content.map((v: any) => (
+                <p key={v1()} className="truncate">
+                  - {v.data.content}
+                </p>
+              ))}
+            </div>
+            <div className="text-sm">
+              중도금 :
+              <span className="text-lg mx-1 text-blue-600 font-medium">
+                {price}
+              </span>{" "}
+              BNB
             </div>
           </div>
-          <div className="mt-2 flex justify-between items-center text-gray-500 text-sm">
-            <span>{formatDate(startDate)}</span>
-            <span>{formatDate(endDate)}</span>
-          </div>
+        </div>
+        <div className="px-6 py-4 flex justify-between items-center text-gray-500 text-sm">
+          <span>{formatDateSlash(startDate)}</span>
+          <span>~</span>
+          <span>{formatDateSlash(endDate)}</span>
         </div>
       </div>
     </div>

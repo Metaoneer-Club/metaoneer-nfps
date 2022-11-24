@@ -8,9 +8,9 @@ import { AutoSVG } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
-import { isToastState, toastContentState } from "stores/toast";
+import { isToastState, toastContentState } from "stores";
 
-const Shop: NextPage = () => {
+const Funding: NextPage = () => {
   const [statusFilter, setStatusFilter] = useState<number>(0);
   const [detailFilter, setDetailFilter] = useState<number>(0);
 
@@ -110,4 +110,4 @@ const filterItems = [
   },
 ];
 
-export default Shop;
+export default Funding;

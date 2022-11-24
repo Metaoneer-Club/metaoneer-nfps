@@ -4,7 +4,7 @@ import { v1 } from "uuid";
 export interface IMilestone {
   keyID: string;
   title: string;
-  content: string;
+  content: any;
   price: number;
   startDate: Date;
   endDate: Date;
@@ -12,7 +12,7 @@ export interface IMilestone {
 export interface IMilestoneUser {
   keyID: string;
   title: string;
-  content: string;
+  content: any;
   price: number;
   startDate: Date;
   endDate: Date;
@@ -25,4 +25,9 @@ const milestoneState = atom<IMilestone[]>({
   default: [],
 });
 
-export { milestoneState };
+const milestoneContentState = atom<any>({
+  key: `milestoneContentState/${v1()}`,
+  default: new Map(),
+});
+
+export { milestoneState, milestoneContentState };
