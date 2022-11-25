@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Payments from "metaoneer-payment";
 import clsx from "clsx";
 
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
+import { FundingModal } from "components/modal/FundingModal";
 import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
+import { MilestoneUser } from "~/components/milestone/MilestoneUser";
 
 const Product = () => {
   const router = useRouter();
@@ -28,11 +29,7 @@ const Product = () => {
   return (
     <>
       {isOpen && (
-        <Payments
-          tokenId={Number(router.query.id)}
-          buyCount={1}
-          close={() => setIsOpen(false)}
-        />
+        <FundingModal id={router.query.id} close={() => setIsOpen(false)} />
       )}
       <div className="min-h-screen bg-slate-50">
         <div className="max-w-[1200px] mx-auto pt-16 pb-40">
@@ -202,12 +199,12 @@ const Product = () => {
                   <div className="col-span-2 text-sm text-center">
                     <p className="mt-1">이전 단계</p>
                     <p className="mt-1">현재 단계</p>
-                    <p className="mt-1">다음 단계까지</p>
+                    <p className="mt-1">다음 단계</p>
                   </div>
                   <div className="col-span-3 text-left text-gray-600 text-sm">
                     <p className="mt-1">펀딩 완료</p>
                     <p className="mt-1">마일스톤 1 진행중</p>
-                    <p className="mt-1">2022.12.04 ~ 2022.12.12</p>
+                    <p className="mt-1">마일스톤 1 투표</p>
                   </div>
                 </div>
               ) : (
@@ -287,7 +284,10 @@ const Product = () => {
                     use in mind.
                   </p>
                 ) : (
-                  ""
+                  <MilestoneUser
+                    id={router.query.id}
+                    blockNumber={blockNumber}
+                  />
                 )}
               </Card>
             </div>

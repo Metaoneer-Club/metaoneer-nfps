@@ -115,7 +115,7 @@ const Header: FC<Props> = ({ active }) => {
       <div
         className={clsx(
           active ? "shadow" : "shadow-lg",
-          "sticky bg-white dark:bg-gray-900 w-full top-0 left-0 z-10"
+          "sticky bg-white dark:bg-gray-900 w-full top-0 left-0 z-20"
         )}
       >
         <header className="flex max-w-[1200px] px-6 py-2 mx-auto transition-all items-center">

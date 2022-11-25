@@ -107,7 +107,7 @@ const MilestoneModal: FC<Props> = ({ close }) => {
 
   return (
     <>
-      <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-10 fixed top-0 right-0 bottom-0 left-0">
+      <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
         <div className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
           <div className="relative py-4 px-1 md:px-3 bg-white shadow-md rounded border border-gray-400">
             <div className="custom-scroll py-4 px-4 md:px-7 h-[480px] overflow-auto">
@@ -240,7 +240,7 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                     id="expiry"
                     className={clsx(
                       "text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 border",
-                      isOpenStart ? " rounded-t" : "rounded"
+                      isOpenEnd ? " rounded-t" : "rounded"
                     )}
                     placeholder={formatDate(endDate)}
                   />

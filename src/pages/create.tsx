@@ -119,7 +119,8 @@ const Create: NextPage = () => {
                     isTap === 0
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}>
+                  )}
+                >
                   1
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -136,7 +137,8 @@ const Create: NextPage = () => {
                     isTap === 1
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}>
+                  )}
+                >
                   2
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -153,7 +155,8 @@ const Create: NextPage = () => {
                     isTap === 2
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}>
+                  )}
+                >
                   3
                 </div>
                 <div className="mt-2 text-center text-sm">
