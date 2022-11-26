@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
+/* API */
+import { AddProfileAPI, CheckProfileAPI } from "~/api";
+import { InitialUserData } from "api/APIModel";
+
 /* Component */
 import { paymentContract, signCaller } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
@@ -10,8 +14,6 @@ import { AutoImage, AutoSVG } from "utils";
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { AddProfileAPI, CheckProfileAPI } from "~/api";
-import { InitialUserData } from "~/api/APIModel";
 
 interface KeyData {
   key: number;

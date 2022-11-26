@@ -5,9 +5,8 @@ import { NextPage } from "next/types";
 /* Component */
 import { Carousel } from "components/slider/Carousel";
 import { MainCard } from "components/card/MainCard";
-import { Button } from "components/asset/button";
+import { Product } from "components/card/ProductCard";
 import { AutoImage } from "utils";
-import { Product } from "~/components/card/ProductCard";
 
 const Home: NextPage = () => {
   const router = useRouter();

@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isToastState, toastContentState } from "stores/toast";
+import { isToastState, toastContentState } from "stores";
 
 const ToastWidget: FC = () => {
   const [fade, setFade] = useState(true);

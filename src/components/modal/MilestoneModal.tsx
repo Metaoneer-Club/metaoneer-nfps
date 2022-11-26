@@ -4,6 +4,7 @@ import React, {
   SetStateAction,
   useState,
   useEffect,
+  useRef,
 } from "react";
 import clsx from "clsx";
 import { v1 } from "uuid";
@@ -32,6 +33,7 @@ interface Props {
 }
 
 const MilestoneModal: FC<Props> = ({ close }) => {
+  const divRef = useRef<any>(0);
   const [isOpenStart, setIsOpenStart] = useState<boolean>(false);
   const [isOpenEnd, setIsOpenEnd] = useState<boolean>(false);
   const [title, setTitle, onChangeTitle] = useInput<string>("");
@@ -55,7 +57,11 @@ const MilestoneModal: FC<Props> = ({ close }) => {
     setMilestoneContentAry(temp);
   }, [milestoneContent, milestoneContent.size]);
 
-  console.log(milestoneContentAry);
+  useEffect(() => {
+    if (isOpenStart || isOpenEnd) {
+      divRef.current.scrollTop = divRef.current?.scrollHeight;
+    }
+  }, [isOpenEnd, isOpenStart]);
 
   const startOpenHandler = (e: any) => {
     setStartDate(e);
@@ -94,7 +100,6 @@ const MilestoneModal: FC<Props> = ({ close }) => {
       startDate: startDate,
       endDate: endDate,
     };
-    console.log(inputData);
 
     setMilestoneArray([...milestoneArray, inputData]);
     setTitle("");
@@ -110,7 +115,10 @@ const MilestoneModal: FC<Props> = ({ close }) => {
       <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
         <div className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
           <div className="relative py-4 px-1 md:px-3 bg-white shadow-md rounded border border-gray-400">
-            <div className="custom-scroll py-4 px-4 md:px-7 h-[480px] overflow-auto">
+            <div
+              ref={divRef}
+              className="custom-scroll scroll-smooth py-4 px-4 md:px-7 h-[480px] overflow-auto"
+            >
               <div className="w-full flex items-center text-gray-600 mb-3">
                 <AutoSVG
                   className="w-8 h-8 text-info mr-2"

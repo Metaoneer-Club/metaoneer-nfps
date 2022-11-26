@@ -3,12 +3,12 @@ import { v1 } from "uuid";
 
 /* Component */
 import { Button } from "components/asset/button";
+import { Badge } from "components/asset/badge";
 import { AutoSVG, formatDateSlash } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
-import { Badge } from "../asset/badge";
 
 interface Props {
   id: string | string[] | undefined;

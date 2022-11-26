@@ -13,7 +13,7 @@ import { ToastWidget } from "components/toast/ToastWidget";
 
 /* State */
 import { useRecoilState } from "recoil";
-import { isToastState } from "stores/toast";
+import { isToastState } from "stores";
 
 interface Props {
   children: ReactNode;

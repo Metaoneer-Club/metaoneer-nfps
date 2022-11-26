@@ -9,12 +9,11 @@ import clsx from "clsx";
 
 /* Component */
 import { Button } from "components/asset/button";
-import { ProductCard } from "components/card/ProductCard";
 import { Card } from "components/asset/card";
-import { Badge } from "components/asset/badge";
 import { Wallet } from "components/blockchain";
+import { ProductCard } from "components/card/ProductCard";
+import { MainCard } from "components/card/MainCard";
 import { AutoImage, AutoSVG, shortAddress } from "utils";
-import { MainCard } from "../card/MainCard";
 
 interface Props {
   wallet: Wallet;

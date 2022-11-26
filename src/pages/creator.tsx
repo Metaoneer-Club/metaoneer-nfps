@@ -1,7 +1,8 @@
 import React from "react";
 import { NextPage } from "next";
-import Link from "next/link";
-import { AutoImage, shortAddress } from "~/utils";
+
+/* Component */
+import { AutoImage, shortAddress } from "utils";
 
 const Creator: NextPage = () => {
   return (

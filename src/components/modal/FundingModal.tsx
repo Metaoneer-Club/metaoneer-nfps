@@ -1,15 +1,15 @@
 import React, { FC, Dispatch, SetStateAction } from "react";
 import { v1 } from "uuid";
 
+/* Hook */
+import useInput from "hooks/useInput";
+
 /* Component */
 import { Button } from "components/asset/button";
-import { Badge } from "components/asset/badge";
-import { AutoSVG } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
-import useInput from "~/hooks/useInput";
 
 interface Props {
   id: string | string[] | undefined;
