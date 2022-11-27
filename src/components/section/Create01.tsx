@@ -13,7 +13,8 @@ import { Editor } from "components/editor/Editor";
 import { CalendarWidget } from "components/calendar/CalendarWidget";
 import { Milestone } from "components/milestone/Milestone";
 import { MilestoneModal } from "components/modal/MilestoneModal";
-import { AutoImage, AutoSVG, formatDate, shortAddress } from "utils";
+import { FormWallet } from "components/wallet/FormWallet";
+import { AutoImage, AutoSVG, formatDate } from "utils";
 
 /* State */
 import { isToastState, milestoneState, toastContentState } from "stores";
@@ -48,7 +49,9 @@ const Create01: FC<Props> = ({
   setEndDate,
   continueHandler,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenStart, setIsOpenStart] = useState<boolean>(false);
+  const [isOpenEnd, setIsOpenEnd] = useState<boolean>(false);
   const mileStoneArray = useRecoilValue(milestoneState);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
@@ -70,8 +73,7 @@ const Create01: FC<Props> = ({
             <span className="mr-4">메인 이미지 업로드</span>
             <div
               onClick={commingSoonHandler}
-              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2"
-            >
+              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2">
               <AutoSVG
                 className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300 group-hover:text-indigo-600"
                 src="/media/icons/arrow-top.svg"
@@ -129,7 +131,12 @@ const Create01: FC<Props> = ({
                   {formatDate(startDate)}
                 </span>
               </div>
-              <CalendarWidget date={startDate} setDate={setStartDate} />
+              <CalendarWidget
+                isOpen={isOpenStart}
+                date={startDate}
+                setIsOpen={setIsOpenStart}
+                setDate={setStartDate}
+              />
             </div>
             <div>
               <div>
@@ -138,7 +145,12 @@ const Create01: FC<Props> = ({
                   {formatDate(endDate)}
                 </span>
               </div>
-              <CalendarWidget date={endDate} setDate={setEndDate} />
+              <CalendarWidget
+                isOpen={isOpenEnd}
+                date={endDate}
+                setIsOpen={setIsOpenEnd}
+                setDate={setEndDate}
+              />
             </div>
           </div>
         </div>
@@ -157,8 +169,7 @@ const Create01: FC<Props> = ({
                     title={v.title}
                     content={v.content}
                     price={v.price}
-                    startDate={v.startDate}
-                    endDate={v.endDate}
+                    expired={v.expired}
                   />
                 </div>
               ))
@@ -171,8 +182,7 @@ const Create01: FC<Props> = ({
           </div>
           <Button
             onClick={() => setIsOpen(true)}
-            className="inline-flex mt-4 group cursor-pointer border shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white"
-          >
+            className="inline-flex mt-4 group cursor-pointer border shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white">
             <AutoSVG className="w-6 h-6 mr-1" src="/media/icons/plus.svg" />
             <span className="pr-1">마일스톤 추가</span>
           </Button>
@@ -189,37 +199,63 @@ const Create01: FC<Props> = ({
         </div>
 
         <div className="mt-6">
-          <div className="font-semibold">지갑주소</div>
-          <div className="mt-2">
-            <div className="flex items-center bg-neutral-100 p-3 rounded border border-gray-400">
-              <div className="flex items-center gap-x-2">
-                <AutoSVG
-                  src="/media/social-logos/metamask.svg"
-                  className="w-5 h-5 mx-2"
-                />
-                <span className="font-semibold">
-                  {shortAddress(wallet.address) ||
-                    "Please connect your wallet first."}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div>
+                <span className="font-semibold mr-2">프로젝트 시작일</span>
+                <span className="text-sm text-gray-600">(펀딩 시작일)</span>
+              </div>
+              <div className="mt-2 mb-5 rounded bg-neutral-100 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
+                <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
+                <span>{formatDate(startDate)}</span>
+              </div>
+            </div>
+            <div>
+              <div>
+                <span className="font-semibold mr-2">프로젝트 종료일</span>
+                <span className="text-sm text-gray-600">
+                  (마지막 마일스톤 마감일)
+                </span>
+              </div>
+              <div className="mt-2 mb-5 rounded bg-neutral-100 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
+                <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
+                <span>
+                  {formatDate(
+                    mileStoneArray[mileStoneArray.length - 1]?.expired
+                  ) || "마일스톤을 추가해 주세요."}
                 </span>
               </div>
             </div>
           </div>
+          <div className="mt-4 text-gray-600 text-sm">
+            <p>
+              ※ 프로젝트는 펀딩 시작일부터 마일스톤 마감일까지의 기준입니다.
+            </p>
+            <p>
+              ※ 모든 마일스톤은 종료 후 DAO 투표를 진행하며, 반대표가 많을 시에
+              프로젝트는 <strong>강제 종료</strong>됩니다.
+            </p>
+            <p>
+              ※ 프로젝트 생명 주기는 펀딩 - [진행중 - 투표중](반복) -
+              종료입니다.
+            </p>
+          </div>
         </div>
+
+        <FormWallet address={wallet.address} />
       </div>
 
       <div className="grid grid-cols-3 gap-4 p-8">
         <Button
           className="rounded py-4 text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
           onClick={commingSoonHandler}
-          disabled={!wallet.address}
-        >
+          disabled={!wallet.address}>
           <span>임시 저장</span>
         </Button>
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
           onClick={continueHandler}
-          disabled={!wallet.address}
-        >
+          disabled={!wallet.address}>
           <span>다음 챕터로</span>
         </Button>
       </div>

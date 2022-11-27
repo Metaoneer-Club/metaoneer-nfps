@@ -13,6 +13,7 @@ import { Card } from "components/asset/card";
 import { Wallet } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
 import { MainCard } from "components/card/MainCard";
+import { FormWallet } from "components/wallet/FormWallet";
 import { AutoImage, AutoSVG, shortAddress } from "utils";
 
 interface Props {
@@ -49,15 +50,13 @@ const Create02: FC<Props> = ({
             )}
             onClick={() => {
               openHandler(0);
-            }}
-          >
+            }}>
             <span>홈 화면 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 0 && "rotate-0"
-              )}
-            >
+              )}>
               <AutoSVG src="/media/icons/dropdown.svg" className="w-6 h-6" />
             </div>
           </div>
@@ -66,8 +65,7 @@ const Create02: FC<Props> = ({
               className={clsx(
                 "my-2 w-4/5 mx-auto h-56 animate__animated animate__fast",
                 isOpen === 0 ? "animate__fadeIn" : "animate__fadeOut"
-              )}
-            >
+              )}>
               <MainCard
                 title={dummy.title}
                 content={dummy.content}
@@ -89,15 +87,13 @@ const Create02: FC<Props> = ({
               "flex justify-between shadow p-4 transition-colors",
               isOpen === 1 && "rounded bg-dark text-white"
             )}
-            onClick={() => openHandler(1)}
-          >
+            onClick={() => openHandler(1)}>
             <span>펀딩 목록 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 1 && "rotate-0"
-              )}
-            >
+              )}>
               <AutoSVG src="/media/icons/dropdown.svg" className="w-6 h-6" />
             </div>
           </div>
@@ -107,8 +103,7 @@ const Create02: FC<Props> = ({
               className={clsx(
                 "w-72 mx-auto group cursor-pointer my-2 animate__animated animate__fast",
                 isOpen === 1 ? "animate__fadeIn" : "animate__fadeOut"
-              )}
-            >
+              )}>
               <ProductCard
                 category="NFT"
                 title={dummy.title}
@@ -130,15 +125,13 @@ const Create02: FC<Props> = ({
               "flex justify-between shadow p-4 transition-colors",
               isOpen === 2 && "rounded bg-dark text-white"
             )}
-            onClick={() => openHandler(2)}
-          >
+            onClick={() => openHandler(2)}>
             <span>펀딩 세부정보 화면 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 2 && "rotate-0"
-              )}
-            >
+              )}>
               <AutoSVG src="/media/icons/dropdown.svg" className="w-6 h-6" />
             </div>
           </div>
@@ -147,8 +140,7 @@ const Create02: FC<Props> = ({
               className={clsx(
                 "my-2 animate__animated animate__fast",
                 isOpen === 2 ? "animate__fadeIn" : "animate__fadeOut"
-              )}
-            >
+              )}>
               <div className="flex justify-between items-center">
                 <div className="text-2xl text-center font-bold flex items-center">
                   <span className="px-4 py-2 text-sm border rounded-xl bg-primary-active text-white mr-6">
@@ -195,8 +187,7 @@ const Create02: FC<Props> = ({
                   <div className="mt-4 w-full">
                     <Button
                       className="bg-primary py-2 text-white w-full text-xs hover:bg-primary-active"
-                      onClick={() => {}}
-                    >
+                      onClick={() => {}}>
                       Buy
                     </Button>
                   </div>
@@ -247,37 +238,20 @@ const Create02: FC<Props> = ({
           )}
         </div>
 
-        <div className="mt-6">
-          <div className="font-semibold">지갑 주소</div>
-          <div className="mt-2">
-            <div className="flex items-center bg-neutral-100 p-3 rounded border border-gray-400">
-              <div className="flex items-center gap-x-2">
-                <AutoSVG
-                  src="/media/social-logos/metamask.svg"
-                  className="w-5 h-5 mx-2"
-                />
-                <span className="font-semibold">
-                  {shortAddress(wallet.address)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <FormWallet address={wallet.address} />
       </div>
 
       <div className="grid grid-cols-3 gap-4 p-8">
         <Button
           className="rounded py-4 text-center font-bold text-white disabled:bg-rose-400 bg-danger hover:bg-danger-active"
           onClick={() => setIsTap(0)}
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           <span>이전 챕터로</span>
         </Button>
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white disabled:bg-indigo-400 bg-indigo-700 hover:bg-indigo-900"
           onClick={registerHandler}
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           {isLoading ? (
             <span className="flex items-center justify-center">
               Please Wait...

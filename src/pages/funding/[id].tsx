@@ -6,12 +6,12 @@ import clsx from "clsx";
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
 import { FundingModal } from "components/modal/FundingModal";
+import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
-import { MilestoneUser } from "~/components/milestone/MilestoneUser";
 
 const Product = () => {
   const router = useRouter();
@@ -42,8 +42,7 @@ const Product = () => {
               <button
                 type="button"
                 className="text-sm mx-2 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
-                onClick={() => setIsVote(!isVote)}
-              >
+                onClick={() => setIsVote(!isVote)}>
                 임시 버튼
               </button>
             </div>
@@ -53,8 +52,7 @@ const Product = () => {
                 onClick={() => {
                   if (Number(router.query.id) > 0)
                     router.push(`/funding/${Number(router.query.id) - 1}`);
-                }}
-              >
+                }}>
                 <AutoSVG className="mr-2" src="/media/icons/arrow-left.svg" />
                 <span className="pr-1">이전</span>
               </Button>
@@ -63,8 +61,7 @@ const Product = () => {
                 onClick={() => {
                   if (Number(router.query.id) < 20)
                     router.push(`/funding/${Number(router.query.id) + 1}`);
-                }}
-              >
+                }}>
                 <span className="pl-1">다음</span>
                 <AutoSVG className="ml-2" src="/media/icons/arrow-right.svg" />
               </Button>
@@ -100,7 +97,7 @@ const Product = () => {
                   <>
                     <div className="mt-8">
                       <label className="text-gray-600">
-                        마일스톤 1 종료까지
+                        마일스톤 1 마감까지
                       </label>
                       <p className="text-gray-600 mt-1">
                         <span className="text-black text-3xl mr-1">30</span>일
@@ -109,8 +106,7 @@ const Product = () => {
                             target="_blank"
                             rel="noreferrer"
                             href="https://bscscan.com/blocks"
-                            className="text-gray-500 hover:text-blue-500 hover:underline"
-                          >
+                            className="text-gray-500 hover:text-blue-500 hover:underline">
                             {accounting(blockNumber)}
                           </a>
                           <span className="text-sm ml-1">블록</span>
@@ -131,8 +127,7 @@ const Product = () => {
                               // width: progress >= 100 ? "100%" : `${progress}%`,
                               width: "40%",
                             }}
-                            className="h-full text-center text-[10px] text-white bg-blue-600 rounded-l-sm"
-                          >
+                            className="h-full text-center text-[10px] text-white bg-blue-600 rounded-l-sm">
                             40%
                           </div>
                           <div
@@ -147,8 +142,7 @@ const Product = () => {
                               // width: progress >= 100 ? "100%" : `${progress}%`,
                               width: "20%",
                             }}
-                            className="h-full text-[10px] text-white bg-red-600 rounded-r-sm"
-                          >
+                            className="h-full text-[10px] text-white bg-red-600 rounded-r-sm">
                             20%
                           </div>
                         </div>
@@ -166,8 +160,7 @@ const Product = () => {
                             target="_blank"
                             rel="noreferrer"
                             href="https://bscscan.com/blocks"
-                            className="text-gray-500 hover:text-blue-500 hover:underline"
-                          >
+                            className="text-gray-500 hover:text-blue-500 hover:underline">
                             {accounting(blockNumber)}
                           </a>
                           <span className="text-sm ml-1">블록</span>
@@ -235,8 +228,7 @@ const Product = () => {
                       });
                       setIsToast(true);
                     }
-                  }}
-                >
+                  }}>
                   {isVote ? <span>투표하기</span> : <span>펀딩하기</span>}
                 </Button>
               </div>
@@ -251,8 +243,7 @@ const Product = () => {
                   className={clsx(
                     "text-gray-600 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                     tabIndex === 0 && "font-medium border-b-2 border-blue-500"
-                  )}
-                >
+                  )}>
                   프로젝트 소개
                 </button>
                 <button
@@ -261,8 +252,7 @@ const Product = () => {
                   className={clsx(
                     "text-gray-600 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                     tabIndex === 1 && "font-medium border-b-2 border-blue-500"
-                  )}
-                >
+                  )}>
                   마일스톤
                 </button>
               </nav>

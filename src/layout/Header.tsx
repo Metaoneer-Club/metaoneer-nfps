@@ -13,6 +13,7 @@ import { AutoImage, AutoSVG, checkIsActive, shortAddress } from "utils";
 /* State */
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { walletState, isToastState, toastContentState } from "stores";
+import { Hamburger } from "~/components/dropdown/Hamburger";
 
 interface Props {
   active: boolean;
@@ -23,8 +24,9 @@ const Header: FC<Props> = ({ active }) => {
   const { theme, setTheme } = useTheme();
   const [wallet, setWallet] = useRecoilState(walletState);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDrop, setIsDrop] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDrop, setIsDrop] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -97,19 +99,17 @@ const Header: FC<Props> = ({ active }) => {
     <div
       className={clsx(
         active ? "shadow" : "shadow-lg",
-        "sticky bg-white dark:bg-gray-900 w-full top-0 left-0 z-20"
-      )}
-    >
-      <header className="flex max-w-[1200px] px-6 py-2 mx-auto transition-all items-center">
+        "sticky bg-white dark:bg-gray-900 w-full top-0 left-0 z-20 transition-shadow duration-300"
+      )}>
+      <header className="flex max-w-[1200px] px-6 py-2 mx-auto transition-all items-center justify-between">
         <div
           className="flex items-center mr-12 cursor-pointer"
-          onClick={() => router.push("/")}
-        >
+          onClick={() => router.push("/")}>
           <div className="relative w-[180px] h-16">
             <AutoImage src="/media/logos/logo.png" alt="logo" priority={true} />
           </div>
         </div>
-        <div className="w-full flex items-center justify-between">
+        <div className="hidden md:flex w-full items-center justify-between">
           <nav>
             <ul className="flex items-center">
               {navItems.map((v, i) => (
@@ -120,8 +120,7 @@ const Header: FC<Props> = ({ active }) => {
                     (router.asPath === v.url ||
                       (i !== 0 && checkIsActive(router.asPath, v.url))) &&
                       "underline underline-offset-4 decoration-2"
-                  )}
-                >
+                  )}>
                   <Link href={v.url}>{v.name}</Link>
                 </li>
               ))}
@@ -134,8 +133,7 @@ const Header: FC<Props> = ({ active }) => {
                   "group flex items-center text-sm border shadow hover:bg-dark hover:text-white",
                   router.asPath === "/create" && "bg-gray-800 text-white"
                 )}
-                onClick={moveCreateHandler}
-              >
+                onClick={moveCreateHandler}>
                 <div className="relative w-6 h-6 mr-1 transition-transform group-hover:rotate-[360deg]">
                   <AutoSVG
                     src="/media/icons/block.svg"
@@ -157,8 +155,7 @@ const Header: FC<Props> = ({ active }) => {
                     ? walletConnectHandler()
                     : setIsDrop(!isDrop);
                 }}
-                disabled={isLoading}
-              >
+                disabled={isLoading}>
                 {isLoading ? (
                   <div className="flex items-center mx-auto">
                     <span className="mr-2">연결중...</span>
@@ -200,6 +197,36 @@ const Header: FC<Props> = ({ active }) => {
             </div>
           </div>
         </div>
+        <div className="relative w-12 h-12 flex items-center md:hidden">
+          <div
+            onClick={() => setIsOpen(!isOpen)}
+            className={clsx(
+              "absolute top-0 p-2 cursor-pointer transition-all duration-150",
+              isOpen ? "rotate-90 opacity-0" : ""
+            )}>
+            <AutoSVG src="/media/icons/hamburger.svg" className="w-8 h-8" />
+          </div>
+          <div
+            onClick={() => setIsOpen(!isOpen)}
+            className={clsx(
+              "absolute top-0 p-2 opacity-0 cursor-pointer transition-all duration-150",
+              isOpen ? "-rotate-90 opacity-100" : ""
+            )}>
+            <AutoSVG src="/media/icons/close.svg" className="w-8 h-8" />
+          </div>
+        </div>
+        {isOpen ? (
+          <Hamburger
+            isLoading={isLoading}
+            address={wallet.address}
+            onMove={moveCreateHandler}
+            connectWallet={walletConnectHandler}
+            close={() => setIsOpen(!isOpen)}
+            onLogOut={walletDisconnectHandler}
+          />
+        ) : (
+          ""
+        )}
       </header>
     </div>
   );
@@ -221,14 +248,6 @@ const navItems: {
     name: "투표",
     url: "/vote",
   },
-  // {
-  //   name: "CREATOR",
-  //   url: "/creator",
-  // },
-  // {
-  //   name: "LOG",
-  //   url: "/log",
-  // },
 ];
 
 export { Header };

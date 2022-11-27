@@ -14,8 +14,7 @@ const Milestone: FC<IMilestone> = ({
   title,
   content,
   price,
-  startDate,
-  endDate,
+  expired,
 }) => {
   const [milestoneArray, setMilestoneArray] = useRecoilState(milestoneState);
 
@@ -27,8 +26,7 @@ const Milestone: FC<IMilestone> = ({
     <div className="relative">
       <div
         className="absolute right-0 p-3 group cursor-pointer"
-        onClick={deleteHandler}
-      >
+        onClick={deleteHandler}>
         <AutoSVG
           src="/media/icons/close.svg"
           className="group-hover:text-danger"
@@ -57,10 +55,8 @@ const Milestone: FC<IMilestone> = ({
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 flex justify-between items-center text-gray-500 text-sm">
-          <span>{formatDateSlash(startDate)}</span>
-          <span>~</span>
-          <span>{formatDateSlash(endDate)}</span>
+        <div className="px-6 py-4 flex justify-end items-center text-gray-500 text-sm">
+          <span>{formatDateSlash(expired)}</span>
         </div>
       </div>
     </div>
