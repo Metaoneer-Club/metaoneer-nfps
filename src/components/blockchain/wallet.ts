@@ -39,9 +39,16 @@ export const changeNetwork = async (chainId: number) => {
 };
 
 export const signCaller = async (account: string) => {
-  const sign = await web3.eth.personal.sign("", account, "").catch(() => {
-    throw new Error("Sign has been Canceled.");
-  });
+  const { ethereum } = window;
+
+  const sign = await ethereum
+    .request({
+      method: "personal_sign",
+      params: ["Metaoneer Service.", account],
+    })
+    .catch(() => {
+      throw new Error("Sign has been Canceled.");
+    });
 
   return sign;
 };

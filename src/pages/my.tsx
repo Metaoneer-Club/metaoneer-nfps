@@ -3,13 +3,13 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 
 /* API */
-import { AddProfileAPI, CheckProfileAPI } from "~/api";
+import { AddProfileAPI, CheckProfileAPI } from "api";
 import { InitialUserData } from "api/APIModel";
 
 /* Component */
 import { paymentContract, signCaller } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
-import { AutoImage, AutoSVG } from "utils";
+import { AutoImage, AutoSVG, shortAddress } from "utils";
 
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
@@ -68,57 +68,49 @@ const MyPage: NextPage = () => {
 
   const editProfileHandler = async () => {
     const sign = await signCaller(wallet.address);
-    console.log(sign);
 
     const test = await AddProfileAPI({
-      nonce: "TEST",
+      nonce: "Metaoneer Service.",
       address: wallet.address,
       chain_id: wallet.network,
       signature: sign,
       nickname: "Orbit",
       content: "하이용",
     });
-    console.log(test);
   };
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-[1200px] mx-auto pt-28 pb-40">
-        <div className="font-sans w-full flex justify-center items-center">
-          <div className="relative w-96 mx-auto bg-white shadow-xl hover:shadow">
-            <div
-              onClick={editProfileHandler}
-              className="absolute cursor-pointer right-0 p-2"
-            >
-              <AutoSVG
-                src="/media/icons/edit.svg"
-                className="bg-gray-200 text-dark hover:text-primary-active rounded w-8 h-8 p-1"
-              />
-            </div>
-            <div className="relative w-32 h-32 mx-auto -mt-20 border-8 border-white rounded-full overflow-hidden">
-              <AutoImage
-                src="/team/Orbit.png"
-                alt="profile"
-                className="scale-[140%] -mt-3 object-contain"
-              />
-            </div>
-            <div className="text-center mt-2 text-3xl font-bold">Orbit</div>
-            <div className="text-center mt-2 font-light text-sm">
-              @Orbit__dev
-            </div>
-            <div className="text-center font-normal text-lg">Metaoneer</div>
-            <div className="px-6 text-center mt-2 font-light text-sm">
-              <p>Front-end Developer</p>
-            </div>
-            <hr className="mt-4" />
-            <div className="flex text-center">
-              <div className="w-1/2 p-4 border-r">
-                <span className="font-bold">{products.length || 0}</span>{" "}
-                Project
+      <div className="max-w-[1200px] mx-auto pt-12 pb-40">
+        <div className="flex flex-col w-2/5 mx-auto">
+          <div className="flex bg-white border border-white shadow-lg rounded-xl">
+            <div className="border-r p-4">
+              <div className="relative h-32 w-32">
+                <AutoImage
+                  src="/team/Orbit.png"
+                  alt="profile"
+                  className="scale-110 w-32 h-32 object-cover rounded-2xl"
+                />
+                <div
+                  onClick={editProfileHandler}
+                  className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300">
+                  <AutoSVG
+                    src="/media/icons/edit.svg"
+                    className="w-8 h-8 p-1.5"
+                  />
+                </div>
               </div>
-              <div className="w-1/2 p-4">
-                <span className="font-bold">2.0 K</span> Funding
+              <div className="text-center p-3">
+                <div className="w-full flex-none text-lg text-gray-800 font-bold leading-none">
+                  Orbit
+                </div>
+                <div className="mt-1 text-xs text-gray-600">
+                  {shortAddress(wallet.address)}
+                </div>
               </div>
+            </div>
+            <div className="text-gray-500 text-sm p-4 my-4">
+              <span>안녕하세요, 뉴비 개발자 오르빗입니다.</span>
             </div>
           </div>
         </div>

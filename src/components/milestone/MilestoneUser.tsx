@@ -25,8 +25,7 @@ const MilestoneUser: FC<Props> = ({ id, blockNumber }) => {
             </div>
             <div
               onClick={() => setIsOpen(true)}
-              className="rounded-lg border shadow-lg w-1/2 p-6 cursor-pointer hover:bg-gray-50 hover:shadow-none"
-            >
+              className="rounded-lg border shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 hover:shadow-none">
               <div className="flex justify-between items-center">
                 <div>
                   <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-info mr-2 text-white">
@@ -55,8 +54,7 @@ const MilestoneUser: FC<Props> = ({ id, blockNumber }) => {
                       target="_blank"
                       rel="noreferrer"
                       href="https://bscscan.com/blocks"
-                      className="text-gray-500 hover:text-blue-500 hover:underline"
-                    >
+                      className="text-gray-500 hover:text-blue-500 hover:underline">
                       {accounting(blockNumber + i * 86400)}
                     </a>
                     <span className="text-sm ml-1">블록</span>

@@ -14,11 +14,11 @@ const useAuth = () => {
 
     const token = sessionStorage.getItem("ACCESS_TOKEN");
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_HOST_API_URL;
-    axios.defaults.headers.common = {
-      Authorization: token
-        ? `JWT ${String(token)}`
-        : String(process.env.NEXT_PUBLIC_AXIOS_HEADERS_TOKEN),
-    };
+    // axios.defaults.headers.common = {
+    //   Authorization: token
+    //     ? `JWT ${String(token)}`
+    //     : String(process.env.NEXT_PUBLIC_AXIOS_HEADERS_TOKEN),
+    // };
   }, [auth, setAuth]);
 
   return auth;

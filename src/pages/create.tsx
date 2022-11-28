@@ -84,13 +84,13 @@ const Create: NextPage = () => {
       setCurrentKey(lastKey);
 
       setToastContent({
-        content: "Successfully registered.",
+        content: "프로젝트가 성공적으로 등록되었습니다.",
         type: "success",
       });
       setIsToast(true);
     } catch (err) {
       setToastContent({
-        content: "[Error] Please check for sufficient gas or network.",
+        content: "가스비가 부족하거나 네트워크 이슈가 있습니다.",
         type: "danger",
       });
       setIsToast(true);
@@ -119,8 +119,7 @@ const Create: NextPage = () => {
                     isTap === 0
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
+                  )}>
                   1
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -137,8 +136,7 @@ const Create: NextPage = () => {
                     isTap === 1
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
+                  )}>
                   2
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -155,13 +153,12 @@ const Create: NextPage = () => {
                     isTap === 2
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
+                  )}>
                   3
                 </div>
                 <div className="mt-2 text-center text-sm">
                   <div>
-                    NFT 생성 완료!<br></br> 프로젝트를 확인해 보세요.
+                    펀딩 NFT 생성 완료!<br></br> 프로젝트를 확인해 보세요.
                   </div>
                 </div>
               </div>

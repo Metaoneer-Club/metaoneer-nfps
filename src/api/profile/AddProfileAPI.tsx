@@ -3,11 +3,7 @@ import { IAddProfileAPI } from "api/APIModel";
 
 const AddProfileAPI = async (args: IAddProfileAPI) => {
   const request = await axios
-    .post("", {
-      params: {
-        chain_id: args.chain_id,
-        address: args.address,
-      },
+    .post(`?chain_id=${args.chain_id}&address=${args.address}`, {
       nonce: args.nonce,
       address: args.address,
       chain_id: args.chain_id,

@@ -43,7 +43,10 @@ const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
       {isOpen && (
         <Calendar
           className="-mt-3 bg-white rounded w-full p-4 border border-gray-400"
-          onChange={setDate}
+          onChange={(e: any) => {
+            setDate(e);
+            setIsOpen(false);
+          }}
           value={date}
           formatDay={(locale, date) => formatDay(date)}
         />

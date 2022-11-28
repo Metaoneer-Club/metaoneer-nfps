@@ -14,7 +14,8 @@ import { Wallet } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
 import { MainCard } from "components/card/MainCard";
 import { FormWallet } from "components/wallet/FormWallet";
-import { AutoImage, AutoSVG, shortAddress } from "utils";
+import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
+import { MilestoneUser } from "../milestone/MilestoneUser";
 
 interface Props {
   wallet: Wallet;
@@ -30,6 +31,7 @@ const Create02: FC<Props> = ({
   registerHandler,
 }) => {
   const [isOpen, setIsOpen] = useState<number>(0);
+  const [tabIndex, setTabIndex] = useState<number>(0);
 
   const openHandler = (tapIndex: number) => {
     if (isOpen === tapIndex) {
@@ -45,8 +47,10 @@ const Create02: FC<Props> = ({
         <div>
           <div
             className={clsx(
-              "flex justify-between shadow p-4 transition-colors",
-              isOpen === 0 && "rounded bg-dark text-white"
+              "flex justify-between shadow p-4 transition-colors duration-300",
+              isOpen === 0
+                ? "rounded bg-dark text-white"
+                : "hover:bg-gray-700 hover:text-white"
             )}
             onClick={() => {
               openHandler(0);
@@ -84,8 +88,10 @@ const Create02: FC<Props> = ({
         <div>
           <div
             className={clsx(
-              "flex justify-between shadow p-4 transition-colors",
-              isOpen === 1 && "rounded bg-dark text-white"
+              "flex justify-between shadow p-4 transition-colors duration-300",
+              isOpen === 1
+                ? "rounded bg-dark text-white"
+                : "hover:bg-gray-700 hover:text-white"
             )}
             onClick={() => openHandler(1)}>
             <span>펀딩 목록 데모</span>
@@ -101,7 +107,7 @@ const Create02: FC<Props> = ({
           {isOpen === 1 ? (
             <div
               className={clsx(
-                "w-72 mx-auto group cursor-pointer my-2 animate__animated animate__fast",
+                "w-72 mx-auto group cursor-pointer my-4 animate__animated animate__fast",
                 isOpen === 1 ? "animate__fadeIn" : "animate__fadeOut"
               )}>
               <ProductCard
@@ -122,8 +128,10 @@ const Create02: FC<Props> = ({
         <div>
           <div
             className={clsx(
-              "flex justify-between shadow p-4 transition-colors",
-              isOpen === 2 && "rounded bg-dark text-white"
+              "flex justify-between shadow p-4 transition-colors duration-300",
+              isOpen === 2
+                ? "rounded bg-dark text-white"
+                : "hover:bg-gray-700 hover:text-white"
             )}
             onClick={() => openHandler(2)}>
             <span>펀딩 세부정보 화면 데모</span>
@@ -138,96 +146,178 @@ const Create02: FC<Props> = ({
           {isOpen === 2 ? (
             <div
               className={clsx(
-                "my-2 animate__animated animate__fast",
+                "my-4 animate__animated animate__fast",
                 isOpen === 2 ? "animate__fadeIn" : "animate__fadeOut"
               )}>
               <div className="flex justify-between items-center">
-                <div className="text-2xl text-center font-bold flex items-center">
-                  <span className="px-4 py-2 text-sm border rounded-xl bg-primary-active text-white mr-6">
+                <div className="text-lg text-center font-bold flex items-center">
+                  <span className="px-4 py-2 text-xs border rounded-lg bg-primary-active text-white mr-4">
                     NFT
                   </span>
-                  <span>{dummy.title}</span>
+                  <span className="text-lg">{dummy.title}</span>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-6 pt-3">
-                <div className="col-span-2">
-                  <div className="relative w-full h-64">
+              <div className="grid grid-cols-5 gap-6 pt-4">
+                <div className="col-span-3">
+                  <div className="relative w-full h-72">
                     <AutoImage
-                      src={dummy.src}
-                      alt={dummy.title}
+                      src="/temp.png"
+                      alt="bnb"
                       className="object-cover rounded-xl"
                     />
                   </div>
                 </div>
-                <div className="flex flex-col px-5 py-3 rounded-xl border bg-white">
-                  <div>
-                    <label className="text-xs font-bold text-gray-600">
-                      Intro
-                    </label>
-                    <p className="mt-1 text-sm truncate">Example Intro</p>
+                <div className="col-span-2 flex flex-col text-center rounded-xl border bg-white">
+                  <div className="grid grid-cols-2 gap-4 p-4 items-center text-sm">
+                    <div className="mt-4">
+                      <label className="text-gray-600">펀딩 금액</label>
+                      <p className="mt-2">
+                        <span className="text-xl mr-1">{accounting(0)}</span>
+                        <span className="text-gray-600">BNB</span>
+                      </p>
+                    </div>
+                    <div className="mt-4">
+                      <label className="text-gray-600">후원자 수</label>
+                      <p className="mt-2">
+                        <span className="text-xl mr-1">{accounting(0)}</span>
+                        <span className="text-gray-600">명</span>
+                      </p>
+                    </div>
+                    <div className="mt-2">
+                      <label className="text-gray-600">펀딩 종료까지</label>
+                      <p className="text-gray-600 mt-1">
+                        <span className="text-black text-xl mr-1">30</span>일
+                        <div className="mt-2">
+                          <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://bscscan.com/blocks"
+                            className="text-gray-500 hover:text-blue-500 hover:underline">
+                            {accounting(86400)}
+                          </a>
+                          <span className="text-xs ml-1">블록</span>
+                        </div>
+                      </p>
+                    </div>
+                    <div className="mt-2">
+                      <label className="text-gray-600">펀딩 달성률</label>
+                      <p className="mt-3">
+                        <span className="text-blue-600 text-xl mr-1">30</span>%
+                      </p>
+                      <div className="mt-3 flex items-center">
+                        <div className="w-full h-3 mb-1 bg-blue-200 rounded-sm">
+                          <div
+                            style={{
+                              // width: progress >= 100 ? "100%" : `${progress}%`,
+                              width: "30%",
+                            }}
+                            className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="pt-2">
-                    <label className="text-xs font-bold text-gray-600">
-                      Price
-                    </label>
-                    <p className="mt-1 text-sm">
-                      <strong className="mr-2">3</strong>BNB
-                    </p>
+                  <div className="grid grid-cols-5 gap-4 px-8">
+                    <div className="col-span-2 text-xs text-center">
+                      <p>펀딩 목표액</p>
+                      <p className="mt-1">현재 단계</p>
+                      <p className="mt-1">펀딩 기간</p>
+                    </div>
+                    <div className="col-span-3 text-left text-gray-600 text-xs">
+                      <p>{accounting(2000)} BNB</p>
+                      <p className="mt-1">펀딩 진행중</p>
+                      <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
+                    </div>
                   </div>
-                  <div className="pt-2">
-                    <label className="text-xs font-bold text-gray-600">
-                      Limit
-                    </label>
-                    <p className="mt-1">
-                      <strong className="text-sm text-danger">12</strong>
-                      <span className="mx-2">/</span>
-                      <strong className="text-sm">50</strong>
-                    </p>
-                  </div>
-                  <div className="mt-4 w-full">
+
+                  <div className="px-8 p-4 mt-auto w-full">
                     <Button
-                      className="bg-primary py-2 text-white w-full text-xs hover:bg-primary-active"
+                      className="bg-blue-600 text-white w-full text-sm hover:bg-blue-700"
                       onClick={() => {}}>
-                      Buy
+                      <span>펀딩하기</span>
                     </Button>
                   </div>
                 </div>
-                <Card className="col-span-2 mt-1 border p-6 bg-white rounded-xl">
-                  <label className="text-xs font-bold text-gray-600">
-                    Description
-                  </label>
-                  <p className="mt-1 text-xs leading-relaxed">
-                    {dummy.content}
-                  </p>
-                </Card>
+              </div>
+
+              <div className="grid grid-cols-3 gap-6 pt-4">
+                <div className="col-span-2 -mt-12">
+                  <nav className="inline-flex flex-row bg-white border border-b-0 rounded rounded-b-none">
+                    <button
+                      type="button"
+                      onClick={() => setTabIndex(0)}
+                      className={clsx(
+                        "text-gray-600 text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                        tabIndex === 0 &&
+                          "font-medium border-b-2 border-blue-500"
+                      )}>
+                      프로젝트 소개
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTabIndex(1)}
+                      className={clsx(
+                        "text-gray-600 text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                        tabIndex === 1 &&
+                          "font-medium border-b-2 border-blue-500"
+                      )}>
+                      마일스톤
+                    </button>
+                  </nav>
+                  <Card className="border p-6 bg-white rounded-tl-none text-sm rounded-xl">
+                    {tabIndex === 0 ? (
+                      <p className="leading-relaxed">
+                        BNB Smart Chain (BSC) supports the most popular
+                        programming languages, flexible tools, and comes with
+                        clear and canonical documentation. You can quickly start
+                        and deploy your application on a blockchain designed
+                        with real use in mind. BNB Smart Chain (BSC) supports
+                        the most popular programming languages, flexible tools,
+                        and comes with clear and canonical documentation. You
+                        can quickly start and deploy your application on a
+                        blockchain designed with real use in mind. BNB Smart
+                        Chain (BSC) supports the most popular programming
+                        languages, flexible tools, and comes with clear and
+                        canonical documentation. You can quickly start and
+                        deploy your application on a blockchain designed with
+                        real use in mind.
+                      </p>
+                    ) : (
+                      <MilestoneUser id="0" blockNumber={86400} />
+                    )}
+                  </Card>
+                </div>
                 <Card className="self-start border mt-1 bg-white rounded-xl">
-                  <h3 className="text-xs font-bold text-gray-600 px-6 pt-4">
-                    Creator Information
+                  <h3 className="text-xs font-medium text-gray-600 px-6 pt-4">
+                    프로젝트 생성자 정보
                   </h3>
-                  <div className="flex items-center mt-3 px-6 pb-4 border-b">
-                    <div className="relative w-7 h-7 mr-2">
-                      <AutoImage
-                        className="rounded-full border"
-                        src="/media/avatars/blank.svg"
-                        alt="icon"
-                      />
+                  <div className="mt-3 px-6 pb-4 border-b">
+                    <div className="flex items-center">
+                      <div className="relative w-7 h-7 mr-2">
+                        <AutoImage
+                          className="rounded-full border"
+                          src="/media/avatars/blank.svg"
+                          alt="icon"
+                        />
+                      </div>
+                      <div className="text-xs">
+                        {shortAddress(
+                          "0x12A60872B053C009452cdb95178144c8fFbDeA4D"
+                        )}
+                      </div>
                     </div>
-                    <div className="text-xs">
-                      {shortAddress(wallet.address)}
-                    </div>
+                    <p className="mt-2 text-xs">
+                      BNB 체인의 랜드마크가 되겠습니다!
+                    </p>
                   </div>
-                  <div className="grid grid-cols-3 text-center">
+                  <div className="grid grid-cols-2 text-center">
                     <div className="border-r">
-                      <p className="text-xs my-2">All</p>
-                      <p className="pb-3">5</p>
-                    </div>
-                    <div className="border-r">
-                      <p className="text-xs my-2">Limit</p>
-                      <p className="pb-3">4</p>
+                      <p className="text-xs my-2">프로젝트 수</p>
+                      <p className="text-sm pb-3">5</p>
                     </div>
                     <div>
-                      <p className="text-xs my-2">Unlimit</p>
-                      <p className="pb-3">1</p>
+                      <p className="text-xs my-2">받은 펀딩 금액</p>
+                      <p className="text-sm pb-3">0 BNB</p>
                     </div>
                   </div>
                 </Card>
