@@ -18,10 +18,10 @@ const Vote: NextPage = () => {
   const setToastContent = useSetRecoilState(toastContentState);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-10 pb-40">
-        <div className="flex items-center rounded border border-gray-200 bg-white">
-          <div className="flex items-center bg-dark text-white rounded-l p-6">
+        <div className="flex items-center rounded border border-gray-200 dark:border-dark-300 bg-white dark:bg-dark">
+          <div className="flex items-center bg-dark dark:bg-dark-600 text-white rounded-l p-6">
             <AutoSVG className="w-6 h-6 mr-2" src="/media/icons/filter.svg" />
             <span className="pr-1">필터</span>
           </div>
@@ -70,7 +70,7 @@ const Vote: NextPage = () => {
           </div>
           <div className="grid justify-items-stretch pt-12">
             <Button
-              className="border shadow bg-white w-2/5 p-4 justify-self-center hover:bg-dark hover:text-white"
+              className="border shadow bg-white dark:bg-dark w-2/5 p-4 justify-self-center hover:bg-dark hover:text-white"
               onClick={() => {
                 setToastContent({
                   content: "Comming Soon!",

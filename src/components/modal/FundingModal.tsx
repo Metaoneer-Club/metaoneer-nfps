@@ -26,21 +26,26 @@ const FundingModal: FC<Props> = ({ id, close }) => {
       <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
         <div className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
           <div className="relative py-4 px-1 md:px-3 bg-white shadow-md rounded border border-gray-400">
-            <div className="custom-scroll py-4 px-4 md:px-7 h-[480px] overflow-auto">
+            <div className="py-4 px-4 md:px-7">
               <div className="text-center">
-                <div className="mb-2 text-2xl font-bold">
+                <div className="mt-2 mb-5 text-2xl font-bold">
                   펀딩 직전 유의사항
                 </div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
-                <div>무엇을 넣어야 할까용</div>
+
+                <div className="mt-3 mb-5 text-left text-sm px-4 py-2 border border-gray-400 rounded">
+                  <p className="mt-1 leading-relaxed">
+                    NPFS는 중앙화된 중개인이 없는 블록체인 탈중앙 플랫폼으로
+                    사용자는 스스로의 책임과 판단으로 다른 사용자들이 생성한
+                    블록체인 상의 스마트 계약을 통해 펀딩에 참여하게 됩니다.
+                  </p>
+                  <p className="mt-1 leading-relaxed">
+                    NPFS 웹사이트에서 확인되는 모든 프로젝트는 개별 심사를
+                    거치지 않고 사용자가 자율 등록한 프로젝트로 Metaoneer 팀에서
+                    안전성을 보증하지 않습니다.
+                  </p>
+                </div>
               </div>
+
               <div className="mt-2">
                 <label
                   htmlFor="name"
@@ -56,7 +61,23 @@ const FundingModal: FC<Props> = ({ id, close }) => {
                   placeholder="0"
                 />
               </div>
-              <div className="mt-8 flex justify-center text-sm">
+
+              <div className="mt-2">
+                <div className="mb-5 px-2 text-gray-700 flex items-center pl-3 text-sm border-gray-400 rounded border">
+                  <input
+                    type="checkbox"
+                    value={amount}
+                    onChange={onChangeAmount}
+                    className="w-6 h-6"
+                  />
+                  <p className="ml-1 p-2">
+                    위험 요소에 대해 충분히 이해하였으며, 이에 동의하고 서비스를
+                    사용함을 확인합니다.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-center text-sm">
                 <Button
                   className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
                   onClick={() => close(false)}

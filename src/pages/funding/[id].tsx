@@ -12,6 +12,7 @@ import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
+import { FundingTable } from "~/components/table/FundingTable";
 
 const Product = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const Product = () => {
   const [blockNumber, setBlockNumber] = useState<number>(864000);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isVote, setIsVote] = useState<boolean>(false);
+  const [isOwner, setIsOwner] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -31,7 +33,7 @@ const Product = () => {
       {isOpen && (
         <FundingModal id={router.query.id} close={() => setIsOpen(false)} />
       )}
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
         <div className="max-w-[1200px] mx-auto pt-16 pb-40">
           <div className="flex justify-between items-center">
             <div className="text-3xl text-center font-bold flex items-center">
@@ -39,29 +41,41 @@ const Product = () => {
                 NFT
               </span>
               <span>프로젝트 제목 {router.query.id}</span>
+
               <button
                 type="button"
                 className="text-sm mx-2 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
-                onClick={() => setIsVote(!isVote)}>
-                임시 버튼
+                onClick={() => setIsVote(!isVote)}
+              >
+                임시 버튼 (투표)
+              </button>
+
+              <button
+                type="button"
+                className="text-sm mx-2 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+                onClick={() => setIsOwner(!isVote)}
+              >
+                임시 버튼 (오너)
               </button>
             </div>
             <div className="flex">
               <Button
-                className="flex items-center bg-white shadow hover:bg-dark hover:text-white mr-4"
+                className="flex items-center bg-white dark:bg-dark shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white mr-4"
                 onClick={() => {
                   if (Number(router.query.id) > 0)
                     router.push(`/funding/${Number(router.query.id) - 1}`);
-                }}>
+                }}
+              >
                 <AutoSVG className="mr-2" src="/media/icons/arrow-left.svg" />
                 <span className="pr-1">이전</span>
               </Button>
               <Button
-                className="flex items-center bg-white shadow hover:bg-dark hover:text-white"
+                className="flex items-center bg-white dark:bg-dark shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white"
                 onClick={() => {
                   if (Number(router.query.id) < 20)
                     router.push(`/funding/${Number(router.query.id) + 1}`);
-                }}>
+                }}
+              >
                 <span className="pl-1">다음</span>
                 <AutoSVG className="ml-2" src="/media/icons/arrow-right.svg" />
               </Button>
@@ -77,44 +91,58 @@ const Product = () => {
                 />
               </div>
             </div>
-            <div className="col-span-2 flex flex-col text-center rounded-xl border bg-white">
+            <div className="col-span-2 flex flex-col text-center rounded-xl border dark:border-dark-300 bg-white dark:bg-dark">
               <div className="grid grid-cols-2 gap-4 p-6 items-center">
                 <div className="mt-4">
-                  <label className="text-gray-600">펀딩 금액</label>
+                  <label className="text-gray-600 dark:text-gray-400">
+                    펀딩 금액
+                  </label>
                   <p className="mt-2">
                     <span className="text-3xl mr-1">{accounting(1802)}</span>
-                    <span className="text-gray-600">BNB</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      BNB
+                    </span>
                   </p>
                 </div>
                 <div className="mt-4">
-                  <label className="text-gray-600">후원자 수</label>
+                  <label className="text-gray-600 dark:text-gray-400">
+                    후원자 수
+                  </label>
                   <p className="mt-2">
                     <span className="text-3xl mr-1">{accounting(143)}</span>
-                    <span className="text-gray-600">명</span>
+                    <span className="text-gray-600 dark:text-gray-400">명</span>
                   </p>
                 </div>
                 {isVote ? (
                   <>
                     <div className="mt-8">
-                      <label className="text-gray-600">
+                      <label className="text-gray-600 dark:text-gray-400">
                         마일스톤 1 마감까지
                       </label>
-                      <p className="text-gray-600 mt-1">
-                        <span className="text-black text-3xl mr-1">30</span>일
+                      <p className="text-gray-dark:text-gray-400 mt-1">
+                        <span className="text-black dark:text-gray-300 text-3xl mr-1">
+                          30
+                        </span>
+                        일
                         <div className="mt-2">
                           <a
                             target="_blank"
                             rel="noreferrer"
                             href="https://bscscan.com/blocks"
-                            className="text-gray-500 hover:text-blue-500 hover:underline">
+                            className="text-gray-500 dark:text-gray-300 hover:text-blue-500 hover:underline"
+                          >
                             {accounting(blockNumber)}
                           </a>
-                          <span className="text-sm ml-1">블록</span>
+                          <span className="dark:text-gray-500 text-sm ml-1">
+                            블록
+                          </span>
                         </div>
                       </p>
                     </div>
                     <div className="mt-8">
-                      <label className="text-gray-600">투표 현황</label>
+                      <label className="text-gray-600 dark:text-gray-400">
+                        투표 현황
+                      </label>
                       <div className="mt-2 flex justify-center items-center">
                         <p className="text-blue-600 text-3xl mr-1">56</p>
                         <p className="mx-2">:</p>
@@ -127,7 +155,8 @@ const Product = () => {
                               // width: progress >= 100 ? "100%" : `${progress}%`,
                               width: "40%",
                             }}
-                            className="h-full text-center text-[10px] text-white bg-blue-600 rounded-l-sm">
+                            className="h-full text-center text-[10px] text-white bg-blue-600 rounded-l-sm"
+                          >
                             40%
                           </div>
                           <div
@@ -142,7 +171,8 @@ const Product = () => {
                               // width: progress >= 100 ? "100%" : `${progress}%`,
                               width: "20%",
                             }}
-                            className="h-full text-[10px] text-white bg-red-600 rounded-r-sm">
+                            className="h-full text-[10px] text-white bg-red-600 rounded-r-sm"
+                          >
                             20%
                           </div>
                         </div>
@@ -152,23 +182,33 @@ const Product = () => {
                 ) : (
                   <>
                     <div className="mt-8">
-                      <label className="text-gray-600">펀딩 종료까지</label>
-                      <p className="text-gray-600 mt-1">
-                        <span className="text-black text-3xl mr-1">30</span>일
+                      <label className="text-gray-600 dark:text-gray-400">
+                        펀딩 종료까지
+                      </label>
+                      <p className="text-gray-dark:text-gray-400 mt-1">
+                        <span className="text-black dark:text-gray-300 text-3xl mr-1">
+                          30
+                        </span>
+                        일
                         <div className="mt-2">
                           <a
                             target="_blank"
                             rel="noreferrer"
                             href="https://bscscan.com/blocks"
-                            className="text-gray-500 hover:text-blue-500 hover:underline">
+                            className="text-gray-500 dark:text-gray-300 hover:text-blue-500 hover:underline"
+                          >
                             {accounting(blockNumber)}
                           </a>
-                          <span className="text-sm ml-1">블록</span>
+                          <span className="dark:text-gray-500 text-sm ml-1">
+                            블록
+                          </span>
                         </div>
                       </p>
                     </div>
                     <div className="mt-8">
-                      <label className="text-gray-600">펀딩 달성률</label>
+                      <label className="text-gray-600 dark:text-gray-400">
+                        펀딩 달성률
+                      </label>
                       <p className="mt-3">
                         <span className="text-blue-600 text-3xl mr-1">90</span>%
                       </p>
@@ -189,12 +229,12 @@ const Product = () => {
               </div>
               {isVote ? (
                 <div className="grid grid-cols-5 gap-4 px-8 py-3">
-                  <div className="col-span-2 text-sm text-center">
+                  <div className="col-span-2 text-sm text-center dark:text-gray-300">
                     <p className="mt-1">이전 단계</p>
                     <p className="mt-1">현재 단계</p>
                     <p className="mt-1">다음 단계</p>
                   </div>
-                  <div className="col-span-3 text-left text-gray-600 text-sm">
+                  <div className="col-span-3 text-left text-gray-dark:text-gray-400 text-sm">
                     <p className="mt-1">펀딩 완료</p>
                     <p className="mt-1">마일스톤 1 진행중</p>
                     <p className="mt-1">마일스톤 1 투표</p>
@@ -202,12 +242,12 @@ const Product = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-5 gap-4 px-8 py-3">
-                  <div className="col-span-2 text-sm text-center">
+                  <div className="col-span-2 text-sm text-center dark:text-gray-300">
                     <p>펀딩 목표액</p>
                     <p className="mt-1">현재 단계</p>
                     <p className="mt-1">펀딩 기간</p>
                   </div>
-                  <div className="col-span-3 text-left text-gray-600 text-sm">
+                  <div className="col-span-3 text-left text-gray-dark:text-gray-400 text-sm">
                     <p>{accounting(2000)} BNB</p>
                     <p className="mt-1">펀딩 진행중</p>
                     <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
@@ -228,7 +268,8 @@ const Product = () => {
                       });
                       setIsToast(true);
                     }
-                  }}>
+                  }}
+                >
                   {isVote ? <span>투표하기</span> : <span>펀딩하기</span>}
                 </Button>
               </div>
@@ -236,27 +277,46 @@ const Product = () => {
           </div>
           <div className="grid grid-cols-3 gap-6 pt-4">
             <div className="col-span-2 -mt-10">
-              <nav className="inline-flex flex-row bg-white border border-b-0 rounded rounded-b-none">
+              <nav className="inline-flex flex-row bg-white dark:bg-dark dark:border-dark-300 border border-b-0 rounded rounded-b-none">
                 <button
                   type="button"
                   onClick={() => setTabIndex(0)}
                   className={clsx(
-                    "text-gray-600 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
-                    tabIndex === 0 && "font-medium border-b-2 border-blue-500"
-                  )}>
+                    "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                    tabIndex === 0 &&
+                      "font-medium border-b-2 border-blue-500 dark:border-primary"
+                  )}
+                >
                   프로젝트 소개
                 </button>
                 <button
                   type="button"
                   onClick={() => setTabIndex(1)}
                   className={clsx(
-                    "text-gray-600 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
-                    tabIndex === 1 && "font-medium border-b-2 border-blue-500"
-                  )}>
+                    "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                    tabIndex === 1 &&
+                      "font-medium border-b-2 border-blue-500 dark:border-primary"
+                  )}
+                >
                   마일스톤
                 </button>
+                {isOwner ? (
+                  <button
+                    type="button"
+                    onClick={() => setTabIndex(2)}
+                    className={clsx(
+                      "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                      tabIndex === 2 &&
+                        "font-medium border-b-2 border-blue-500 dark:border-primary"
+                    )}
+                  >
+                    펀딩 현황
+                  </button>
+                ) : (
+                  ""
+                )}
               </nav>
-              <Card className="border p-6 bg-white rounded-tl-none rounded-xl">
+              <Card className="border p-6 bg-white dark:bg-dark dark:border-dark-300 rounded-tl-none rounded-xl">
                 {tabIndex === 0 ? (
                   <p className="leading-relaxed">
                     BNB Smart Chain (BSC) supports the most popular programming
@@ -274,15 +334,21 @@ const Product = () => {
                     use in mind.
                   </p>
                 ) : (
+                  ""
+                )}
+                {tabIndex === 1 ? (
                   <MilestoneUser
                     id={router.query.id}
                     blockNumber={blockNumber}
                   />
+                ) : (
+                  ""
                 )}
+                {tabIndex === 2 ? <FundingTable /> : ""}
               </Card>
             </div>
-            <Card className="self-start border mt-5 bg-white rounded-xl">
-              <h3 className="text-xs font-medium text-gray-600 px-6 pt-4">
+            <Card className="self-start border mt-5 bg-white dark:bg-dark dark:border-dark-300 rounded-xl">
+              <h3 className="text-xs font-medium text-gray-dark:text-gray-400 px-6 pt-4">
                 프로젝트 생성자 정보
               </h3>
               <div className="mt-3 px-6 pb-4 border-b">

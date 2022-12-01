@@ -80,10 +80,10 @@ const MyPage: NextPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
         <div className="flex flex-col w-2/5 mx-auto">
-          <div className="flex bg-white border border-white shadow-lg rounded-xl">
+          <div className="flex bg-white dark:bg-dark border border-white dark:border-dark-300 shadow-lg rounded-xl">
             <div className="border-r p-4">
               <div className="relative h-32 w-32">
                 <AutoImage
@@ -93,7 +93,8 @@ const MyPage: NextPage = () => {
                 />
                 <div
                   onClick={editProfileHandler}
-                  className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300">
+                  className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300"
+                >
                   <AutoSVG
                     src="/media/icons/edit.svg"
                     className="w-8 h-8 p-1.5"
@@ -101,7 +102,7 @@ const MyPage: NextPage = () => {
                 </div>
               </div>
               <div className="text-center p-3">
-                <div className="w-full flex-none text-lg text-gray-800 font-bold leading-none">
+                <div className="w-full flex-none text-lg text-gray-800 dark:text-gray-300 font-bold leading-none">
                   Orbit
                 </div>
                 <div className="mt-1 text-xs text-gray-600">
@@ -109,7 +110,7 @@ const MyPage: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className="text-gray-500 text-sm p-4 my-4">
+            <div className="text-gray-500 dark:text-gray-400 text-sm p-4 my-4">
               <span>안녕하세요, 뉴비 개발자 오르빗입니다.</span>
             </div>
           </div>

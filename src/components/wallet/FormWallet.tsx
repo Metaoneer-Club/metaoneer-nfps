@@ -12,7 +12,7 @@ const FormWallet: FC<Props> = ({ address }) => {
     <div className="mt-6">
       <div className="font-semibold">지갑주소</div>
       <div className="mt-2">
-        <div className="flex items-center bg-neutral-100 p-3 rounded border border-gray-400">
+        <div className="flex items-center bg-neutral-100 dark:bg-dark-400 p-3 rounded border border-gray-400 dark:border-dark-300">
           <div className="flex items-center gap-x-2">
             <AutoSVG
               src="/media/social-logos/metamask.svg"

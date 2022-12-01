@@ -25,27 +25,28 @@ const MilestoneUser: FC<Props> = ({ id, blockNumber }) => {
             </div>
             <div
               onClick={() => setIsOpen(true)}
-              className="rounded-lg border shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 hover:shadow-none">
+              className="rounded-lg border dark:bg-dark-500 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none"
+            >
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-info mr-2 text-white">
+                  <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-info dark:bg-info-active mr-2 text-white">
                     완료
                   </div>
                   {i !== 3 ? (
-                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-success text-white">
+                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-success dark:bg-success-active text-white">
                       지향
                     </div>
                   ) : (
-                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-danger text-white">
+                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-danger dark:bg-danger-active text-white">
                       지양
                     </div>
                   )}
-                  <h3 className="mt-3 font-bold text-gray-800 text-xl truncate">
+                  <h3 className="mt-3 font-bold text-gray-800 dark:text-gray-300 text-xl truncate">
                     마일스톤 {i + 1}
                   </h3>
                 </div>
                 <div className="text-sm text-center text-gray-600">
-                  <span className="text-black text-3xl mr-1">
+                  <span className="text-black dark:text-gray-300 text-3xl mr-1">
                     {i * 30 + 10}
                   </span>
                   일
@@ -54,14 +55,15 @@ const MilestoneUser: FC<Props> = ({ id, blockNumber }) => {
                       target="_blank"
                       rel="noreferrer"
                       href="https://bscscan.com/blocks"
-                      className="text-gray-500 hover:text-blue-500 hover:underline">
+                      className="text-gray-500 hover:text-blue-500 hover:underline"
+                    >
                       {accounting(blockNumber + i * 86400)}
                     </a>
                     <span className="text-sm ml-1">블록</span>
                   </div>
                 </div>
               </div>
-              <p className="mt-3 text-sm leading-snug tracking-wide text-gray-900 truncate-3-lines">
+              <p className="mt-3 text-sm leading-snug tracking-wide text-gray-900 dark:text-dark-300 truncate-3-lines">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. Lorem Ipsum has been the industry`s standard dummy
                 text ever since the 1500s, when an unknown printer took a galley

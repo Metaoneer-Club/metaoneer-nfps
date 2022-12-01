@@ -73,7 +73,8 @@ const Create01: FC<Props> = ({
             <span className="mr-4">메인 이미지 업로드</span>
             <div
               onClick={commingSoonHandler}
-              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2">
+              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2"
+            >
               <AutoSVG
                 className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300 group-hover:text-indigo-600"
                 src="/media/icons/arrow-top.svg"
@@ -94,7 +95,7 @@ const Create01: FC<Props> = ({
           <div className="font-semibold">프로젝트 제목</div>
           <div>
             <input
-              className="form-input mt-1 w-full rounded border border-gray-400 p-2"
+              className="form-input dark:border-dark-300 dark:bg-dark-400 dark:text-gray-300 mt-1 w-full rounded border border-gray-400 p-2"
               type="text"
               value={title}
               onChange={onChangeTitle}
@@ -109,11 +110,13 @@ const Create01: FC<Props> = ({
         <div className="mt-6">
           <div>
             <span className="font-semibold mr-1">펀딩 목표액</span>
-            <span className="text-xs text-gray-600">(단위 : BNB)</span>
+            <span className="text-xs text-gray-600 dark:text-dark-300">
+              (단위 : BNB)
+            </span>
           </div>
           <div>
             <input
-              className="form-input mt-1 w-full rounded border border-gray-400 p-2"
+              className="form-input dark:border-dark-300 dark:bg-dark-400 dark:text-gray-300 mt-1 w-full rounded border border-gray-400 p-2"
               type="number"
               value={price}
               onChange={onChangePrice}
@@ -127,7 +130,7 @@ const Create01: FC<Props> = ({
             <div>
               <div>
                 <span className="font-semibold mr-2">펀딩 시작일</span>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-dark-300">
                   {formatDate(startDate)}
                 </span>
               </div>
@@ -141,7 +144,7 @@ const Create01: FC<Props> = ({
             <div>
               <div>
                 <span className="font-semibold mr-2">펀딩 종료일</span>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-dark-300">
                   {formatDate(endDate)}
                 </span>
               </div>
@@ -174,7 +177,7 @@ const Create01: FC<Props> = ({
                 </div>
               ))
             ) : (
-              <div className="inline-flex text-sm mt-2 rounded-lg border p-3 items-center">
+              <div className="inline-flex text-sm mt-2 rounded-lg border dark:border-dark-300 p-3 items-center">
                 <AutoSVG className="mr-2" src="/media/icons/warning.svg" />
                 <span className="pr-1 ">마일스톤을 추가해 주세요.</span>
               </div>
@@ -182,11 +185,12 @@ const Create01: FC<Props> = ({
           </div>
           <Button
             onClick={() => setIsOpen(true)}
-            className="inline-flex mt-4 group cursor-pointer border shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white">
+            className="inline-flex mt-4 group cursor-pointer border dark:border-dark-300 shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white"
+          >
             <AutoSVG className="w-6 h-6 mr-1" src="/media/icons/plus.svg" />
             <span className="pr-1">마일스톤 추가</span>
           </Button>
-          <div className="mt-4 text-gray-600 text-sm">
+          <div className="mt-4 text-gray-600 dark:text-dark-300 text-sm">
             <p>
               ※ 마일스톤은 달성 목표와 산출물의 발표 기간이 작성돼야 합니다.
             </p>
@@ -203,9 +207,11 @@ const Create01: FC<Props> = ({
             <div>
               <div>
                 <span className="font-semibold mr-2">프로젝트 시작일</span>
-                <span className="text-sm text-gray-600">(펀딩 시작일)</span>
+                <span className="text-sm text-gray-600 dark:text-dark-300">
+                  (펀딩 시작일)
+                </span>
               </div>
-              <div className="mt-2 mb-5 rounded bg-neutral-100 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
+              <div className="mt-2 mb-5 rounded bg-neutral-100 dark:bg-dark-400 dark:border-dark-300 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
                 <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
                 <span>{formatDate(startDate)}</span>
               </div>
@@ -213,11 +219,11 @@ const Create01: FC<Props> = ({
             <div>
               <div>
                 <span className="font-semibold mr-2">프로젝트 종료일</span>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-dark-300">
                   (마지막 마일스톤 마감일)
                 </span>
               </div>
-              <div className="mt-2 mb-5 rounded bg-neutral-100 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
+              <div className="mt-2 mb-5 rounded bg-neutral-100 dark:bg-dark-400 dark:border-dark-300 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
                 <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
                 <span>
                   {formatDate(
@@ -227,7 +233,7 @@ const Create01: FC<Props> = ({
               </div>
             </div>
           </div>
-          <div className="mt-4 text-gray-600 text-sm">
+          <div className="mt-4 text-gray-600 dark:text-dark-300 text-sm">
             <p>
               ※ 프로젝트는 펀딩 시작일부터 마일스톤 마감일까지의 기준입니다.
             </p>
@@ -249,13 +255,15 @@ const Create01: FC<Props> = ({
         <Button
           className="rounded py-4 text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
           onClick={commingSoonHandler}
-          disabled={!wallet.address}>
+          disabled={!wallet.address}
+        >
           <span>임시 저장</span>
         </Button>
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
           onClick={continueHandler}
-          disabled={!wallet.address}>
+          disabled={!wallet.address}
+        >
           <span>다음 챕터로</span>
         </Button>
       </div>

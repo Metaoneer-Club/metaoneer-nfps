@@ -21,17 +21,17 @@ const MilestoneUserModal: FC<Props> = ({ id, close }) => {
 
   return (
     <>
-      <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
+      <div className="py-12 bg-gray-700/50 dark:bg-black/60 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
         <div className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
-          <div className="relative py-4 px-1 md:px-3 bg-white shadow-md rounded border border-gray-400">
+          <div className="relative py-4 px-1 md:px-3 bg-white dark:bg-dark shadow-md rounded border border-gray-400 dark:border-dark-300">
             <div className="custom-scroll py-4 px-4 md:px-7 max-h-[360px] overflow-auto">
-              <div className="w-full flex items-center text-gray-600 mb-3">
-                <Badge className="bg-info mr-2">진행중</Badge>
-                <h1 className="text-gray-800 text-lg font-bold">
+              <div className="w-full flex items-center text-gray-600 dark:text-gray-300 mb-3">
+                <Badge className="bg-info-active mr-2">진행중</Badge>
+                <h1 className="text-gray-800 dark:text-gray-300 text-lg font-bold">
                   {dummyData.title} {id}
                 </h1>
               </div>
-              <div className="mt-6 text-gray-800 font-medium">
+              <div className="mt-6 text-gray-800 dark:text-gray-300 font-medium">
                 산출물 리스트
               </div>
               <div className="mt-3">
@@ -46,7 +46,7 @@ const MilestoneUserModal: FC<Props> = ({ id, close }) => {
                 ))}
               </div>
               <div className="mt-2 w-full h-10 flex items-center">
-                <span className="text-gray-800 text-sm font-medium mr-20">
+                <span className="text-gray-800 dark:text-gray-300 text-sm font-medium mr-20">
                   중도금
                 </span>
                 <div>
@@ -56,7 +56,7 @@ const MilestoneUserModal: FC<Props> = ({ id, close }) => {
                   <span className="text-sm">BNB</span>
                 </div>
               </div>
-              <div className="text-gray-800">
+              <div className="text-gray-800 dark:text-gray-300">
                 <div className="flex items-center">
                   <span className="text-sm font-medium mr-5">
                     마일스톤 시작일

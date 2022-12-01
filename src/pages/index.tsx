@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-zinc-50 dark:bg-dark-600">
       <Carousel />
       <div className="max-w-[1200px] mx-auto pt-28 ">
         <div className="flex items-center">

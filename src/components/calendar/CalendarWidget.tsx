@@ -22,7 +22,8 @@ const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
       <div className={clsx("relative mt-2", !isOpen && "mb-5")}>
         <div
           className="absolute right-0 text-gray-600 flex items-center pr-3 h-full cursor-pointer "
-          onClick={() => setIsOpen(!isOpen)}>
+          onClick={() => setIsOpen(!isOpen)}
+        >
           <AutoSVG
             className={
               isOpen
@@ -42,7 +43,7 @@ const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
       </div>
       {isOpen && (
         <Calendar
-          className="-mt-3 bg-white rounded w-full p-4 border border-gray-400"
+          className="-mt-3 bg-white dark:bg-dark rounded w-full p-4 border border-gray-400"
           onChange={(e: any) => {
             setDate(e);
             setIsOpen(false);

@@ -107,11 +107,11 @@ const Create: NextPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
         <div className="grid grid-cols-7 content-center font-manrope">
-          <div className="rounded-xl col-start-2 col-span-5 border shadow bg-white">
-            <div className="grid grid-cols-8 gx-4 break-words font-bold border-b p-8">
+          <div className="rounded-xl col-start-2 col-span-5 border shadow bg-white dark:bg-dark dark:border-dark-300">
+            <div className="grid grid-cols-8 gx-4 break-words font-bold border-b dark:border-dark-300 p-8">
               <div className="col-span-2 items-center justify-center">
                 <div
                   className={clsx(
@@ -119,7 +119,8 @@ const Create: NextPage = () => {
                     isTap === 0
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}>
+                  )}
+                >
                   1
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -136,7 +137,8 @@ const Create: NextPage = () => {
                     isTap === 1
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}>
+                  )}
+                >
                   2
                 </div>
                 <div className="mt-2 text-center text-sm py-2">
@@ -153,7 +155,8 @@ const Create: NextPage = () => {
                     isTap === 2
                       ? "bg-indigo-700 border-indigo-700"
                       : "bg-indigo-400 border-indigo-400"
-                  )}>
+                  )}
+                >
                   3
                 </div>
                 <div className="mt-2 text-center text-sm">

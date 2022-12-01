@@ -13,6 +13,13 @@ module.exports = {
       },
       colors: {
         dark: "#1e1e2d",
+        "dark-100": "#9899ac",
+        "dark-300": "#6d6d80",
+        "dark-200": "#565674",
+        "dark-400": "#2b2b40",
+        "dark-500": "#1E1E2C",
+        "dark-600": "#151521",
+        "dark-700": "#1b1b28",
         primary: "#009ef7",
         "primary-active": "#0095e8",
         "primary-light": "#f1faff",

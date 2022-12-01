@@ -18,10 +18,10 @@ const Funding: NextPage = () => {
   const setToastContent = useSetRecoilState(toastContentState);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-10 pb-40">
-        <div className="flex items-center rounded border border-gray-200 bg-white">
-          <div className="flex items-center bg-dark text-white rounded-l p-6">
+        <div className="flex items-center rounded border border-gray-200 dark:border-dark-300 bg-white dark:bg-dark">
+          <div className="flex items-center bg-dark dark:bg-dark-600 text-white rounded-l p-6">
             <AutoSVG className="w-6 h-6 mr-2" src="/media/icons/filter.svg" />
             <span className="pr-1">필터</span>
           </div>
@@ -30,7 +30,8 @@ const Funding: NextPage = () => {
             <select
               onChange={(e: any) => setStatusFilter(e.target.value)}
               value={statusFilter}
-              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32">
+              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32"
+            >
               <option value={0}>펀딩 비율</option>
               <option value={1}>펀딩 비용</option>
               <option value={2}>펀딩 생성</option>
@@ -41,7 +42,8 @@ const Funding: NextPage = () => {
             <select
               onChange={(e: any) => setDetailFilter(e.target.value)}
               value={detailFilter}
-              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2">
+              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2"
+            >
               {filterItems[statusFilter].option.map((opt, i) => (
                 <option key={opt} value={i}>
                   {opt}
@@ -69,14 +71,15 @@ const Funding: NextPage = () => {
           </div>
           <div className="grid justify-items-stretch pt-12">
             <Button
-              className="border shadow bg-white w-2/5 p-4 justify-self-center hover:bg-dark hover:text-white"
+              className="border shadow bg-white dark:bg-dark w-2/5 p-4 justify-self-center hover:bg-dark hover:text-white"
               onClick={() => {
                 setToastContent({
                   content: "Comming Soon!",
                   type: "primary",
                 });
                 setIsToast(true);
-              }}>
+              }}
+            >
               Read More
             </Button>
           </div>
