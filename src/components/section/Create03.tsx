@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 /* Component */
 import { Button } from "components/asset/button";
 import { AutoSVG, shortAddress } from "utils";
+import { NFT_CONTRACT_ADDRESS } from "../blockchain";
 
 interface Props {
   currentKey: string;
@@ -15,24 +16,24 @@ const Create03: FC<Props> = ({ currentKey }) => {
   return (
     <div>
       <div className="mt-8 px-8 text-center">
-        <div className="font-bold text-2xl">The Product has been created!</div>
+        <div className="font-bold text-2xl">
+          프로젝트가 성공적으로 생성되었습니다!
+        </div>
         <div className="p-4">
           <AutoSVG
-            src="/media/icons/verified.svg"
+            src="/media/icons/check.svg"
             className="w-16 h-16 mt-3 text-indigo-600 mx-auto"
           />
 
           <div className="mt-6 text-gray-600">
-            <span>Check your product{"'"}s NFT in</span>
             <strong
               onClick={() => router.push("/my")}
               className="mx-1 text-indigo-600 cursor-pointer underline"
             >
-              My Product
+              내 프로젝트
             </strong>
-            <div>
-              or Press the button below to return to <strong>Home</strong>
-            </div>
+            <span>에서 당신의 프로젝트를 확인해 보세요.</span>
+            <div>혹은 펀딩 탭을 눌러 내 프로젝트를 조회해 보세요.</div>
           </div>
           <div className="mt-6 w-96 mx-auto border border-gray-400 rounded-lg text-sm">
             <div className="flex border-b border-gray-400 items-center">
@@ -43,18 +44,18 @@ const Create03: FC<Props> = ({ currentKey }) => {
             </div>
             <div className="flex items-center">
               <div className="w-1/2 p-4 border-r border-gray-400">
-                NFT Contract Address
+                펀딩 NFT 계약 주소
               </div>
               <div className="w-1/2 p-4">
                 <span
                   onClick={() =>
                     window.open(
-                      "https://testnet.bscscan.com/address/0x690245a527dFf32Dc850A79E801F6D221eDb1A1F"
+                      `https://testnet.bscscan.com/address/${NFT_CONTRACT_ADDRESS}`
                     )
                   }
                   className="cursor-pointer underline hover:text-indigo-600"
                 >
-                  {shortAddress("0x690245a527dFf32Dc850A79E801F6D221eDb1A1F")}
+                  {shortAddress(NFT_CONTRACT_ADDRESS)}
                 </span>
               </div>
             </div>
@@ -64,10 +65,10 @@ const Create03: FC<Props> = ({ currentKey }) => {
 
       <div className="p-8">
         <Button
-          className="w-full rounded bg-indigo-700 hover:bg-indigo-900 py-4 text-center font-bold text-white"
+          className="w-full rounded bg-indigo-700 hover:bg-indigo-600 py-4 text-center font-bold text-white"
           onClick={() => router.push("/")}
         >
-          DONE
+          완료
         </Button>
       </div>
     </div>

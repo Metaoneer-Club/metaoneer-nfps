@@ -1,4 +1,4 @@
-import React, { FC, Dispatch, SetStateAction } from "react";
+import React, { FC, Dispatch, SetStateAction, useState } from "react";
 import { v1 } from "uuid";
 
 /* Component */
@@ -12,10 +12,12 @@ import { isToastState, toastContentState } from "stores";
 
 interface Props {
   id: string | string[] | undefined;
+  isOwner: boolean;
   close: Dispatch<SetStateAction<boolean>>;
 }
 
-const MilestoneUserModal: FC<Props> = ({ id, close }) => {
+const MilestoneUserModal: FC<Props> = ({ id, isOwner, close }) => {
+  const [isCheck, setIsCheck] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -37,10 +39,17 @@ const MilestoneUserModal: FC<Props> = ({ id, close }) => {
               <div className="mt-3">
                 {dummyData.content.map((v: any) => (
                   <div key={v1()} className="flex items-center mt-1.5">
-                    <AutoSVG
-                      src="/media/icons/verified.svg"
-                      className="text-primary-active mr-2"
-                    />
+                    {isOwner ? (
+                      <input
+                        type="checkbox"
+                        onClick={() => setIsCheck(!isCheck)}
+                      />
+                    ) : (
+                      <AutoSVG
+                        src="/media/icons/check.svg"
+                        className="text-primary-active mr-2"
+                      />
+                    )}
                     <span>{v}</span>
                   </div>
                 ))}

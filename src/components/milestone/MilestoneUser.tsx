@@ -1,19 +1,26 @@
 import React, { FC, useState } from "react";
 import { v1 } from "uuid";
-import { accounting } from "~/utils";
-import { MilestoneUserModal } from "../modal/MilestoneUserModal";
+
+/* Component */
+import { MilestoneUserModal } from "components/modal/MilestoneUserModal";
+import { accounting } from "utils";
 
 interface Props {
   id: string | string[] | undefined;
   blockNumber: number;
+  isOwner: boolean;
 }
 
-const MilestoneUser: FC<Props> = ({ id, blockNumber }) => {
+const MilestoneUser: FC<Props> = ({ id, blockNumber, isOwner }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <>
-      {isOpen ? <MilestoneUserModal id={id} close={setIsOpen} /> : ""}
+      {isOpen ? (
+        <MilestoneUserModal id={id} isOwner={isOwner} close={setIsOpen} />
+      ) : (
+        ""
+      )}
       <div className="relative">
         <div className="left-3 absolute border-opacity-20 border-indigo-400 h-full border-4" />
         {[...Array(4)].map((v, i) => (

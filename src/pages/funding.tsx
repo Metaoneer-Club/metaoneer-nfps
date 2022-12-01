@@ -56,10 +56,10 @@ const Funding: NextPage = () => {
           <div className="grid grid-cols-4 gap-6 mt-8">
             {[...Array(20)].map((v, i) => (
               <ProductCard
-                key={i}
-                keyID={i}
+                key={i + 1}
+                keyID={i + 1}
                 category="NFT"
-                title={`제목 예제 ${i}`}
+                title={`제목 예제 ${i + 1}`}
                 content="BNB 스마트 체인(BSC)은 가장 인기 있는 프로그래밍 언어, 유연한 도구를 지원하며 명확하고 표준적인 문서를 제공한다. 실제 사용을 염두에 두고 설계된 블록체인에서 애플리케이션을 빠르게 시작하고 배포할 수 있습니다."
                 imgURI="/temp.png"
                 creator="0x12A60872B053C009452cdb95178144c8fFbDeA4D"

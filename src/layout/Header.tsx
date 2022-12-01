@@ -99,7 +99,7 @@ const Header: FC<Props> = ({ active }) => {
     <>
       <div className="bg-white dark:bg-dark-500 border-b dark:border-dark-600">
         <div className="flex max-w-[1200px] px-6 py-3 mx-auto items-center justify-end">
-          <p className="text-white font-bold mr-4">
+          <p className="text-white font-bold text-sm mr-8">
             다크모드는 현재 미완성입니다.
           </p>
           <button
@@ -111,9 +111,11 @@ const Header: FC<Props> = ({ active }) => {
             <span className="flex items-center">
               <AutoSVG
                 className="w-4 h-4 mr-2"
-                src={`/media/icons/theme-${theme}.svg`}
+                src={`/media/icons/theme-${
+                  theme === "dark" ? "light" : "dark"
+                }.svg`}
               />
-              {theme === "light" ? "Light" : "Dark"}
+              {theme === "light" ? "다크 모드 켜기" : "라이트 모드 켜기"}
             </span>
           </button>
         </div>
@@ -159,8 +161,9 @@ const Header: FC<Props> = ({ active }) => {
               <div className="flex mr-4 items-center">
                 <Button
                   className={clsx(
-                    "group flex items-center text-sm border shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white",
-                    router.asPath === "/create" && "bg-gray-800 text-white"
+                    "group flex items-center text-sm border dark:border-dark-300 shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white",
+                    router.asPath === "/create" &&
+                      "bg-gray-800 dark:bg-dark-600 text-white"
                   )}
                   onClick={moveCreateHandler}
                 >
@@ -177,8 +180,9 @@ const Header: FC<Props> = ({ active }) => {
               <div className="relative">
                 <Button
                   className={clsx(
-                    "flex items-center w-40 text-sm border shadow rounded-2xl py-3.5 group disabled:bg-gray-400 disabled:text-white hover:bg-dark dark:hover:bg-dark-600 hover:text-white",
-                    router.asPath === "/my" && "bg-gray-800 text-white"
+                    "flex items-center w-40 text-sm border dark:border-dark-300 shadow rounded-2xl py-3.5 group disabled:bg-gray-400 disabled:text-white hover:bg-dark dark:hover:bg-dark-600 hover:text-white",
+                    router.asPath === "/my" &&
+                      "bg-gray-800 dark:bg-dark-600 text-white"
                   )}
                   onClick={() => {
                     Boolean(!wallet.address)

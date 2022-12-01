@@ -350,13 +350,13 @@ const abi: any = [
   },
 ];
 
-let paymentContract: any, CONTRACT_ADDRESS: CA;
+let paymentContract: any, PAYMENT_CONTRACT_ADDRESS: CA;
 if (typeof window !== "undefined") {
-  CONTRACT_ADDRESS =
+  PAYMENT_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"
       ? "0xB535450F3Ca1a711931594Dcfca075B918D996AC"
       : "0xB535450F3Ca1a711931594Dcfca075B918D996AC";
-  paymentContract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
+  paymentContract = new web3.eth.Contract(abi, PAYMENT_CONTRACT_ADDRESS);
 }
 
-export { paymentContract, CONTRACT_ADDRESS };
+export { paymentContract, PAYMENT_CONTRACT_ADDRESS };

@@ -6,7 +6,7 @@ import clsx from "clsx";
 import useInput from "hooks/useInput";
 
 /* Component */
-import { paymentContract } from "components/blockchain";
+import { fundContract, nftContract } from "components/blockchain";
 import { Create01, Create02, Create03 } from "components/section";
 import { hexBalance } from "utils";
 
@@ -72,16 +72,22 @@ const Create: NextPage = () => {
 
     setIsLoading(true);
     try {
-      await paymentContract.methods
-        .prepareKeyRegister(title, hexBalance(price))
+      await fundContract.methods
+        .FundRegister(hexBalance(price), [
+          [123, 345, 2, [0, 0, []], [wallet.address, 0, 0, 0]],
+          [567, 678, 4, [0, 0, []], [wallet.address, 0, 0, 0]],
+        ])
         .send({
           from: wallet.address,
           gas: 10000000,
         });
-      const lastKey = await paymentContract.methods
-        .lastKey(wallet.address)
+      const balanceOf = await nftContract.methods
+        .balanceOf(wallet.address)
         .call();
-      setCurrentKey(lastKey);
+      const lastToken = await nftContract.methods
+        .tokenOfOwnerByIndex(wallet.address, Number(balanceOf - 1))
+        .call();
+      setCurrentKey(lastToken);
 
       setToastContent({
         content: "프로젝트가 성공적으로 등록되었습니다.",
@@ -89,6 +95,7 @@ const Create: NextPage = () => {
       });
       setIsToast(true);
     } catch (err) {
+      console.log(err);
       setToastContent({
         content: "가스비가 부족하거나 네트워크 이슈가 있습니다.",
         type: "danger",

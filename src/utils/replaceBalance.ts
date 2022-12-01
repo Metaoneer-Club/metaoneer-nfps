@@ -1,6 +1,6 @@
 import { web3 } from "components/blockchain";
 
-export const replaceBalance = (balance: number) => {
+export const replaceBalance = (balance: number | string) => {
   return Number(web3.utils.fromWei(String(balance), "ether"));
 };
 

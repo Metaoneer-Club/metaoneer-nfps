@@ -22,13 +22,12 @@ const InputWidget: FC<Props> = ({ keyID, index }) => {
     onChangeInputValue(e);
     setMilestoneContent(
       milestoneContent.set(index, {
+        ...milestoneContent,
         keyID: keyID,
         content: e.target.value,
       })
     );
   };
-
-  console.log(milestoneContent);
 
   return (
     <input

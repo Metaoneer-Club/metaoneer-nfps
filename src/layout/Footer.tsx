@@ -14,7 +14,7 @@ interface ALink {
 
 const Footer: FC = () => {
   return (
-    <div className="bg-zinc-800 text-neutral-300">
+    <div className="bg-zinc-800 dark:bg-dark-700 text-neutral-300">
       <footer className="max-w-[1200px] mx-auto py-10">
         <nav className="grid grid-cols-5 items-start text-sm">
           <ul>

@@ -38,7 +38,7 @@ const ProductCard: FC<Product> = ({
           Number.isInteger(keyID) && router.push(`/funding/${keyID}`)
         }
       >
-        <Card className="border dark:border-dark-300 rounded-lg min-h-96 bg-white dark:bg-dark-500 dark:text-gray-300 group-hover:shadow-lg">
+        <Card className="border dark:border-dark rounded-lg min-h-96 bg-white dark:bg-dark-500 dark:text-gray-300 group-hover:shadow-lg">
           <div className="relative h-56 rounded-t-lg overflow-hidden">
             <AutoImage
               src={imgURI}

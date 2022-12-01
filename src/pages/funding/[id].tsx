@@ -1,37 +1,120 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
+
+/* Hook */
+import useInput from "hooks/useInput";
 
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
 import { FundingModal } from "components/modal/FundingModal";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
-import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
+import {
+  accounting,
+  AutoImage,
+  AutoSVG,
+  hexBalance,
+  shortAddress,
+} from "utils";
 
 /* State */
-import { useSetRecoilState } from "recoil";
-import { isToastState, toastContentState } from "stores";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isToastState, toastContentState, walletState } from "stores";
 import { FundingTable } from "~/components/table/FundingTable";
+import { fundContract } from "~/components/blockchain";
 
 const Product = () => {
   const router = useRouter();
+  const wallet = useRecoilValue(walletState);
+  const [project, setProject] = useState({
+    limitprice: 0,
+    totalFundamount: 0,
+    funder: [],
+    fundermoney: [],
+  });
   const [tabIndex, setTabIndex] = useState<number>(0);
+  const [amount, setAmount, onChangeAmount] = useInput<number>(0);
   const [blockNumber, setBlockNumber] = useState<number>(864000);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isVote, setIsVote] = useState<boolean>(false);
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
+  useEffect(() => {
+    const projectData = async () => {
+      const funder = await fundContract.methods
+        .funderView(router.query.id)
+        .call();
+      console.log(funder);
+      // setProject({
+      //   ...project,
+      //   limitprice: fund.limitprice,
+      //   totalFundamount: fund.targetFundamount,
+      // });
+    };
+    projectData();
+  }, [project, router.query.id]);
+
   setTimeout(() => {
     blockNumber > 0 && setBlockNumber(blockNumber - 1);
   }, 3000);
 
+  const fundingHandler = async (id: string) => {
+    if (amount === 0) {
+      setToastContent({
+        content: "펀딩 금액을 입력해 주세요.",
+        type: "primary",
+      });
+      setIsToast(true);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await fundContract.methods.funding(id, hexBalance(amount)).send({
+        from: wallet.address,
+        gas: 10000000,
+      });
+    } catch {
+      setToastContent({
+        content: "에러! 펀딩이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      setIsLoading(false);
+      return;
+    }
+
+    setToastContent({
+      content: "펀딩이 완료되었습니다.",
+      type: "success",
+    });
+    setIsToast(true);
+    setIsLoading(false);
+    setIsOpen(false);
+    setAmount(0);
+    return true;
+  };
+
+  const closeHandler = () => {
+    setIsOpen(false);
+    setAmount(0);
+  };
+
   return (
     <>
       {isOpen && (
-        <FundingModal id={router.query.id} close={() => setIsOpen(false)} />
+        <FundingModal
+          isLoading={isLoading}
+          id={router.query.id}
+          amount={amount}
+          onChangeAmount={onChangeAmount}
+          onFunding={fundingHandler}
+          close={closeHandler}
+        />
       )}
       <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
         <div className="max-w-[1200px] mx-auto pt-16 pb-40">
@@ -53,7 +136,7 @@ const Product = () => {
               <button
                 type="button"
                 className="text-sm mx-2 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
-                onClick={() => setIsOwner(!isVote)}
+                onClick={() => setIsOwner(!isOwner)}
               >
                 임시 버튼 (오너)
               </button>
@@ -98,7 +181,9 @@ const Product = () => {
                     펀딩 금액
                   </label>
                   <p className="mt-2">
-                    <span className="text-3xl mr-1">{accounting(1802)}</span>
+                    <span className="text-3xl mr-1">
+                      {accounting(project.totalFundamount) || 0}
+                    </span>
                     <span className="text-gray-600 dark:text-gray-400">
                       BNB
                     </span>
@@ -185,7 +270,7 @@ const Product = () => {
                       <label className="text-gray-600 dark:text-gray-400">
                         펀딩 종료까지
                       </label>
-                      <p className="text-gray-dark:text-gray-400 mt-1">
+                      <div className="text-gray-dark:text-gray-400 mt-1">
                         <span className="text-black dark:text-gray-300 text-3xl mr-1">
                           30
                         </span>
@@ -203,21 +288,24 @@ const Product = () => {
                             블록
                           </span>
                         </div>
-                      </p>
+                      </div>
                     </div>
                     <div className="mt-8">
                       <label className="text-gray-600 dark:text-gray-400">
                         펀딩 달성률
                       </label>
                       <p className="mt-3">
-                        <span className="text-blue-600 text-3xl mr-1">90</span>%
+                        <span className="text-blue-600 text-3xl mr-1">
+                          {project.totalFundamount / project.limitprice || 0}
+                        </span>
+                        %
                       </p>
                       <div className="mt-3 flex items-center">
                         <div className="w-full h-3 mb-1 bg-blue-200 rounded-sm">
                           <div
                             style={{
-                              // width: progress >= 100 ? "100%" : `${progress}%`,
-                              width: "90%",
+                              // width: project.limitprice ? project.totalFundamount/ project.limitprice
+                              width: "50%",
                             }}
                             className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
                           />
@@ -248,7 +336,10 @@ const Product = () => {
                     <p className="mt-1">펀딩 기간</p>
                   </div>
                   <div className="col-span-3 text-left text-gray-dark:text-gray-400 text-sm">
-                    <p>{accounting(2000)} BNB</p>
+                    <p>
+                      {project.limitprice ? accounting(project.limitprice) : 0}{" "}
+                      BNB
+                    </p>
                     <p className="mt-1">펀딩 진행중</p>
                     <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
                   </div>
@@ -340,6 +431,7 @@ const Product = () => {
                   <MilestoneUser
                     id={router.query.id}
                     blockNumber={blockNumber}
+                    isOwner={isOwner}
                   />
                 ) : (
                   ""

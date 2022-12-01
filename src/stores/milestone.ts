@@ -6,7 +6,8 @@ export interface IMilestone {
   title: string;
   content: any;
   price: number;
-  expired: Date;
+  startDate: number;
+  expired: number;
 }
 export interface IMilestoneUser {
   keyID: string;

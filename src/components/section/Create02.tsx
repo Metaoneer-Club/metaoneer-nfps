@@ -14,8 +14,8 @@ import { Wallet } from "components/blockchain";
 import { ProductCard } from "components/card/ProductCard";
 import { MainCard } from "components/card/MainCard";
 import { FormWallet } from "components/wallet/FormWallet";
+import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { accounting, AutoImage, AutoSVG, shortAddress } from "utils";
-import { MilestoneUser } from "../milestone/MilestoneUser";
 
 interface Props {
   wallet: Wallet;
@@ -54,13 +54,15 @@ const Create02: FC<Props> = ({
             )}
             onClick={() => {
               openHandler(0);
-            }}>
+            }}
+          >
             <span>홈 화면 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 0 && "rotate-0"
-              )}>
+              )}
+            >
               <AutoSVG src="/media/icons/dropdown.svg" className="w-6 h-6" />
             </div>
           </div>
@@ -69,7 +71,8 @@ const Create02: FC<Props> = ({
               className={clsx(
                 "my-2 w-4/5 mx-auto h-56 animate__animated animate__fast",
                 isOpen === 0 ? "animate__fadeIn" : "animate__fadeOut"
-              )}>
+              )}
+            >
               <MainCard
                 title={dummy.title}
                 content={dummy.content}
@@ -93,13 +96,15 @@ const Create02: FC<Props> = ({
                 ? "rounded bg-dark text-white"
                 : "hover:bg-gray-700 hover:text-white"
             )}
-            onClick={() => openHandler(1)}>
+            onClick={() => openHandler(1)}
+          >
             <span>펀딩 목록 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 1 && "rotate-0"
-              )}>
+              )}
+            >
               <AutoSVG src="/media/icons/dropdown.svg" className="w-6 h-6" />
             </div>
           </div>
@@ -109,7 +114,8 @@ const Create02: FC<Props> = ({
               className={clsx(
                 "w-72 mx-auto group cursor-pointer my-4 animate__animated animate__fast",
                 isOpen === 1 ? "animate__fadeIn" : "animate__fadeOut"
-              )}>
+              )}
+            >
               <ProductCard
                 category="NFT"
                 title={dummy.title}
@@ -133,13 +139,15 @@ const Create02: FC<Props> = ({
                 ? "rounded bg-dark text-white"
                 : "hover:bg-gray-700 hover:text-white"
             )}
-            onClick={() => openHandler(2)}>
+            onClick={() => openHandler(2)}
+          >
             <span>펀딩 세부정보 화면 데모</span>
             <div
               className={clsx(
                 "transition-transform rotate-90 duration-300",
                 isOpen === 2 && "rotate-0"
-              )}>
+              )}
+            >
               <AutoSVG src="/media/icons/dropdown.svg" className="w-6 h-6" />
             </div>
           </div>
@@ -148,7 +156,8 @@ const Create02: FC<Props> = ({
               className={clsx(
                 "my-4 animate__animated animate__fast",
                 isOpen === 2 ? "animate__fadeIn" : "animate__fadeOut"
-              )}>
+              )}
+            >
               <div className="flex justify-between items-center">
                 <div className="text-lg text-center font-bold flex items-center">
                   <span className="px-4 py-2 text-xs border rounded-lg bg-primary-active text-white mr-4">
@@ -185,19 +194,20 @@ const Create02: FC<Props> = ({
                     </div>
                     <div className="mt-2">
                       <label className="text-gray-600">펀딩 종료까지</label>
-                      <p className="text-gray-600 mt-1">
+                      <div className="text-gray-600 mt-1">
                         <span className="text-black text-xl mr-1">30</span>일
                         <div className="mt-2">
                           <a
                             target="_blank"
                             rel="noreferrer"
                             href="https://bscscan.com/blocks"
-                            className="text-gray-500 hover:text-blue-500 hover:underline">
+                            className="text-gray-500 hover:text-blue-500 hover:underline"
+                          >
                             {accounting(86400)}
                           </a>
                           <span className="text-xs ml-1">블록</span>
                         </div>
-                      </p>
+                      </div>
                     </div>
                     <div className="mt-2">
                       <label className="text-gray-600">펀딩 달성률</label>
@@ -233,7 +243,8 @@ const Create02: FC<Props> = ({
                   <div className="px-8 p-4 mt-auto w-full">
                     <Button
                       className="bg-blue-600 text-white w-full text-sm hover:bg-blue-700"
-                      onClick={() => {}}>
+                      onClick={() => {}}
+                    >
                       <span>펀딩하기</span>
                     </Button>
                   </div>
@@ -250,7 +261,8 @@ const Create02: FC<Props> = ({
                         "text-gray-600 text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                         tabIndex === 0 &&
                           "font-medium border-b-2 border-blue-500"
-                      )}>
+                      )}
+                    >
                       프로젝트 소개
                     </button>
                     <button
@@ -260,7 +272,8 @@ const Create02: FC<Props> = ({
                         "text-gray-600 text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                         tabIndex === 1 &&
                           "font-medium border-b-2 border-blue-500"
-                      )}>
+                      )}
+                    >
                       마일스톤
                     </button>
                   </nav>
@@ -335,17 +348,19 @@ const Create02: FC<Props> = ({
         <Button
           className="rounded py-4 text-center font-bold text-white disabled:bg-rose-400 bg-danger hover:bg-danger-active"
           onClick={() => setIsTap(0)}
-          disabled={isLoading}>
+          disabled={isLoading}
+        >
           <span>이전 챕터로</span>
         </Button>
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white disabled:bg-indigo-400 bg-indigo-700 hover:bg-indigo-900"
           onClick={registerHandler}
-          disabled={isLoading}>
+          disabled={isLoading}
+        >
           {isLoading ? (
             <span className="flex items-center justify-center">
-              Please Wait...
-              <div className="animate-spin ml-2">
+              <span className="mr-2">프로젝트 생성중...</span>
+              <div className="animate-spin">
                 <AutoSVG src="/media/icons/spinner.svg" className="w-6 h-6" />
               </div>
             </span>

@@ -33,13 +33,14 @@ const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
             src="/media/icons/calendar.svg"
           />
         </div>
-        <input
+        <div
           className={clsx(
-            "text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 border",
+            "text-gray-600 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 border",
             isOpen ? " rounded-t" : "rounded"
           )}
-          placeholder={formatDate(date)}
-        />
+        >
+          <span>{formatDate(date)}</span>
+        </div>
       </div>
       {isOpen && (
         <Calendar

@@ -20,13 +20,9 @@ const MainCard: FC<Product> = ({
 }) => {
   const router = useRouter();
   return (
-    <div className="group flex bg-dark text-center text-white h-56 border rounded-2xl">
+    <div className="group flex bg-dark text-center text-white h-56 border dark:border-dark-500 rounded-2xl overflow-hidden">
       <div className="relative w-1/2 h-full">
-        <AutoImage
-          src={imgURI}
-          alt={title}
-          className="rounded-l-xl object-cover"
-        />
+        <AutoImage src={imgURI} alt={title} className="object-cover" />
       </div>
       <div className="w-1/2 p-6">
         <h2 className="font-bold text-base">{title}</h2>
@@ -53,7 +49,7 @@ const MainCard: FC<Product> = ({
           </div>
         </div>
         <Button
-          className="mt-3 w-full border text-sm group-hover:border-danger group-hover:text-danger"
+          className="mt-3 w-full border dark:border-dark-300 text-sm group-hover:border-danger group-hover:text-danger"
           onClick={() =>
             Number.isInteger(keyID) && router.push(`/funding/${keyID}`)
           }

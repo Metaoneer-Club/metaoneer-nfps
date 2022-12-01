@@ -14,14 +14,14 @@ const Dropdown: FC<Props> = ({ close, onLogOut }) => {
   return (
     <>
       <div onClick={close} className="fixed inset-0 h-full w-full z-10"></div>
-      <div className="absolute right-0 mt-2 w-44 text-sm border bg-white rounded-md shadow-xl z-20">
+      <div className="absolute right-0 mt-2 w-44 text-sm border bg-white dark:bg-dark-400 dark:border-dark-300 rounded-md shadow-xl z-20">
         <button
           type="button"
           onClick={(e: any) => {
             router.push("/my");
             close(e);
           }}
-          className="w-full px-4 py-3 text-gray-700  rounded-t hover:bg-primary-light hover:text-primary"
+          className="w-full px-4 py-3 text-gray-700 dark:text-gray-300 rounded-t hover:bg-primary-light dark:hover:bg-gray-300 hover:text-primary dark:hover:text-dark"
         >
           <span className="flex items-center justify-center">
             <AutoSVG src="/media/icons/star.svg" className="w-5 h-5 mr-2" />
@@ -31,7 +31,7 @@ const Dropdown: FC<Props> = ({ close, onLogOut }) => {
         <button
           type="button"
           onClick={onLogOut}
-          className="w-full px-4 py-3 text-gray-700 rounded-b hover:bg-danger-light hover:text-danger"
+          className="w-full px-4 py-3 text-gray-700 dark:text-gray-300 rounded-b hover:bg-danger-light dark:hover:bg-gray-300 hover:text-danger dark:hover:text-dark"
         >
           <span className="flex items-center justify-center">
             <AutoSVG src="/media/icons/close.svg" className="w-5 h-5 mr-2" />

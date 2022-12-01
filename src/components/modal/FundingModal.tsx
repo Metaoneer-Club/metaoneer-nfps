@@ -1,8 +1,9 @@
-import React, { FC, Dispatch, SetStateAction } from "react";
-import { v1 } from "uuid";
-
-/* Hook */
-import useInput from "hooks/useInput";
+import React, {
+  FC,
+  ChangeEventHandler,
+  MouseEventHandler,
+  useState,
+} from "react";
 
 /* Component */
 import { Button } from "components/asset/button";
@@ -10,14 +11,26 @@ import { Button } from "components/asset/button";
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
+import { AutoSVG } from "~/utils";
 
 interface Props {
   id: string | string[] | undefined;
-  close: Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
+  amount: number;
+  onChangeAmount: ChangeEventHandler<HTMLInputElement>;
+  onFunding: any;
+  close: MouseEventHandler<HTMLButtonElement>;
 }
 
-const FundingModal: FC<Props> = ({ id, close }) => {
-  const [amount, setAmount, onChangeAmount] = useInput<string>("");
+const FundingModal: FC<Props> = ({
+  id,
+  isLoading,
+  amount,
+  onChangeAmount,
+  onFunding,
+  close,
+}) => {
+  const [isCheck, setIsCheck] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -33,12 +46,12 @@ const FundingModal: FC<Props> = ({ id, close }) => {
                 </div>
 
                 <div className="mt-3 mb-5 text-left text-sm px-4 py-2 border border-gray-400 rounded">
-                  <p className="mt-1 leading-relaxed">
+                  <p className="mt-1 leading-loose">
                     NPFS는 중앙화된 중개인이 없는 블록체인 탈중앙 플랫폼으로
                     사용자는 스스로의 책임과 판단으로 다른 사용자들이 생성한
                     블록체인 상의 스마트 계약을 통해 펀딩에 참여하게 됩니다.
                   </p>
-                  <p className="mt-1 leading-relaxed">
+                  <p className="mt-1 leading-loose">
                     NPFS 웹사이트에서 확인되는 모든 프로젝트는 개별 심사를
                     거치지 않고 사용자가 자율 등록한 프로젝트로 Metaoneer 팀에서
                     안전성을 보증하지 않습니다.
@@ -66,8 +79,7 @@ const FundingModal: FC<Props> = ({ id, close }) => {
                 <div className="mb-5 px-2 text-gray-700 flex items-center pl-3 text-sm border-gray-400 rounded border">
                   <input
                     type="checkbox"
-                    value={amount}
-                    onChange={onChangeAmount}
+                    onClick={() => setIsCheck(!isCheck)}
                     className="w-6 h-6"
                   />
                   <p className="ml-1 p-2">
@@ -80,17 +92,28 @@ const FundingModal: FC<Props> = ({ id, close }) => {
               <div className="mt-6 flex justify-center text-sm">
                 <Button
                   className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
-                  onClick={() => close(false)}
+                  onClick={close}
                 >
                   <span>취소</span>
                 </Button>
                 <Button
-                  className="w-28 rounded text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
-                  onClick={() => {
-                    alert("Tx보내면서 돈 보내기");
-                  }}
+                  className="w-40 rounded text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
+                  onClick={() => onFunding(String(id))}
+                  disabled={!isCheck || isLoading}
                 >
-                  <span>펀딩하기</span>
+                  {!isLoading ? (
+                    <span>펀딩하기</span>
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      <span className="mr-2">펀딩 진행중...</span>
+                      <div className="animate-spin">
+                        <AutoSVG
+                          src="/media/icons/spinner.svg"
+                          className="w-5 h-5"
+                        />
+                      </div>
+                    </span>
+                  )}
                 </Button>
               </div>
             </div>

@@ -84,7 +84,7 @@ const MyPage: NextPage = () => {
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
         <div className="flex flex-col w-2/5 mx-auto">
           <div className="flex bg-white dark:bg-dark border border-white dark:border-dark-300 shadow-lg rounded-xl">
-            <div className="border-r p-4">
+            <div className="border-r dark:border-dark-300 p-4">
               <div className="relative h-32 w-32">
                 <AutoImage
                   src="/team/Orbit.png"
