@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { NextPage } from "next/types";
 import clsx from "clsx";
 
@@ -73,10 +73,14 @@ const Create: NextPage = () => {
     setIsLoading(true);
     try {
       await fundContract.methods
-        .FundRegister(hexBalance(price), [
-          [123, 345, 2, [0, 0, []], [wallet.address, 0, 0, 0]],
-          [567, 678, 4, [0, 0, []], [wallet.address, 0, 0, 0]],
-        ])
+        .FundRegister(
+          hexBalance(price),
+          123,
+          345,
+          [123, 345],
+          [345, 567],
+          [20, 50]
+        )
         .send({
           from: wallet.address,
           gas: 10000000,
@@ -119,59 +123,32 @@ const Create: NextPage = () => {
         <div className="grid grid-cols-7 content-center font-manrope">
           <div className="rounded-xl col-start-2 col-span-5 border shadow bg-white dark:bg-dark dark:border-dark-300">
             <div className="grid grid-cols-8 gx-4 break-words font-bold border-b dark:border-dark-300 p-8">
-              <div className="col-span-2 items-center justify-center">
-                <div
-                  className={clsx(
-                    "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
-                    isTap === 0
-                      ? "bg-indigo-700 border-indigo-700"
-                      : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
-                  1
-                </div>
-                <div className="mt-2 text-center text-sm py-2">
-                  프로젝트 정보를 입력해 주세요.
-                </div>
-              </div>
-              <div className="col-span-1 flex items-center">
-                <hr className="w-3/4 mx-auto"></hr>
-              </div>
-              <div className="col-span-2 items-center justify-center">
-                <div
-                  className={clsx(
-                    "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
-                    isTap === 1
-                      ? "bg-indigo-700 border-indigo-700"
-                      : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
-                  2
-                </div>
-                <div className="mt-2 text-center text-sm py-2">
-                  프로젝트 데모를 확인해 주세요.
-                </div>
-              </div>
-              <div className="col-span-1 flex items-center">
-                <hr className="w-3/4 mx-auto"></hr>
-              </div>
-              <div className="col-span-2 items-center justify-center">
-                <div
-                  className={clsx(
-                    "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
-                    isTap === 2
-                      ? "bg-indigo-700 border-indigo-700"
-                      : "bg-indigo-400 border-indigo-400"
-                  )}
-                >
-                  3
-                </div>
-                <div className="mt-2 text-center text-sm">
-                  <div>
-                    펀딩 NFT 생성 완료!<br></br> 프로젝트를 확인해 보세요.
+              {chapter.map((v, i) => (
+                <Fragment key={v}>
+                  <div className="col-span-2 items-center justify-center">
+                    <div
+                      className={clsx(
+                        "border w-8 h-8 mx-auto text-center leading-7 text-white font-bold rounded-full",
+                        isTap === i
+                          ? "bg-indigo-700 border-indigo-700"
+                          : "bg-indigo-400 border-indigo-400"
+                      )}
+                    >
+                      {i + 1}
+                    </div>
+                    <div className="mt-2 text-center text-sm py-2 whitespace-pre-wrap">
+                      {v}
+                    </div>
                   </div>
-                </div>
-              </div>
+                  {i !== 2 ? (
+                    <div className="col-span-1 flex items-center">
+                      <hr className="w-3/4 mx-auto"></hr>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </Fragment>
+              ))}
             </div>
 
             {isTap === 0 ? (
@@ -209,5 +186,11 @@ const Create: NextPage = () => {
     </div>
   );
 };
+
+const chapter = [
+  "프로젝트 정보를 입력해 주세요.",
+  "프로젝트 데모를 확인해 주세요.",
+  "펀딩 NFT 생성 완료!\n프로젝트를 확인해 보세요.",
+];
 
 export default Create;

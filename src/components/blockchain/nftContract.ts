@@ -1,6 +1,6 @@
 import { web3, WALLET_NETWORK } from "components/blockchain/web3";
 
-type CA = "0xca7133eDCF1ffa3AC4a8b98557E99D887c2493E2" | "";
+type CA = "0x5caC6e70a76CA1b3c7Fa4Bd1aA1bE51dBFDc9B46" | "";
 
 const abi: any = [
   {
@@ -631,8 +631,8 @@ let nftContract: any, NFT_CONTRACT_ADDRESS: CA;
 if (typeof window !== "undefined") {
   NFT_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"
-      ? "0xca7133eDCF1ffa3AC4a8b98557E99D887c2493E2"
-      : "0xca7133eDCF1ffa3AC4a8b98557E99D887c2493E2";
+      ? "0x5caC6e70a76CA1b3c7Fa4Bd1aA1bE51dBFDc9B46"
+      : "0x5caC6e70a76CA1b3c7Fa4Bd1aA1bE51dBFDc9B46";
   nftContract = new web3.eth.Contract(abi, NFT_CONTRACT_ADDRESS);
 }
 

@@ -31,9 +31,6 @@ const FundingModal: FC<Props> = ({
   close,
 }) => {
   const [isCheck, setIsCheck] = useState<boolean>(false);
-  const setIsToast = useSetRecoilState(isToastState);
-  const setToastContent = useSetRecoilState(toastContentState);
-
   return (
     <>
       <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
@@ -76,10 +73,14 @@ const FundingModal: FC<Props> = ({
               </div>
 
               <div className="mt-2">
-                <div className="mb-5 px-2 text-gray-700 flex items-center pl-3 text-sm border-gray-400 rounded border">
+                <div
+                  onClick={() => setIsCheck(!isCheck)}
+                  className="mb-5 px-2 cursor-pointer text-gray-700 flex items-center pl-3 text-sm border-gray-400 rounded border"
+                >
                   <input
                     type="checkbox"
-                    onClick={() => setIsCheck(!isCheck)}
+                    onChange={() => setIsCheck(!isCheck)}
+                    checked={isCheck}
                     className="w-6 h-6"
                   />
                   <p className="ml-1 p-2">
@@ -93,6 +94,7 @@ const FundingModal: FC<Props> = ({
                 <Button
                   className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
                   onClick={close}
+                  disabled={isLoading}
                 >
                   <span>취소</span>
                 </Button>
@@ -125,14 +127,3 @@ const FundingModal: FC<Props> = ({
 };
 
 export { FundingModal };
-
-const dummyData: any = {
-  title: "프로젝트 제목",
-  content: [
-    "M2E 안드로이드 어플리케이션 프로토타입 시연",
-    "홈페이지 내 커뮤니티 게시판 생성",
-    "현대백화점 스크린에 대형 광고",
-    "와우 챌린지 참여 인원 500명 달성",
-  ],
-  price: 80,
-};

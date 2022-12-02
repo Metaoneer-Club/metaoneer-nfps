@@ -227,11 +227,11 @@ const Create01: FC<Props> = ({
               <div className="mt-2 mb-5 rounded bg-neutral-100 dark:bg-dark-400 dark:border-dark-300 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
                 <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
                 <span>
-                  {mileStoneArray[mileStoneArray.length - 1]?.expired ||
-                    "마일스톤을 추가해 주세요."}
-                  {/* {formatDate(
-                    mileStoneArray[mileStoneArray.length - 1]?.expired
-                  ) || "마일스톤을 추가해 주세요."} */}
+                  {mileStoneArray[mileStoneArray.length - 1]?.expired ? (
+                    <span>{formatDate(endDate)}</span>
+                  ) : (
+                    "마일스톤을 추가해 주세요."
+                  )}
                 </span>
               </div>
             </div>

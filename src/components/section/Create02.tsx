@@ -181,14 +181,18 @@ const Create02: FC<Props> = ({
                     <div className="mt-4">
                       <label className="text-gray-600">펀딩 금액</label>
                       <p className="mt-2">
-                        <span className="text-xl mr-1">{accounting(0)}</span>
+                        <span className="text-xl mr-1">
+                          {accounting(0) || 0}
+                        </span>
                         <span className="text-gray-600">BNB</span>
                       </p>
                     </div>
                     <div className="mt-4">
                       <label className="text-gray-600">후원자 수</label>
                       <p className="mt-2">
-                        <span className="text-xl mr-1">{accounting(0)}</span>
+                        <span className="text-xl mr-1">
+                          {accounting(0) || 0}
+                        </span>
                         <span className="text-gray-600">명</span>
                       </p>
                     </div>
@@ -296,7 +300,14 @@ const Create02: FC<Props> = ({
                         real use in mind.
                       </p>
                     ) : (
-                      <MilestoneUser id="0" blockNumber={86400} />
+                      <MilestoneUser
+                        id="0"
+                        blockNumber={86400}
+                        title={""}
+                        content={[]}
+                        price={0}
+                        isOwner={false}
+                      />
                     )}
                   </Card>
                 </div>

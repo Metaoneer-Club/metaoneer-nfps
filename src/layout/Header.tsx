@@ -8,12 +8,12 @@ import clsx from "clsx";
 import { Button } from "components/asset/button";
 import { Dropdown } from "components/dropdown/Dropdown";
 import { changeNetwork, setMetamaskAccount } from "components/blockchain";
+import { Hamburger } from "components/dropdown/Hamburger";
 import { AutoImage, AutoSVG, checkIsActive, shortAddress } from "utils";
 
 /* State */
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { walletState, isToastState, toastContentState } from "stores";
-import { Hamburger } from "~/components/dropdown/Hamburger";
 
 interface Props {
   active: boolean;
@@ -24,12 +24,16 @@ const Header: FC<Props> = ({ active }) => {
   const { theme, setTheme } = useTheme();
   const [wallet, setWallet] = useRecoilState(walletState);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDrop, setIsDrop] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
     buttonRef.current?.classList.add("animate__fadeIn");
 
@@ -94,6 +98,10 @@ const Header: FC<Props> = ({ active }) => {
 
     router.push("/");
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>

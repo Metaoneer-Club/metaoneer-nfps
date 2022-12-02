@@ -3,7 +3,11 @@ import React, { FC } from "react";
 /* Component */
 import { AutoImage, shortAddress } from "utils";
 
-const FundingTable: FC = () => {
+interface Props {
+  fundingList: any;
+}
+
+const FundingTable: FC<Props> = ({ fundingList }) => {
   return (
     <div className="mt-2 overflow-x-auto">
       <table className="table-auto w-full">

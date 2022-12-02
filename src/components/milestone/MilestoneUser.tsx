@@ -7,17 +7,34 @@ import { accounting } from "utils";
 
 interface Props {
   id: string | string[] | undefined;
+  title: string;
+  content: string[];
+  price: number;
   blockNumber: number;
   isOwner: boolean;
 }
 
-const MilestoneUser: FC<Props> = ({ id, blockNumber, isOwner }) => {
+const MilestoneUser: FC<Props> = ({
+  id,
+  title,
+  content,
+  price,
+  blockNumber,
+  isOwner,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <>
       {isOpen ? (
-        <MilestoneUserModal id={id} isOwner={isOwner} close={setIsOpen} />
+        <MilestoneUserModal
+          id={id}
+          title={title}
+          content={content}
+          price={price}
+          isOwner={isOwner}
+          close={setIsOpen}
+        />
       ) : (
         ""
       )}
@@ -36,17 +53,33 @@ const MilestoneUser: FC<Props> = ({ id, blockNumber, isOwner }) => {
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-info dark:bg-info-active mr-2 text-white">
-                    완료
-                  </div>
-                  {i !== 3 ? (
+                  {i < 2 ? (
+                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-info dark:bg-info-active mr-2 text-white">
+                      완료
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {i === 2 ? (
+                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-warning dark:bg-warning-active mr-2 text-white">
+                      진행중
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {i > 2 ? (
+                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-primary dark:bg-priamry-active mr-2 text-white">
+                      시작 전
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {i < 2 ? (
                     <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-success dark:bg-success-active text-white">
                       지향
                     </div>
                   ) : (
-                    <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-danger dark:bg-danger-active text-white">
-                      지양
-                    </div>
+                    ""
                   )}
                   <h3 className="mt-3 font-bold text-gray-800 dark:text-gray-300 text-xl truncate">
                     마일스톤 {i + 1}

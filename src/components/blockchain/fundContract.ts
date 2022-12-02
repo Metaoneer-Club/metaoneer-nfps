@@ -1,6 +1,6 @@
 import { web3, WALLET_NETWORK } from "components/blockchain/web3";
 
-type CA = "0xed204D155f4e61eCf81aA0572Aa77d611572A8c6" | "";
+type CA = "0xD73AA9F4dC1090324C9f25CD3778Ab3ebbe81432" | "";
 
 const abi: any = [
   {
@@ -37,79 +37,154 @@ const abi: any = [
     inputs: [
       {
         internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "ALLinterMediatePayment",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestonStep",
+        type: "uint256",
+      },
+    ],
+    name: "DAOMilestonPass",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestonStep",
+        type: "uint256",
+      },
+    ],
+    name: "DAOMilestonReject",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestonStep",
+        type: "uint256",
+      },
+    ],
+    name: "DaoResult",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestonStep",
+        type: "uint256",
+      },
+    ],
+    name: "DaoResultPass",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestonStep",
+        type: "uint256",
+      },
+    ],
+    name: "DaoResultReject",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "_limit",
         type: "uint256",
       },
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "start_date",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "expired_date",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "mileston_receive",
-            type: "uint256",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "pass",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "reject",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "voter",
-                type: "address[]",
-              },
-            ],
-            internalType: "struct MetaOneerNFPS.DAO",
-            name: "dao",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "address",
-                name: "_user",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "allowed_vote",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "pass_vote",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "reject_vote",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct MetaOneerNFPS.FunderDAO",
-            name: "fdao",
-            type: "tuple",
-          },
-        ],
-        internalType: "struct MetaOneerNFPS.Mileston[]",
-        name: "_mile",
-        type: "tuple[]",
+        internalType: "uint256",
+        name: "fundstart_date",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "fundexpired_date",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "start_date",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "expired_date",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "receive_ratio",
+        type: "uint256[]",
       },
     ],
     name: "FundRegister",
@@ -125,6 +200,43 @@ const abi: any = [
         internalType: "contract IFunding",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "Refund",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "daoView",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
       },
     ],
     stateMutability: "view",
@@ -150,6 +262,21 @@ const abi: any = [
         name: "totalFundamount",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "RemainAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "fund_start_date",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "fund_expired_date",
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -160,107 +287,34 @@ const abi: any = [
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestoneStep",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "funderaddr",
+        type: "address",
       },
     ],
     name: "funderView",
     outputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "limitprice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "totalFundamount",
-            type: "uint256",
-          },
-          {
-            internalType: "address[]",
-            name: "funder",
-            type: "address[]",
-          },
-          {
-            internalType: "uint256[]",
-            name: "fundmoney",
-            type: "uint256[]",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "start_date",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "expired_date",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "mileston_receive",
-                type: "uint256",
-              },
-              {
-                components: [
-                  {
-                    internalType: "uint256",
-                    name: "pass",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "reject",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "address[]",
-                    name: "voter",
-                    type: "address[]",
-                  },
-                ],
-                internalType: "struct MetaOneerNFPS.DAO",
-                name: "dao",
-                type: "tuple",
-              },
-              {
-                components: [
-                  {
-                    internalType: "address",
-                    name: "_user",
-                    type: "address",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "allowed_vote",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "pass_vote",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "reject_vote",
-                    type: "uint256",
-                  },
-                ],
-                internalType: "struct MetaOneerNFPS.FunderDAO",
-                name: "fdao",
-                type: "tuple",
-              },
-            ],
-            internalType: "struct MetaOneerNFPS.Mileston[]",
-            name: "mile",
-            type: "tuple[]",
-          },
-        ],
-        internalType: "struct MetaOneerNFPS.Fund",
+        internalType: "uint256",
         name: "",
-        type: "tuple",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -271,17 +325,132 @@ const abi: any = [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "fundMoney",
         type: "uint256",
       },
     ],
     name: "funding",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "fundingView",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "milestonStep",
+        type: "uint256",
+      },
+    ],
+    name: "interMediatePayment",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "milestonStepView",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "milestonView",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -313,7 +482,7 @@ const abi: any = [
       },
       {
         internalType: "uint256",
-        name: "Fundstep",
+        name: "FundStep",
         type: "uint256",
       },
     ],
@@ -341,8 +510,8 @@ let fundContract: any, FUND_CONTRACT_ADDRESS: CA;
 if (typeof window !== "undefined") {
   FUND_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"
-      ? "0xed204D155f4e61eCf81aA0572Aa77d611572A8c6"
-      : "0xed204D155f4e61eCf81aA0572Aa77d611572A8c6";
+      ? "0xD73AA9F4dC1090324C9f25CD3778Ab3ebbe81432"
+      : "0xD73AA9F4dC1090324C9f25CD3778Ab3ebbe81432";
   fundContract = new web3.eth.Contract(abi, FUND_CONTRACT_ADDRESS);
 }
 
