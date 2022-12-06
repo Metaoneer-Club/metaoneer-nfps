@@ -44,7 +44,7 @@ const Milestone: FC<IMilestone> = ({
             <div className="h-20 grid grid-cols-2 gap-x-4 px-4">
               {content.map((v: any) => (
                 <p key={v1()} className="truncate">
-                  - {v}
+                  - {v.name}
                 </p>
               ))}
             </div>

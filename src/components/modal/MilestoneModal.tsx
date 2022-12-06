@@ -82,10 +82,20 @@ const MilestoneModal: FC<Props> = ({ close }) => {
       return;
     }
 
+    const setUp = milestoneContentAry.map((v: any, i: number) => {
+      return {
+        id: i,
+        name: v,
+        done: false,
+      };
+    });
+
+    console.log(setUp);
+
     const inputData: IMilestone = {
       keyID: `ms${v1()}`,
       title: title,
-      content: milestoneContentAry,
+      content: setUp,
       price: price,
       startDate: 123,
       expired: 123,

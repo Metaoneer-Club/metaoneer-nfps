@@ -9,3 +9,19 @@ export interface IAddProfileAPI extends InitialUserData {
   nickname: string;
   content: string;
 }
+
+export interface ICreateMilestone {
+  description: string;
+  image?: string;
+  name: string;
+  external_url: string;
+  attributes: {
+    trait_type: string;
+    value: string | number;
+  }[];
+  milestones: {
+    id: number;
+    name: string;
+    done: boolean;
+  }[][];
+}

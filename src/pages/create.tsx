@@ -2,6 +2,10 @@ import React, { Fragment, useState } from "react";
 import { NextPage } from "next/types";
 import clsx from "clsx";
 
+/* API */
+import { ICreateMilestone } from "api/APIModel";
+import { CreateMilestoneAPI } from "api";
+
 /* Hook */
 import useInput from "hooks/useInput";
 
@@ -12,10 +16,18 @@ import { hexBalance } from "utils";
 
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isToastState, toastContentState, walletState } from "stores";
+import {
+  isToastState,
+  milestoneContentState,
+  milestoneState,
+  toastContentState,
+  walletState,
+} from "stores";
 
 const Create: NextPage = () => {
   const wallet = useRecoilValue(walletState);
+  const mileStoneArray = useRecoilValue(milestoneState);
+  const mileStoneContent = useRecoilValue(milestoneContentState);
   const [isTap, setIsTap] = useState<number>(0);
   const [currentKey, setCurrentKey] = useState<string>("");
   const [title, setTitle, onChangeTitle] = useInput<string>("");
@@ -67,10 +79,7 @@ const Create: NextPage = () => {
     }
   };
 
-  const registerHandler = async () => {
-    if (!checkRule()) return;
-
-    setIsLoading(true);
+  const uploadContract = async () => {
     try {
       await fundContract.methods
         .FundRegister(
@@ -92,12 +101,6 @@ const Create: NextPage = () => {
         .tokenOfOwnerByIndex(wallet.address, Number(balanceOf - 1))
         .call();
       setCurrentKey(lastToken);
-
-      setToastContent({
-        content: "프로젝트가 성공적으로 등록되었습니다.",
-        type: "success",
-      });
-      setIsToast(true);
     } catch (err) {
       console.log(err);
       setToastContent({
@@ -106,15 +109,71 @@ const Create: NextPage = () => {
       });
       setIsToast(true);
       setIsLoading(false);
-      return;
+      return false;
+    }
+    return true;
+  };
+
+  const uploadBackend = async () => {
+    const BASE_URL =
+      "http://nfps.metaoneer.club.s3-website.ap-northeast-2.amazonaws.com/funding/";
+
+    const milestoneData: ICreateMilestone = {
+      description: String(content),
+      image: "",
+      name: `NFPS #${currentKey}`,
+      external_url: BASE_URL + currentKey,
+      attributes: [
+        {
+          trait_type: "title",
+          value: title,
+        },
+        {
+          trait_type: "content",
+          value: String(content),
+        },
+        {
+          trait_type: "milestones",
+          value: mileStoneArray.length,
+        },
+      ],
+      milestones: [mileStoneContent.content],
+    };
+
+    try {
+      await CreateMilestoneAPI(milestoneData);
+      setToastContent({
+        content: "프로젝트가 성공적으로 등록되었습니다.",
+        type: "success",
+      });
+      setIsToast(true);
+    } catch (err) {
+      setToastContent({
+        content: "입력 데이터에 오류가 있습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      setIsLoading(false);
+      return false;
     }
 
-    setTitle("");
-    setContent("");
-    setPrice(0);
-    setIsLoading(false);
-    setIsTap(2);
-    window.scrollTo(0, 0);
+    return true;
+  };
+
+  const registerHandler = async () => {
+    if (!checkRule()) return;
+
+    setIsLoading(true);
+    const contract = await uploadContract();
+    const backend = contract && (await uploadBackend());
+    if (backend) {
+      setTitle("");
+      setContent("");
+      setPrice(0);
+      setIsLoading(false);
+      setIsTap(2);
+      window.scrollTo(0, 0);
+    }
   };
 
   return (

@@ -4,7 +4,11 @@ import { v1 } from "uuid";
 export interface IMilestone {
   keyID: string;
   title: string;
-  content: any;
+  content: {
+    id: number;
+    name: string;
+    done: boolean;
+  }[];
   price: number;
   startDate: number;
   expired: number;
@@ -12,7 +16,11 @@ export interface IMilestone {
 export interface IMilestoneUser {
   keyID: string;
   title: string;
-  content: any;
+  content: {
+    id: number;
+    name: string;
+    done: boolean;
+  }[];
   price: number;
   startDate: Date;
   endDate: Date;
