@@ -27,7 +27,8 @@ const MyPage: NextPage = () => {
   const router = useRouter();
   const wallet = useRecoilValue(walletState);
   const [products, setProducts] = useState<KeyData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [imageData, setImageData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -68,31 +69,68 @@ const MyPage: NextPage = () => {
 
   const editProfileHandler = async () => {
     const sign = await signCaller(wallet.address);
+    try {
+      await AddProfileAPI({
+        nonce: "Metaoneer Service.",
+        address: wallet.address,
+        chain_id: wallet.network,
+        signature: sign,
+        image: imageData,
+        nickname: "Orbit",
+        content: "하이용",
+      });
+    } catch (err) {
+      setToastContent({
+        content: "프로필 업데이트에 실패하였습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+    }
+  };
 
-    const test = await AddProfileAPI({
-      nonce: "Metaoneer Service.",
+  const testHandler = async () => {
+    const a = await CheckProfileAPI({
       address: wallet.address,
       chain_id: wallet.network,
-      signature: sign,
-      nickname: "Orbit",
-      content: "하이용",
     });
+
+    console.log(a);
   };
+
+  const imageHandler = async () => {
+    const formData = new FormData();
+    formData.append("file", imageData);
+    await AddProfileAPI({});
+    // image: formData,
+    // nonce: "Metaoneer Service.",
+    // address: wallet.address,
+  };
+
+  console.log(imageData);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
+        <button type="button" onClick={testHandler}>
+          임시 버튼
+        </button>
         <div className="flex flex-col w-2/5 mx-auto">
           <div className="flex bg-white dark:bg-dark border border-white dark:border-dark-300 shadow-lg rounded-xl">
             <div className="border-r dark:border-dark-300 p-4">
               <div className="relative h-32 w-32">
-                <AutoImage
+                {/* <AutoImage
                   src="/team/Orbit.png"
                   alt="profile"
                   className="scale-110 w-32 h-32 object-cover rounded-2xl"
+                /> */}
+                <input
+                  type="file"
+                  accept="image/jpg,impge/png,image/jpeg,image/gif"
+                  name="profile_img"
+                  onChange={(e: any) => setImageData(e.target.files[0])}
                 />
                 <div
-                  onClick={editProfileHandler}
+                  onClick={imageHandler}
                   className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300"
                 >
                   <AutoSVG

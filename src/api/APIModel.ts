@@ -1,18 +1,23 @@
 export interface InitialUserData {
-  address: string;
-  chain_id: number;
+  address?: string;
+  chain_id?: number;
 }
 
 export interface IAddProfileAPI extends InitialUserData {
-  nonce: string;
-  signature: string;
-  nickname: string;
-  content: string;
+  nonce?: string;
+  image?: any;
+  signature?: string;
+  nickname?: string;
+  content?: string;
+}
+
+export interface IImageProfileAPI extends InitialUserData {
+  image: any;
 }
 
 export interface ICreateMilestone {
   description: string;
-  image?: string;
+  image?: any;
   name: string;
   external_url: string;
   attributes: {

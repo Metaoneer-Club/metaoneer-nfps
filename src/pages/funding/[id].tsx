@@ -8,7 +8,7 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { fundContract } from "components/blockchain";
+import { fundContract, web3 } from "components/blockchain";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { FundingTable } from "components/table/FundingTable";
 import { FundingModal } from "components/modal/FundingModal";
@@ -57,6 +57,7 @@ const Product = () => {
   const [isOpenVote, setIsOpenVote] = useState<boolean>(false);
   const [isVote, setIsVote] = useState<boolean>(false);
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [isVoted, setIsVoted] = useState<number>(0);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -64,22 +65,18 @@ const Product = () => {
     const projectData = async () => {
       const funding = await fundContract.methods
         .fundingView(router.query.id)
-        .call();
-      console.log("fundingView : ", funding); // [목표액, 모금액, 펀딩시작일, 펀딩종료일,[펀더지갑], [펀딩금액]]
+        .call(); // [목표액, 모금액, 펀딩시작일, 펀딩종료일,[펀더지갑], [펀딩금액]]
       const funder = await fundContract.methods
         .funderView(
           router.query.id,
           0,
           wallet.address || "0x0000000000000000000000000000000000000000"
         )
-        .call();
-      console.log("funderView : ", funder); // [대기, 찬성, 반대]
-      const milestone = await fundContract.methods
-        .milestonView(router.query.id)
-        .call();
-      console.log("milestonView : ", milestone); // [마일갯수, [마일시작일], [마일종료일], [마일중도금], [마일중도금비율]]
-      const voter = await fundContract.methods.daoView(router.query.id).call();
-      console.log("daoView : ", voter); // [[찬성], [반대]]
+        .call(); // [대기, 찬성, 반대]
+      // const milestone = await fundContract.methods
+      //   .milestonView(router.query.id)
+      //   .call(); // [마일갯수, [마일시작일], [마일종료일], [마일중도금], [마일중도금비율]]
+      const voter = await fundContract.methods.daoView(router.query.id).call(); // [[찬성], [반대]]
       const funders = funding[4]?.map((v: any) => v.toUpperCase());
       const fundingList = funders?.reduce(
         (obj: any, key: any, index: number) => ({
@@ -88,6 +85,13 @@ const Product = () => {
         }),
         {}
       );
+
+      console.log(funder);
+      console.log(voter);
+
+      const votedAry = Object.values(funder);
+      const checkVoted: any =
+        votedAry.indexOf(votedAry.filter((v) => v !== "0")[0]) || 0;
 
       setProject({
         limitprice: funding[0] || 0,
@@ -98,6 +102,7 @@ const Product = () => {
         daoPass: voter[0][0], // 마일스톤 위치 0
         daoReject: voter[0][1],
       });
+      setIsVoted(checkVoted);
     };
     projectData();
   }, [router.query.id, wallet.address]);
@@ -188,6 +193,7 @@ const Product = () => {
     });
 
     const voter = await fundContract.methods.daoView(router.query.id).call();
+    console.log(voter);
     setProject({
       ...project,
       daoPass: voter[0][0],
@@ -239,6 +245,40 @@ const Product = () => {
     setAmount(0);
   };
 
+  const testHandler = async () => {
+    console.log("테스트 시작");
+    let beforeBalance = await web3.eth.getBalance(wallet.address);
+    beforeBalance = replaceBalance(beforeBalance);
+
+    await fundContract.methods.interMediatePayment(1, 1).send({
+      from: wallet.address,
+      gas: 1000000,
+    });
+
+    let afterBalance = await web3.eth.getBalance(wallet.address);
+    afterBalance = replaceBalance(afterBalance);
+
+    console.log("이전", beforeBalance);
+    console.log("이후", afterBalance);
+  };
+
+  const test2Handler = async () => {
+    console.log("테스트 시작");
+    let beforeBalance = await web3.eth.getBalance(wallet.address);
+    beforeBalance = replaceBalance(beforeBalance);
+
+    await fundContract.methods.Refund(1).send({
+      from: wallet.address,
+      gas: 1000000,
+    });
+
+    let afterBalance = await web3.eth.getBalance(wallet.address);
+    afterBalance = replaceBalance(afterBalance);
+
+    console.log("이전", beforeBalance);
+    console.log("이후", afterBalance);
+  };
+
   return (
     <>
       {isOpenFund && (
@@ -255,6 +295,7 @@ const Product = () => {
         <VoteModal
           isLoading={isLoadingVote}
           id={router.query.id}
+          isVoted={isVoted}
           voting={project.fundingList[wallet.address.toUpperCase()]}
           onChangeAmount={onChangeAmount}
           onPass={passHandler}
@@ -285,6 +326,20 @@ const Product = () => {
                 onClick={() => setIsOwner(!isOwner)}
               >
                 임시 버튼 (오너)
+              </button>
+              <button
+                type="button"
+                className="text-sm border ml-4 p-2 rounded bg-red-500 text-white hover:bg-red-600"
+                onClick={testHandler}
+              >
+                임시 버튼 (인출)
+              </button>
+              <button
+                type="button"
+                className="text-sm border ml-4 p-2 rounded bg-red-500 text-white hover:bg-red-600"
+                onClick={test2Handler}
+              >
+                임시 버튼 (환급)
               </button>
             </div>
             <div className="flex">

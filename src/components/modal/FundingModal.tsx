@@ -7,11 +7,7 @@ import React, {
 
 /* Component */
 import { Button } from "components/asset/button";
-
-/* State */
-import { useSetRecoilState } from "recoil";
-import { isToastState, toastContentState } from "stores";
-import { AutoSVG } from "~/utils";
+import { AutoSVG } from "utils";
 
 interface Props {
   id: string | string[] | undefined;
@@ -74,13 +70,16 @@ const FundingModal: FC<Props> = ({
 
               <div className="mt-2">
                 <div
-                  onClick={() => setIsCheck(!isCheck)}
+                  onClick={() => {
+                    !isLoading && setIsCheck(!isCheck);
+                  }}
                   className="mb-5 px-2 cursor-pointer text-gray-700 flex items-center pl-3 text-sm border-gray-400 rounded border"
                 >
                   <input
                     type="checkbox"
                     onChange={() => setIsCheck(!isCheck)}
                     checked={isCheck}
+                    disabled={isLoading}
                     className="w-6 h-6"
                   />
                   <p className="ml-1 p-2">

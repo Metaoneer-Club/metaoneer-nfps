@@ -165,15 +165,15 @@ const Create: NextPage = () => {
 
     setIsLoading(true);
     const contract = await uploadContract();
-    const backend = contract && (await uploadBackend());
-    if (backend) {
-      setTitle("");
-      setContent("");
-      setPrice(0);
-      setIsLoading(false);
-      setIsTap(2);
-      window.scrollTo(0, 0);
-    }
+    // const backend = contract && (await uploadBackend());
+    // if (backend) {
+    // }
+    setTitle("");
+    setContent("");
+    setPrice(0);
+    setIsLoading(false);
+    setIsTap(2);
+    window.scrollTo(0, 0);
   };
 
   return (

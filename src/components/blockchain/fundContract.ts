@@ -1,6 +1,6 @@
 import { web3, WALLET_NETWORK } from "components/blockchain/web3";
 
-type CA = "0xD73AA9F4dC1090324C9f25CD3778Ab3ebbe81432" | "";
+type CA = "0x0efabC4068a8C9225d760fE9075EEf0eEeDCCd27" | "";
 
 const abi: any = [
   {
@@ -510,8 +510,8 @@ let fundContract: any, FUND_CONTRACT_ADDRESS: CA;
 if (typeof window !== "undefined") {
   FUND_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"
-      ? "0xD73AA9F4dC1090324C9f25CD3778Ab3ebbe81432"
-      : "0xD73AA9F4dC1090324C9f25CD3778Ab3ebbe81432";
+      ? "0x0efabC4068a8C9225d760fE9075EEf0eEeDCCd27"
+      : "0x0efabC4068a8C9225d760fE9075EEf0eEeDCCd27";
   fundContract = new web3.eth.Contract(abi, FUND_CONTRACT_ADDRESS);
 }
 
