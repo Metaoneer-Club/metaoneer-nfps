@@ -94,10 +94,7 @@ const Create: NextPage = () => {
       return false;
     }
 
-    let dt = new Date();
-    dt.setDate(dt.getDate() + 1);
-    dt.setHours(9, 0, 0);
-    if (startDate < dt) {
+    if (startDate.getTime() < Date.now()) {
       setToastContent({
         content: "시작 날짜는 금일보다 커야합니다.",
         type: "danger",

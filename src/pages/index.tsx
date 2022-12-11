@@ -77,7 +77,7 @@ const productItems: Product[] = [
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 1874,
     amount: 23421,
-    expired: new Date(),
+    expired: 12,
   },
   {
     keyID: 2,
@@ -89,7 +89,7 @@ const productItems: Product[] = [
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 213,
     amount: 4342,
-    expired: new Date(),
+    expired: 7,
   },
   {
     keyID: 3,
@@ -101,7 +101,7 @@ const productItems: Product[] = [
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 98,
     amount: 2342,
-    expired: new Date(),
+    expired: 16,
   },
   {
     keyID: 4,
@@ -113,7 +113,7 @@ const productItems: Product[] = [
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 87,
     amount: 1567,
-    expired: new Date(),
+    expired: 0.7,
   },
 ];
 

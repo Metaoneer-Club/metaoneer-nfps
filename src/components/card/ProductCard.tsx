@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 /* Component */
 import { Card } from "components/asset/card";
-import { AutoImage, shortAddress } from "utils";
+import { AutoImage, shortAddress, toDate, toHours, zeroCount } from "utils";
 
 export interface Product {
   keyID?: number;
@@ -14,7 +14,7 @@ export interface Product {
   creator: string;
   progress: number;
   amount: number;
-  expired: Date;
+  expired: number;
 }
 
 const ProductCard: FC<Product> = ({
@@ -63,9 +63,15 @@ const ProductCard: FC<Product> = ({
                 </strong>
                 <span>{amount} BNB</span>
               </div>
-              <strong className="text-gray-500">
-                {expired.getDate()}일 남음
-              </strong>
+              {toDate(expired) >= 1 ? (
+                <strong className="text-gray-500">
+                  {zeroCount(toDate(expired))}일 남음
+                </strong>
+              ) : (
+                <strong className="text-gray-500">
+                  {zeroCount(toHours(expired))}시간 남음
+                </strong>
+              )}
             </div>
             <div className="mt-1 flex items-center">
               <div className="w-full h-2 bg-blue-200 rounded-sm">

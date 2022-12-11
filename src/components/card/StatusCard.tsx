@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import {
   accounting,
   progressing,
@@ -14,10 +14,24 @@ interface Props {
   blockNumber: number;
   project: IProject;
   milestep: number;
+  milestones: string[][];
 }
 
-const StatusCard: FC<Props> = ({ status, blockNumber, project, milestep }) => {
-  const baseBN = status < 1 ? project.fundingStart : project.fundingEnd;
+const StatusCard: FC<Props> = ({
+  status,
+  blockNumber,
+  project,
+  milestep,
+  milestones,
+}) => {
+  const baseBN = () => {
+    if (status === 0) return project.fundingStart;
+    if (status === 1) return project.fundingEnd;
+    if (status === 2) return Number(milestones[milestep][1]);
+    if (status >= 3) return blockNumber;
+    return 0;
+  };
+
   const current = () => {
     if (status === 0) return "펀딩 시작까지";
     if (status === 1) return "펀딩 종료까지";
@@ -50,17 +64,17 @@ const StatusCard: FC<Props> = ({ status, blockNumber, project, milestep }) => {
       <div className="mt-8">
         <label className="text-gray-600 dark:text-gray-400">{current()}</label>
         <div className="text-gray-dark:text-gray-400 mt-1">
-          {toDate(baseBN - blockNumber) >= 1 ? (
+          {toDate(baseBN() - blockNumber) >= 1 ? (
             <>
               <span className="text-black dark:text-gray-300 text-3xl mr-1">
-                {zeroCount(toDate(baseBN - blockNumber))}
+                {zeroCount(toDate(baseBN() - blockNumber))}
               </span>
               일
             </>
           ) : (
             <>
               <span className="text-black dark:text-gray-300 text-3xl mr-1">
-                {zeroCount(toHours(baseBN - blockNumber))}
+                {zeroCount(toHours(baseBN() - blockNumber))}
               </span>
               시간
             </>
@@ -73,7 +87,7 @@ const StatusCard: FC<Props> = ({ status, blockNumber, project, milestep }) => {
               href="https://bscscan.com/blocks"
               className="text-gray-500 dark:text-gray-300 hover:text-blue-500 hover:underline"
             >
-              {accounting(zeroCount(baseBN - blockNumber))}
+              {accounting(zeroCount(baseBN() - blockNumber))}
             </a>
             <span className="dark:texta-gray-500 text-sm ml-1">블록</span>
           </div>

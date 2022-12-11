@@ -275,7 +275,7 @@ const Product = () => {
     setAmount(0);
   };
 
-  const testHandler = async () => {
+  const interHandler = async () => {
     console.log("테스트 시작");
     let beforeBalance = await web3.eth.getBalance(wallet.address);
     beforeBalance = replaceBalance(beforeBalance);
@@ -292,7 +292,7 @@ const Product = () => {
     console.log("이후", afterBalance);
   };
 
-  const test2Handler = async () => {
+  const refundHandler = async () => {
     console.log("테스트 시작");
     let beforeBalance = await web3.eth.getBalance(wallet.address);
     beforeBalance = replaceBalance(beforeBalance);
@@ -361,20 +361,6 @@ const Product = () => {
               >
                 임시 버튼 (오너)
               </button>
-              <button
-                type="button"
-                className="text-sm border p-2 rounded bg-red-500 text-white hover:bg-red-600"
-                onClick={testHandler}
-              >
-                임시 버튼 (인출)
-              </button>
-              <button
-                type="button"
-                className="text-sm border ml-4 p-2 rounded bg-red-500 text-white hover:bg-red-600"
-                onClick={test2Handler}
-              >
-                임시 버튼 (환급)
-              </button>
             </div>
             <div className="flex">
               <Button
@@ -423,6 +409,7 @@ const Product = () => {
                   blockNumber={blockNumber}
                   project={project}
                   milestep={Number(mileStoneStep)}
+                  milestones={mileStoneAry}
                 />
               </div>
 
@@ -449,7 +436,7 @@ const Product = () => {
               ) : (
                 ""
               )}
-              {Number(isStatus) >= 2 ? (
+              {Number(isStatus) === 2 ? (
                 <div className="grid grid-cols-5 gap-4 px-8 py-3">
                   <div className="col-span-2 text-sm text-center dark:text-gray-300">
                     <p className="mt-1">이전 단계</p>
@@ -464,6 +451,22 @@ const Product = () => {
                     <p className="mt-1">
                       마일스톤 {Number(mileStoneStep) + 2} 시작
                     </p>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {Number(isStatus) >= 3 ? (
+                <div className="grid grid-cols-5 gap-4 px-8 py-3">
+                  <div className="col-span-2 text-sm text-center dark:text-gray-300">
+                    <p className="mt-1">이전 단계</p>
+                    <p className="mt-1">현재 단계</p>
+                    <p className="mt-1">다음 단계</p>
+                  </div>
+                  <div className="col-span-3 text-left text-gray-dark:text-gray-400 text-sm">
+                    <p className="mt-1">마일스톤 진행</p>
+                    <p className="mt-1">프로젝트 종료</p>
+                    <p className="mt-1">없음</p>
                   </div>
                 </div>
               ) : (
@@ -493,11 +496,41 @@ const Product = () => {
                   ""
                 )}
                 {Number(isStatus) === 2 ? (
+                  <>
+                    <Button
+                      className="bg-blue-600 text-white w-full hover:bg-blue-700"
+                      onClick={() => {
+                        isOwner ? interHandler() : setIsOpenVote(true);
+                      }}
+                    >
+                      <span>{isOwner ? "중도금 받기" : "투표하기"}</span>
+                    </Button>
+                  </>
+                ) : (
+                  ""
+                )}
+                {Number(isStatus) === 3 ? (
                   <Button
-                    className="bg-blue-600 text-white w-full hover:bg-blue-700"
-                    onClick={() => setIsOpenVote(true)}
+                    className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
+                    onClick={() => {
+                      isOwner ? interHandler() : "";
+                    }}
+                    disabled={!isOwner}
                   >
-                    <span>투표하기</span>
+                    <span>{isOwner ? "자금받기" : "프로젝트 완료"}</span>
+                  </Button>
+                ) : (
+                  ""
+                )}
+                {Number(isStatus) >= 4 ? (
+                  <Button
+                    className="bg-danger text-white w-full hover:bg-danger-active disabled:bg-red-400"
+                    onClick={() => {
+                      isOwner ? "" : refundHandler();
+                    }}
+                    disabled={isOwner}
+                  >
+                    <span>{isOwner ? "환불 진행중" : "환불받기"}</span>
                   </Button>
                 ) : (
                   ""

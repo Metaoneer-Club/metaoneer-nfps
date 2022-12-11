@@ -3,6 +3,7 @@ import React, {
   FC,
   MouseEventHandler,
   SetStateAction,
+  useEffect,
   useState,
 } from "react";
 import clsx from "clsx";
@@ -32,6 +33,17 @@ const Create02: FC<Props> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<number>(0);
   const [tabIndex, setTabIndex] = useState<number>(0);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setBlockNumber(blockNumber + 1);
+    }, 3000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [blockNumber]);
 
   const openHandler = (tapIndex: number) => {
     if (isOpen === tapIndex) {
@@ -81,7 +93,7 @@ const Create02: FC<Props> = ({
                 creator="0x12A60872B053C009452cdb95178144c8fFbDeA4D"
                 progress={66}
                 amount={300}
-                expired={new Date()}
+                expired={24}
               />
             </div>
           ) : (
@@ -124,7 +136,7 @@ const Create02: FC<Props> = ({
                 creator="0x12A60872B053C009452cdb95178144c8fFbDeA4D"
                 progress={66}
                 amount={300}
-                expired={new Date()}
+                expired={24}
               />
             </div>
           ) : (
@@ -307,6 +319,8 @@ const Create02: FC<Props> = ({
                         content={[]}
                         price={0}
                         isOwner={false}
+                        dao={[]}
+                        milestones={[]}
                       />
                     )}
                   </Card>

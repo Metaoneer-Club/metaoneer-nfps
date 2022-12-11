@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 /* API */
 import { AddProfileAPI, CheckProfileAPI } from "api";
-import { IAddProfileAPI, InitialUserData } from "api/APIModel";
 
 /* Component */
-import { paymentContract, signCaller } from "components/blockchain";
-import { ProductCard } from "components/card/ProductCard";
-import { AutoImage, AutoSVG, shortAddress } from "utils";
+import {
+  fundContract,
+  getBN,
+  nftContract,
+  signCaller,
+} from "components/blockchain";
+import { Product, ProductCard } from "components/card/ProductCard";
+import {
+  AutoImage,
+  AutoSVG,
+  progressing,
+  replaceBalance,
+  shortAddress,
+} from "utils";
 
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import axios from "axios";
-
-interface KeyData {
-  key: number;
-  title: string;
-  price: number;
-  count: number;
-  owner: string;
-}
 
 const MyPage: NextPage = () => {
   const router = useRouter();
   const wallet = useRecoilValue(walletState);
-  const [products, setProducts] = useState<KeyData[]>([]);
+  const [projectAry, setProjectAry] = useState<Product[]>([]);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
   const [imageData, setImageData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const setIsToast = useSetRecoilState(isToastState);
@@ -44,25 +47,31 @@ const MyPage: NextPage = () => {
         router.push("/");
         return;
       }
-
-      const keyList = await paymentContract.methods
-        .myKeyList(wallet.address)
-        .call();
+      const count = await nftContract.methods.totalSupply().call();
+      const bn = await getBN();
 
       const promises: Promise<void>[] = [];
-      const keyAry: KeyData[] = [];
-      for (let id = 0; id < keyList.length; id++) {
+      const projects: any = [];
+      for (let id = 1; id <= count; id++) {
         const promise = async (index: number) => {
-          const keypool = await paymentContract.methods
-            .prepareKeypool(keyList[index])
-            .call();
-          keyAry.push(keypool);
+          const project = await fundContract.methods.fundingView(index).call();
+          const owner = await nftContract.methods.ownerOf(index).call();
+          projects.push({
+            ...project,
+            owner,
+            index,
+          });
         };
         promises.push(promise(id));
       }
-      await Promise.all(promises);
 
-      setProducts(keyAry);
+      await Promise.all(promises);
+      const after = projects.filter(
+        (v: any) => v.owner.toUpperCase() === wallet.address.toUpperCase()
+      );
+      after.sort((a: any, b: any) => a[1] - b[1]);
+      setProjectAry(after);
+      setBlockNumber(bn);
       setIsLoading(false);
     };
     callProducts();
@@ -171,10 +180,10 @@ const MyPage: NextPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-4 gap-6 mt-12">
-              {products?.map((v: KeyData) => (
+              {projectAry?.map((v: any) => (
                 <ProductCard
-                  key={v.key}
-                  keyID={v.key}
+                  key={v.keyID}
+                  keyID={v.keyID}
                   title={v.title}
                   content="BNB Smart Chain (BSC) supports the most popular
               programming languages, flexible tools, and comes with
@@ -184,9 +193,9 @@ const MyPage: NextPage = () => {
                   imgURI="/temp.png"
                   category="NFT"
                   creator={v.owner}
-                  progress={66}
-                  amount={300}
-                  expired={new Date()}
+                  progress={progressing(v[1], v[0])}
+                  amount={replaceBalance(v[0])}
+                  expired={v[3] - blockNumber}
                 />
               ))}
             </div>

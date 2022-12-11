@@ -15,6 +15,7 @@ const Comming: NextPage = () => {
   const [projectAry, setProjectAry] = useState([]);
   const [statusFilter, setStatusFilter] = useState<number>(0);
   const [detailFilter, setDetailFilter] = useState<number>(0);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -41,9 +42,20 @@ const Comming: NextPage = () => {
 
       const after = projects.filter((v: any) => v[2] > bn);
       setProjectAry(after);
+      setBlockNumber(bn);
     };
     getProject();
   }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setBlockNumber(blockNumber + 1);
+    }, 3000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [blockNumber]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
@@ -93,7 +105,7 @@ const Comming: NextPage = () => {
                   creator={v.owner}
                   progress={progressing(v[1], v[0])}
                   amount={replaceBalance(v[0])}
-                  expired={new Date()}
+                  expired={v[2] - blockNumber}
                 />
               ))
             ) : (

@@ -1,11 +1,10 @@
 import React, { FC } from "react";
 import { useRouter } from "next/router";
-import clsx from "clsx";
 
 /* Component */
-import { AutoImage } from "utils";
+import { Button } from "components/asset/button";
 import { Product } from "components/card/ProductCard";
-import { Button } from "../asset/button";
+import { AutoImage, toDate, toHours, zeroCount } from "utils";
 
 const MainCard: FC<Product> = ({
   keyID,
@@ -36,7 +35,15 @@ const MainCard: FC<Product> = ({
             </strong>
             <span>{amount} BNB</span>
           </div>
-          <strong className="text-gray-300">{expired.getDate()}일 남음</strong>
+          {toDate(expired) >= 1 ? (
+            <strong className="text-gray-300">
+              {zeroCount(toDate(expired))}일 남음
+            </strong>
+          ) : (
+            <strong className="text-gray-300">
+              {zeroCount(toHours(expired))}시간 남음
+            </strong>
+          )}
         </div>
         <div className="mt-1 flex items-center">
           <div className="w-full h-2 bg-danger-light rounded-sm">
