@@ -23,6 +23,8 @@ const Milestone: FC<IMilestone> = ({
     setMilestoneArray(milestoneArray.filter((v) => v.keyID !== keyID));
   };
 
+  console.log(milestoneArray);
+
   return (
     <div className="relative">
       <div
@@ -44,22 +46,23 @@ const Milestone: FC<IMilestone> = ({
             <div className="h-20 grid grid-cols-2 gap-x-4 px-4">
               {content.map((v: any) => (
                 <p key={v1()} className="truncate">
-                  - {v.name}
+                  - {v}
                 </p>
               ))}
             </div>
             <div className="text-sm">
-              중도금 :
+              중도금 비율 :
               <span className="text-lg mx-1 text-blue-600 font-medium">
                 {price}
               </span>{" "}
-              BNB
+              %
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 flex justify-end items-center text-gray-500 text-sm">
-          {/* <span>{formatDateSlash(expired)}</span> */}
-          <span>{formatDateSlash(new Date())}</span>
+        <div className="px-6 py-4 flex justify-between items-center text-gray-500 text-sm">
+          <span>{formatDateSlash(new Date(startDate))}</span>
+          <span>~</span>
+          <span>{formatDateSlash(new Date(expired))}</span>
         </div>
       </div>
     </div>

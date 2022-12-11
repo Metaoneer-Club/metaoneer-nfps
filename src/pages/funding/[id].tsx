@@ -8,11 +8,12 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { fundContract, web3 } from "components/blockchain";
+import { fundContract, getBN, nftContract, web3 } from "components/blockchain";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { FundingTable } from "components/table/FundingTable";
 import { FundingModal } from "components/modal/FundingModal";
 import { VoteModal } from "components/modal/VoteModal";
+import { StatusCard } from "components/card/StatusCard";
 
 import {
   accounting,
@@ -25,21 +26,21 @@ import {
 
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isToastState, toastContentState, walletState } from "stores";
-interface Project {
-  limitprice: number;
-  totalFundamount: number;
-  fundingStart: number;
-  fundingEnd: number;
-  fundingList: any;
-  daoPass: number;
-  daoReject: number;
-}
+import { IProject, isToastState, toastContentState, walletState } from "stores";
+
+type Status = 0 | 1 | 2 | 3 | 4 | 5;
+// 0: 펀딩예정
+// 1: 펀딩중
+// 2: 마일스톤 진행중
+// 3: 마일스톤 끝까지 완료
+// 4: 마일스톤 도중 중단됨
+// 5: 펀딩 중단됨
 
 const Product = () => {
   const router = useRouter();
   const wallet = useRecoilValue(walletState);
-  const [project, setProject] = useState<Project>({
+  const [projectCount, setProjectCount] = useState<number>(0);
+  const [project, setProject] = useState<IProject>({
     limitprice: 0,
     totalFundamount: 0,
     fundingStart: 0,
@@ -47,25 +48,44 @@ const Product = () => {
     fundingList: {},
     daoPass: 0,
     daoReject: 0,
+    owner: "0x0000000000000000000000000000000000000000",
   });
+  const [mileStoneAry, setMileStoneAry] = useState([]);
+  const [mileStoneStep, setMileStoneStep] = useState<number>(0);
+  const [daoAry, setDaoAry] = useState([]);
+  const [isStatus, setIsStatus] = useState<Status>(0);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [amount, setAmount, onChangeAmount] = useInput<number>(0);
-  const [blockNumber, setBlockNumber] = useState<number>(864000);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
+  const [isCount, setIsCount] = useState<number>(0);
   const [isLoadingFund, setIsLoadingFund] = useState<boolean>(false);
   const [isLoadingVote, setIsLoadingVote] = useState<boolean>(false);
   const [isOpenFund, setIsOpenFund] = useState<boolean>(false);
   const [isOpenVote, setIsOpenVote] = useState<boolean>(false);
-  const [isVote, setIsVote] = useState<boolean>(false);
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [isVoted, setIsVoted] = useState<number>(0);
+  const [UPDATES, setUPDATES] = useState<number>(0);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
+
+  const [test, , testCh] = useInput<Status>(0);
+
+  useEffect(() => {
+    const getData = async () => {
+      const bn = await getBN();
+      const count = await nftContract.methods.totalSupply().call();
+      setBlockNumber(bn);
+      setIsCount(count);
+    };
+    getData();
+  }, []);
 
   useEffect(() => {
     const projectData = async () => {
       const funding = await fundContract.methods
         .fundingView(router.query.id)
         .call(); // [목표액, 모금액, 펀딩시작일, 펀딩종료일,[펀더지갑], [펀딩금액]]
+
       const funder = await fundContract.methods
         .funderView(
           router.query.id,
@@ -73,10 +93,26 @@ const Product = () => {
           wallet.address || "0x0000000000000000000000000000000000000000"
         )
         .call(); // [대기, 찬성, 반대]
-      // const milestone = await fundContract.methods
-      //   .milestonView(router.query.id)
-      //   .call(); // [마일갯수, [마일시작일], [마일종료일], [마일중도금], [마일중도금비율]]
+
+      const milestone = await fundContract.methods
+        .milestonView(router.query.id)
+        .call(); // [마일갯수, [마일시작일], [마일종료일], [마일중도금], [마일중도금비율]]
+
+      const milestep = await fundContract.methods
+        .milestonStepView(router.query.id)
+        .call(); // 마일스톤 단계
+
       const voter = await fundContract.methods.daoView(router.query.id).call(); // [[찬성], [반대]]
+
+      const milestoneList: any = [];
+      for (let m = 0; m < milestone[1].length; m++) {
+        const milestoneData = [];
+        for (let i = 1; i <= 4; i++) {
+          milestoneData.push(milestone[i][m]);
+        }
+        milestoneList.push(milestoneData);
+      }
+
       const funders = funding[4]?.map((v: any) => v.toUpperCase());
       const fundingList = funders?.reduce(
         (obj: any, key: any, index: number) => ({
@@ -86,12 +122,15 @@ const Product = () => {
         {}
       );
 
-      console.log(funder);
-      console.log(voter);
-
       const votedAry = Object.values(funder);
-      const checkVoted: any =
-        votedAry.indexOf(votedAry.filter((v) => v !== "0")[0]) || 0;
+      const checkVoted: any = votedAry.indexOf(
+        votedAry.filter((v) => v !== "0")[0]
+      );
+
+      const nftOwner = await nftContract.methods
+        .ownerOf(router.query.id)
+        .call();
+      const nftCount = await nftContract.methods.balanceOf(nftOwner).call();
 
       setProject({
         limitprice: funding[0] || 0,
@@ -99,17 +138,36 @@ const Product = () => {
         fundingStart: funding[2] || 0,
         fundingEnd: funding[3] || 0,
         fundingList: fundingList || {},
-        daoPass: voter[0][0], // 마일스톤 위치 0
-        daoReject: voter[0][1],
+        daoPass: voter[0][milestep], // [0번, 1번, 2번 찬성]
+        daoReject: voter[1][milestep], // [0번, 1번, 2번 반대]
+        owner: nftOwner,
       });
-      setIsVoted(checkVoted);
+      setMileStoneAry(milestoneList);
+      setDaoAry(voter);
+      setMileStoneStep(milestep);
+      setProjectCount(nftCount);
+      setIsVoted(checkVoted < 0 ? 0 : checkVoted);
     };
     projectData();
-  }, [router.query.id, wallet.address]);
+  }, [router.query.id, wallet.address, UPDATES]);
 
-  setTimeout(() => {
-    blockNumber > 0 && setBlockNumber(blockNumber - 1);
-  }, 3000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      blockNumber < project.fundingEnd && setBlockNumber(blockNumber + 1);
+    }, 3000);
+
+    // if (blockNumber < project.fundingStart) {
+    //   setIsStatus(0);
+    // } else if (blockNumber <= project.fundingEnd) {
+    //   setIsStatus(1);
+    // } else if (blockNumber > project.fundingEnd) {
+    //   setIsStatus(2);
+    // }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [blockNumber, project.fundingEnd, project.fundingStart]);
 
   const fundingHandler = async (id: string) => {
     if (amount === 0) {
@@ -144,24 +202,7 @@ const Product = () => {
       type: "success",
     });
 
-    const funding = await fundContract.methods
-      .fundingView(router.query.id)
-      .call();
-    const fundingList = funding[4]?.reduce(
-      (obj: any, key: string, index: number) => ({
-        ...obj,
-        [key.toUpperCase()]: funding[5][index],
-      }),
-      {}
-    );
-    setProject({
-      ...project,
-      limitprice: funding[0] || 0,
-      totalFundamount: funding[1] || 0,
-      fundingStart: funding[2] || 0,
-      fundingEnd: funding[3] || 0,
-      fundingList: fundingList || {},
-    });
+    setUPDATES(UPDATES + 1);
     setIsToast(true);
     setIsLoadingFund(false);
     setIsOpenFund(false);
@@ -192,13 +233,7 @@ const Product = () => {
       type: "success",
     });
 
-    const voter = await fundContract.methods.daoView(router.query.id).call();
-    console.log(voter);
-    setProject({
-      ...project,
-      daoPass: voter[0][0],
-      daoReject: voter[0][1],
-    });
+    setUPDATES(UPDATES + 1);
     setIsToast(true);
     setIsLoadingVote(false);
     setIsOpenVote(false);
@@ -228,12 +263,7 @@ const Product = () => {
       type: "danger",
     });
 
-    const voter = await fundContract.methods.daoView(router.query.id).call();
-    setProject({
-      ...project,
-      daoPass: voter[0][0],
-      daoReject: voter[0][1],
-    });
+    setUPDATES(UPDATES + 1);
     setIsToast(true);
     setIsLoadingVote(false);
     setIsOpenVote(false);
@@ -279,6 +309,11 @@ const Product = () => {
     console.log("이후", afterBalance);
   };
 
+  const statusChanger = (e: any) => {
+    testCh(e);
+    setIsStatus(e.target.value);
+  };
+
   return (
     <>
       {isOpenFund && (
@@ -312,24 +347,23 @@ const Product = () => {
               </span>
               <span>프로젝트 제목 {router.query.id}</span>
 
-              <button
-                type="button"
-                className="text-sm mx-4 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
-                onClick={() => setIsVote(!isVote)}
-              >
-                임시 버튼 (투표)
-              </button>
+              <input
+                type="number"
+                className="text-sm w-14 text-center mx-4 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+                value={test}
+                onChange={statusChanger}
+              />
 
               <button
                 type="button"
-                className="text-sm border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+                className="text-sm border mr-4 p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
                 onClick={() => setIsOwner(!isOwner)}
               >
                 임시 버튼 (오너)
               </button>
               <button
                 type="button"
-                className="text-sm border ml-4 p-2 rounded bg-red-500 text-white hover:bg-red-600"
+                className="text-sm border p-2 rounded bg-red-500 text-white hover:bg-red-600"
                 onClick={testHandler}
               >
                 임시 버튼 (인출)
@@ -356,8 +390,15 @@ const Product = () => {
               <Button
                 className="flex items-center bg-white dark:bg-dark shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white"
                 onClick={() => {
-                  if (Number(router.query.id) < 20)
+                  if (Number(router.query.id) < isCount) {
                     router.push(`/funding/${Number(router.query.id) + 1}`);
+                  } else {
+                    setToastContent({
+                      content: "마지막 펀딩입니다.",
+                      type: "primary",
+                    });
+                    setIsToast(true);
+                  }
                 }}
               >
                 <span className="pl-1">다음</span>
@@ -377,202 +418,15 @@ const Product = () => {
             </div>
             <div className="col-span-2 flex flex-col text-center rounded-xl border dark:border-dark-300 bg-white dark:bg-dark">
               <div className="grid grid-cols-2 gap-4 p-6 items-center">
-                <div className="mt-4">
-                  <label className="text-gray-600 dark:text-gray-400">
-                    펀딩 금액
-                  </label>
-                  <p className="mt-2">
-                    <span className="text-3xl mr-1">
-                      {Number(
-                        replaceBalance(project.totalFundamount).toFixed(5)
-                      )}
-                    </span>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      BNB
-                    </span>
-                  </p>
-                </div>
-                <div className="mt-4">
-                  <label className="text-gray-600 dark:text-gray-400">
-                    후원자 수
-                  </label>
-                  <p className="mt-2">
-                    <span className="text-3xl mr-1">
-                      {accounting(Object.keys(project.fundingList).length) || 0}
-                    </span>
-                    <span className="text-gray-600 dark:text-gray-400">명</span>
-                  </p>
-                </div>
-                {isVote ? (
-                  <>
-                    <div className="mt-8">
-                      <label className="text-gray-600 dark:text-gray-400">
-                        마일스톤 1 마감까지
-                      </label>
-                      <div className="text-gray-dark:text-gray-400 mt-1">
-                        <span className="text-black dark:text-gray-300 text-3xl mr-1">
-                          30
-                        </span>
-                        일
-                        <div className="mt-2">
-                          <a
-                            target="_blank"
-                            rel="noreferrer"
-                            href="https://bscscan.com/blocks"
-                            className="text-gray-500 dark:text-gray-300 hover:text-blue-500 hover:underline"
-                          >
-                            {accounting(blockNumber)}
-                          </a>
-                          <span className="dark:text-gray-500 text-sm ml-1">
-                            블록
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-8">
-                      <label className="text-gray-600 dark:text-gray-400">
-                        투표 현황
-                      </label>
-                      <div className="mt-3 flex justify-center items-center">
-                        <p className="text-blue-600 text-3xl mr-1">
-                          {Number(
-                            (project.daoPass > 0
-                              ? (project.daoPass / project.totalFundamount) *
-                                100
-                              : 0
-                            ).toFixed(2)
-                          ) || 0}
-                        </p>
-                        <p className="mx-2">:</p>
-                        <p className="text-red-600 text-3xl mr-1">
-                          {Number(
-                            (project.daoReject > 0
-                              ? (project.daoReject / project.totalFundamount) *
-                                100
-                              : 0
-                            ).toFixed(2)
-                          ) || 0}
-                        </p>
-                      </div>
-                      <div className="mt-3 flex items-center">
-                        <div className="w-full flex items-center justify-between h-3 mb-1 bg-gray-300 rounded-sm">
-                          <div
-                            style={{
-                              width: `${
-                                project.daoPass > 0
-                                  ? (project.daoPass /
-                                      project.totalFundamount) *
-                                    100
-                                  : 0
-                              }%`,
-                            }}
-                            className="h-full bg-blue-600 rounded-l-sm"
-                          />
-                          <div
-                            style={{
-                              width: `${
-                                project.daoReject > 0
-                                  ? (project.daoReject /
-                                      project.totalFundamount) *
-                                    100
-                                  : 0
-                              }%`,
-                            }}
-                            className="h-full bg-red-600 rounded-r-sm"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="mt-8">
-                      <label className="text-gray-600 dark:text-gray-400">
-                        펀딩 종료까지
-                      </label>
-                      <div className="text-gray-dark:text-gray-400 mt-1">
-                        <span className="text-black dark:text-gray-300 text-3xl mr-1">
-                          30
-                        </span>
-                        일
-                        <div className="mt-2">
-                          <a
-                            target="_blank"
-                            rel="noreferrer"
-                            href="https://bscscan.com/blocks"
-                            className="text-gray-500 dark:text-gray-300 hover:text-blue-500 hover:underline"
-                          >
-                            {accounting(blockNumber)}
-                          </a>
-                          <span className="dark:text-gray-500 text-sm ml-1">
-                            블록
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-8">
-                      <label className="text-gray-600 dark:text-gray-400">
-                        펀딩 달성률
-                      </label>
-                      <div className="mt-3">
-                        <span className="text-blue-600 text-3xl mr-1">
-                          {Number(
-                            (
-                              (replaceBalance(project.totalFundamount) /
-                                replaceBalance(project.limitprice)) *
-                              100
-                            ).toFixed(5)
-                          ) || 0}
-                        </span>
-                        %
-                      </div>
-                      <div className="mt-3 flex items-center">
-                        <div className="w-full h-3 mb-1 bg-blue-200 rounded-sm">
-                          <div
-                            style={{
-                              // width: project.limitprice ? project.totalFundamount/ project.limitprice
-                              width: `${
-                                Number(
-                                  (
-                                    (replaceBalance(project.totalFundamount) /
-                                      replaceBalance(project.limitprice)) *
-                                    100
-                                  ).toFixed(5)
-                                ) >= 100
-                                  ? "100%"
-                                  : Number(
-                                      (
-                                        (replaceBalance(
-                                          project.totalFundamount
-                                        ) /
-                                          replaceBalance(project.limitprice)) *
-                                        100
-                                      ).toFixed(5)
-                                    )
-                              }%`,
-                            }}
-                            className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
+                <StatusCard
+                  status={Number(isStatus)}
+                  blockNumber={blockNumber}
+                  project={project}
+                  milestep={Number(mileStoneStep)}
+                />
               </div>
-              {isVote ? (
-                <div className="grid grid-cols-5 gap-4 px-8 py-3">
-                  <div className="col-span-2 text-sm text-center dark:text-gray-300">
-                    <p className="mt-1">이전 단계</p>
-                    <p className="mt-1">현재 단계</p>
-                    <p className="mt-1">다음 단계</p>
-                  </div>
-                  <div className="col-span-3 text-left text-gray-dark:text-gray-400 text-sm">
-                    <p className="mt-1">펀딩 완료</p>
-                    <p className="mt-1">마일스톤 1 진행중</p>
-                    <p className="mt-1">마일스톤 1 투표</p>
-                  </div>
-                </div>
-              ) : (
+
+              {Number(isStatus) <= 1 ? (
                 <div className="grid grid-cols-5 gap-4 px-8 py-3">
                   <div className="col-span-2 text-sm text-center dark:text-gray-300">
                     <p className="mt-1">펀딩 목표액</p>
@@ -586,14 +440,59 @@ const Product = () => {
                         : 0}{" "}
                       BNB
                     </p>
-                    <p className="mt-1">펀딩 진행중</p>
+                    <p className="mt-1">
+                      {Number(isStatus) === 0 ? "펀딩 대기중" : "펀딩 진행중"}
+                    </p>
                     <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
                   </div>
                 </div>
+              ) : (
+                ""
+              )}
+              {Number(isStatus) >= 2 ? (
+                <div className="grid grid-cols-5 gap-4 px-8 py-3">
+                  <div className="col-span-2 text-sm text-center dark:text-gray-300">
+                    <p className="mt-1">이전 단계</p>
+                    <p className="mt-1">현재 단계</p>
+                    <p className="mt-1">다음 단계</p>
+                  </div>
+                  <div className="col-span-3 text-left text-gray-dark:text-gray-400 text-sm">
+                    <p className="mt-1">펀딩 완료</p>
+                    <p className="mt-1">
+                      마일스톤 {Number(mileStoneStep) + 1} 진행중
+                    </p>
+                    <p className="mt-1">
+                      마일스톤 {Number(mileStoneStep) + 2} 시작
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                ""
               )}
 
               <div className="p-8 pt-4 mt-auto w-full">
-                {isVote ? (
+                {Number(isStatus) === 0 ? (
+                  <Button
+                    className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
+                    onClick={() => {}}
+                    disabled
+                  >
+                    <span>펀딩대기</span>
+                  </Button>
+                ) : (
+                  ""
+                )}
+                {Number(isStatus) === 1 ? (
+                  <Button
+                    className="bg-blue-600 text-white w-full hover:bg-blue-700"
+                    onClick={() => setIsOpenFund(true)}
+                  >
+                    <span>펀딩하기</span>
+                  </Button>
+                ) : (
+                  ""
+                )}
+                {Number(isStatus) === 2 ? (
                   <Button
                     className="bg-blue-600 text-white w-full hover:bg-blue-700"
                     onClick={() => setIsOpenVote(true)}
@@ -601,12 +500,7 @@ const Product = () => {
                     <span>투표하기</span>
                   </Button>
                 ) : (
-                  <Button
-                    className="bg-blue-600 text-white w-full hover:bg-blue-700"
-                    onClick={() => setIsOpenFund(true)}
-                  >
-                    <span>펀딩하기</span>
-                  </Button>
+                  ""
                 )}
               </div>
             </div>
@@ -680,6 +574,8 @@ const Product = () => {
                     price={0}
                     blockNumber={blockNumber}
                     isOwner={isOwner}
+                    dao={daoAry}
+                    milestones={mileStoneAry}
                   />
                 ) : (
                   ""
@@ -705,7 +601,8 @@ const Product = () => {
                     />
                   </div>
                   <div className="text-xs">
-                    {shortAddress("0x12A60872B053C009452cdb95178144c8fFbDeA4D")}
+                    {shortAddress(project?.owner) ||
+                      "0x0000000000000000000000000000000000000000"}
                   </div>
                 </div>
                 <p className="mt-2 text-xs">
@@ -715,7 +612,7 @@ const Product = () => {
               <div className="grid grid-cols-2 text-center">
                 <div className="border-r">
                   <p className="text-xs my-2">프로젝트 수</p>
-                  <p className="pb-3">1</p>
+                  <p className="pb-3">{projectCount || 1}</p>
                 </div>
                 <div>
                   <p className="text-xs my-2">받은 펀딩 금액</p>

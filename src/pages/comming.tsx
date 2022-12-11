@@ -4,14 +4,14 @@ import { NextPage } from "next/types";
 /* Component */
 import { ProductCard } from "components/card/ProductCard";
 import { Button } from "components/asset/button";
+import { fundContract, getBN, nftContract } from "components/blockchain";
 import { AutoSVG, progressing, replaceBalance } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
-import { fundContract, getBN, nftContract } from "~/components/blockchain";
 
-const Funding: NextPage = () => {
+const Comming: NextPage = () => {
   const [projectAry, setProjectAry] = useState([]);
   const [statusFilter, setStatusFilter] = useState<number>(0);
   const [detailFilter, setDetailFilter] = useState<number>(0);
@@ -22,7 +22,6 @@ const Funding: NextPage = () => {
     const getProject = async () => {
       const count = await nftContract.methods.totalSupply().call();
       const bn = await getBN();
-
       const promises: Promise<void>[] = [];
       const projects: any = [];
       for (let id = 1; id <= count; id++) {
@@ -39,8 +38,8 @@ const Funding: NextPage = () => {
       }
 
       await Promise.all(promises);
-      const after = projects.filter((v: any) => v[2] < bn);
-      after.sort((a: any, b: any) => a[1] - b[1]);
+
+      const after = projects.filter((v: any) => v[2] > bn);
       setProjectAry(after);
     };
     getProject();
@@ -61,9 +60,8 @@ const Funding: NextPage = () => {
               value={statusFilter}
               className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32"
             >
-              <option value={0}>펀딩 비율</option>
-              <option value={1}>펀딩 비용</option>
-              <option value={2}>펀딩 생성</option>
+              <option value={0}>펀딩 비용</option>
+              <option value={1}>펀딩 생성</option>
             </select>
           </div>
           <div className="text-sm pl-10 flex items-center">
@@ -134,10 +132,6 @@ const Funding: NextPage = () => {
 
 const filterItems = [
   {
-    label: "비율",
-    option: ["전체", "0% ~ 50%", "50% ~ 75%", "75% ~ 100%", "100 이상"],
-  },
-  {
     label: "비용",
     option: [
       "전체",
@@ -153,4 +147,4 @@ const filterItems = [
   },
 ];
 
-export default Funding;
+export default Comming;

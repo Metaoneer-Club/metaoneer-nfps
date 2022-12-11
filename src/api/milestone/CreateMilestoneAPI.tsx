@@ -1,15 +1,13 @@
 import axios from "axios";
-import { ICreateMilestone } from "api/APIModel";
+import { ICreateMilestoneAPI } from "api/APIModel";
 
-const CreateMilestoneAPI = async (args: ICreateMilestone) => {
+const CreateMilestoneAPI = async (args: ICreateMilestoneAPI) => {
   const request = await axios
-    .post("/create", {
-      description: args.description,
-      image: args.image,
-      name: args.name,
-      external_url: args.external_url,
-      attributes: args.attributes,
-      milestones: args.milestones,
+    .post("/milestone", {
+      token_id: args.token_id,
+      milestone_id: args.milestone_id,
+      status: args.status,
+      address: args.address,
     })
     .then((res) => res.data);
 

@@ -1,24 +1,23 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { NextPage } from "next/types";
 import clsx from "clsx";
 
 /* API */
-import { ICreateMilestone } from "api/APIModel";
-import { CreateMilestoneAPI } from "api";
+import { ICreateFundingAPI } from "api/APIModel";
+import { CreateFundingAPI } from "api";
 
 /* Hook */
 import useInput from "hooks/useInput";
 
 /* Component */
-import { fundContract, nftContract } from "components/blockchain";
+import { fundContract, getBN, nftContract, toBN } from "components/blockchain";
 import { Create01, Create02, Create03 } from "components/section";
 import { hexBalance } from "utils";
 
 /* State */
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
 import {
   isToastState,
-  milestoneContentState,
   milestoneState,
   toastContentState,
   walletState,
@@ -26,8 +25,7 @@ import {
 
 const Create: NextPage = () => {
   const wallet = useRecoilValue(walletState);
-  const mileStoneArray = useRecoilValue(milestoneState);
-  const mileStoneContent = useRecoilValue(milestoneContentState);
+  const [mileStoneArray, setMileStoneArray] = useRecoilState(milestoneState);
   const [isTap, setIsTap] = useState<number>(0);
   const [currentKey, setCurrentKey] = useState<string>("");
   const [title, setTitle, onChangeTitle] = useInput<string>("");
@@ -35,11 +33,38 @@ const Create: NextPage = () => {
     "### 여기에 설명을 입력해 주세요."
   );
   const [price, setPrice, onChangePrice] = useInput<number>(0);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [isLoading, setIsLoading] = useState(false);
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [lastDate, setLastDate] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
+
+  console.log(mileStoneArray);
+
+  useEffect(() => {
+    let stDt = new Date();
+    let endDt = new Date();
+    stDt.setDate(stDt.getDate() + 1);
+    endDt.setDate(endDt.getDate() + 2);
+
+    setStartDate(stDt);
+    setEndDate(endDt);
+  }, []);
+
+  useEffect(() => {
+    if (mileStoneArray.length > 0) {
+      const dates = mileStoneArray
+        .map((v) => v.expired)
+        .reduce((prev, curr) =>
+          new Date(prev).getTime() <= new Date(curr).getTime() ? curr : prev
+        );
+      console.log(dates);
+      setLastDate(dates);
+    } else {
+      setLastDate(endDate);
+    }
+  }, [endDate, mileStoneArray]);
 
   const checkRule = () => {
     if (title.length === 0) {
@@ -60,9 +85,34 @@ const Create: NextPage = () => {
       return false;
     }
 
-    if (price === 0) {
+    if (price <= 0) {
       setToastContent({
-        content: "펀딩 목표비용을 입력해 주세요.",
+        content: "펀딩 목표비용은 0보다 커야합니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return false;
+    }
+
+    let dt = new Date();
+    dt.setDate(dt.getDate() + 1);
+    dt.setHours(9, 0, 0);
+    if (startDate < dt) {
+      setToastContent({
+        content: "시작 날짜는 금일보다 커야합니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return false;
+    }
+
+    const middle: number = mileStoneArray?.reduce(
+      (prev, curr) => Number(prev) + Number(curr.price),
+      0
+    );
+    if (middle !== 100) {
+      setToastContent({
+        content: "중도금은 100%로 설정돼야 합니다.",
         type: "danger",
       });
       setIsToast(true);
@@ -80,15 +130,27 @@ const Create: NextPage = () => {
   };
 
   const uploadContract = async () => {
+    const blockNumber = await getBN();
+    const stdt = toBN(blockNumber, startDate);
+    const edt = toBN(blockNumber, endDate);
+
+    const milestoneSdt = mileStoneArray.map((v) =>
+      toBN(blockNumber, v.startDate)
+    );
+    const milestoneEdt = mileStoneArray.map((v) =>
+      toBN(blockNumber, v.expired)
+    );
+    const milestonePrice = mileStoneArray.map((v) => v.price);
+
     try {
       await fundContract.methods
         .FundRegister(
           hexBalance(price),
-          123,
-          345,
-          [123, 345],
-          [345, 567],
-          [20, 50]
+          stdt,
+          edt,
+          milestoneSdt,
+          milestoneEdt,
+          milestonePrice
         )
         .send({
           from: wallet.address,
@@ -115,33 +177,19 @@ const Create: NextPage = () => {
   };
 
   const uploadBackend = async () => {
-    const BASE_URL =
-      "http://nfps.metaoneer.club.s3-website.ap-northeast-2.amazonaws.com/funding/";
-
-    const milestoneData: ICreateMilestone = {
-      description: String(content),
-      image: "",
-      name: `NFPS #${currentKey}`,
-      external_url: BASE_URL + currentKey,
-      attributes: [
-        {
-          trait_type: "title",
-          value: title,
-        },
-        {
-          trait_type: "content",
-          value: String(content),
-        },
-        {
-          trait_type: "milestones",
-          value: mileStoneArray.length,
-        },
-      ],
-      milestones: [mileStoneContent.content],
+    const mileStoneContent: any = mileStoneArray.map((v) => v.content);
+    const fundingData: ICreateFundingAPI = {
+      address: wallet.address,
+      metadata: {
+        title: title,
+        content: String(content),
+        milestones: [mileStoneContent],
+      },
+      token_id: Number(currentKey),
     };
 
     try {
-      await CreateMilestoneAPI(milestoneData);
+      await CreateFundingAPI(fundingData);
       setToastContent({
         content: "프로젝트가 성공적으로 등록되었습니다.",
         type: "success",
@@ -166,14 +214,16 @@ const Create: NextPage = () => {
     setIsLoading(true);
     const contract = await uploadContract();
     // const backend = contract && (await uploadBackend());
-    // if (backend) {
-    // }
-    setTitle("");
-    setContent("");
-    setPrice(0);
+    if (contract) {
+      setTitle("");
+      setContent("");
+      setPrice(0);
+      setMileStoneArray([]);
+      setIsTap(2);
+      window.scrollTo(0, 0);
+    }
+
     setIsLoading(false);
-    setIsTap(2);
-    window.scrollTo(0, 0);
   };
 
   return (
@@ -218,6 +268,7 @@ const Create: NextPage = () => {
                 price={price}
                 startDate={startDate}
                 endDate={endDate}
+                lastDate={lastDate}
                 onChangeTitle={onChangeTitle}
                 onChangeContent={setContent}
                 onChangePrice={onChangePrice}

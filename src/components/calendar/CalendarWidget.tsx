@@ -18,10 +18,10 @@ interface Props {
 
 const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
   return (
-    <div className="mb-5 mt-2">
+    <div className="mt-2 mb-5">
       <div className={clsx("relative mt-2", !isOpen && "mb-5")}>
         <div
-          className="absolute right-0 text-gray-600 flex items-center pr-3 h-full cursor-pointer "
+          className="absolute right-0 text-gray-600 flex items-center pr-3 h-full cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           <AutoSVG
@@ -44,7 +44,10 @@ const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
       </div>
       {isOpen && (
         <Calendar
-          className="-mt-3 bg-white dark:bg-dark rounded w-full p-4 border border-gray-400"
+          className={clsx(
+            "bg-white dark:bg-dark rounded w-full p-4 border border-gray-400",
+            isOpen && "rounded-t-none border-t-0"
+          )}
           onChange={(e: any) => {
             setDate(e);
             setIsOpen(false);

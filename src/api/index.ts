@@ -1,3 +1,7 @@
+/* Funding */
+export * from "api/funding/CreateFundingAPI";
+
+/* Milestone */
 export * from "api/milestone/CreateMilestoneAPI";
 
 /* Profile */

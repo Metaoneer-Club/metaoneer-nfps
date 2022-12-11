@@ -8,7 +8,7 @@ import React, {
 
 /* Component */
 import { Button } from "components/asset/button";
-import { Wallet } from "components/blockchain";
+import { getBN, Wallet } from "components/blockchain";
 import { Editor } from "components/editor/Editor";
 import { CalendarWidget } from "components/calendar/CalendarWidget";
 import { Milestone } from "components/milestone/Milestone";
@@ -27,6 +27,7 @@ interface Props {
   price: number;
   startDate: Date;
   endDate: Date;
+  lastDate: Date;
   onChangeTitle: (e?: ChangeEvent) => void;
   onChangeContent: Dispatch<SetStateAction<string | undefined>>;
   onChangePrice: (e?: ChangeEvent) => void;
@@ -42,6 +43,7 @@ const Create01: FC<Props> = ({
   price,
   startDate,
   endDate,
+  lastDate,
   onChangeTitle,
   onChangeContent,
   onChangePrice,
@@ -56,6 +58,8 @@ const Create01: FC<Props> = ({
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
+  console.log(mileStoneArray);
+
   const commingSoonHandler = () => {
     setToastContent({
       content: "Comming Soon!",
@@ -66,7 +70,15 @@ const Create01: FC<Props> = ({
 
   return (
     <div>
-      {isOpen ? <MilestoneModal close={setIsOpen} /> : ""}
+      {isOpen ? (
+        <MilestoneModal
+          baseDate={lastDate}
+          totalPrice={price}
+          close={setIsOpen}
+        />
+      ) : (
+        ""
+      )}
       <div className="mt-8 p-8 pt-0 border-b">
         <div>
           <div className="flex items-center font-semibold">
@@ -116,7 +128,7 @@ const Create01: FC<Props> = ({
           </div>
           <div>
             <input
-              className="form-input dark:border-dark-300 dark:bg-dark-400 dark:text-gray-300 mt-1 w-full rounded border border-gray-400 p-2"
+              className="form-input px-3 dark:border-dark-300 dark:bg-dark-400 dark:text-gray-300 mt-1 w-full rounded border border-gray-400 p-2"
               type="number"
               value={price}
               onChange={onChangePrice}
@@ -228,7 +240,7 @@ const Create01: FC<Props> = ({
                 <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
                 <span>
                   {mileStoneArray[mileStoneArray.length - 1]?.expired ? (
-                    <span>{formatDate(endDate)}</span>
+                    <span>{formatDate(lastDate)}</span>
                   ) : (
                     "마일스톤을 추가해 주세요."
                   )}
@@ -239,6 +251,9 @@ const Create01: FC<Props> = ({
           <div className="mt-4 text-gray-600 dark:text-dark-300 text-sm">
             <p>
               ※ 프로젝트는 펀딩 시작일부터 마일스톤 마감일까지의 기준입니다.
+            </p>
+            <p>
+              ※ 모든 일정은 <strong>매 09시</strong>를 기준으로 진행됩니다.
             </p>
             <p>
               ※ 모든 마일스톤은 종료 후 DAO 투표를 진행하며, 반대표가 많을 시에
@@ -254,14 +269,7 @@ const Create01: FC<Props> = ({
         <FormWallet address={wallet.address} />
       </div>
 
-      <div className="grid grid-cols-3 gap-4 p-8">
-        <Button
-          className="rounded py-4 text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
-          onClick={commingSoonHandler}
-          disabled={!wallet.address}
-        >
-          <span>임시 저장</span>
-        </Button>
+      <div className="grid grid-cols-2 gap-4 p-8">
         <Button
           className="col-span-2 rounded py-4 text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
           onClick={continueHandler}

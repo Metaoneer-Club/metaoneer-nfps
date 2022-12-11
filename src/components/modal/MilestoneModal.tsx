@@ -15,7 +15,7 @@ import useInput from "hooks/useInput";
 import { Button } from "components/asset/button";
 import { CalendarWidget } from "components/calendar/CalendarWidget";
 import { InputWidget } from "components/input/InputWidget";
-import { AutoSVG } from "utils";
+import { AutoSVG, formatDate } from "utils";
 
 /* State */
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -28,16 +28,16 @@ import {
 } from "stores";
 
 interface Props {
+  baseDate: Date;
+  totalPrice: number;
   close: Dispatch<SetStateAction<boolean>>;
 }
 
-const MilestoneModal: FC<Props> = ({ close }) => {
+const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
   const divRef = useRef<any>(0);
-  const [isOpenStart, setIsOpenStart] = useState<boolean>(false);
-  const [isOpenEnd, setIsOpenEnd] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [title, setTitle, onChangeTitle] = useInput<string>("");
   const [price, setPrice, onChangePrice] = useInput<number>(0);
-  const [startDate, setStartDate] = useState<Date>(new Date());
   const [expired, setExpired] = useState<Date>(new Date());
   const [milestoneArray, setMilestoneArray] = useRecoilState(milestoneState);
   const [milestoneContent, setMilestoneContent] = useRecoilState(
@@ -49,28 +49,33 @@ const MilestoneModal: FC<Props> = ({ close }) => {
   const setToastContent = useSetRecoilState(toastContentState);
 
   useEffect(() => {
-    let temp = Array.from(milestoneContent, ([index, data]) => ({
-      index,
-      data,
-    })).map((v: any) => v.data.content);
+    let temp = new Date(baseDate);
+    temp.setDate(temp.getDate() + 1);
+    setExpired(temp);
+  }, [baseDate]);
+
+  console.log(milestoneContent);
+
+  useEffect(() => {
+    let temp = Array.from(milestoneContent.values());
 
     setMilestoneContentAry(temp);
   }, [milestoneContent, milestoneContent.size]);
 
   useEffect(() => {
-    if (isOpenStart || isOpenEnd) {
+    if (isOpen) {
       divRef.current.scrollTop = divRef.current?.scrollHeight;
     }
-  }, [isOpenStart, isOpenEnd]);
+  }, [isOpen]);
 
-  const addMilestoneHandler = () => {
+  const checkRule = () => {
     if (title.length === 0) {
       setToastContent({
         content: "마일스톤 제목을 입력해 주세요.",
         type: "danger",
       });
       setIsToast(true);
-      return;
+      return false;
     }
 
     if (milestoneContentAry.length === 0) {
@@ -79,8 +84,32 @@ const MilestoneModal: FC<Props> = ({ close }) => {
         type: "danger",
       });
       setIsToast(true);
-      return;
+      return false;
     }
+
+    if (price > 100) {
+      setToastContent({
+        content: "중도금 비율은 100%를 넘을 수 없습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return false;
+    }
+
+    if (price < 0) {
+      setToastContent({
+        content: "중도금 비율은 0보다 커야합니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return false;
+    }
+
+    return true;
+  };
+
+  const addMilestoneHandler = async () => {
+    if (!checkRule()) return;
 
     const setUp = milestoneContentAry.map((v: any, i: number) => {
       return {
@@ -90,20 +119,19 @@ const MilestoneModal: FC<Props> = ({ close }) => {
       };
     });
 
-    console.log(setUp);
-
     const inputData: IMilestone = {
       keyID: `ms${v1()}`,
       title: title,
-      content: setUp,
+      content: milestoneContentAry,
       price: price,
-      startDate: 123,
-      expired: 123,
+      startDate: baseDate,
+      expired: expired,
     };
 
     setMilestoneArray([...milestoneArray, inputData]);
     setTitle("");
     setMilestoneContent(new Map());
+    setMilestoneContentAry([]);
     setPrice(0);
     setExpired(new Date());
     close(false);
@@ -147,7 +175,7 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                 마일스톤 산출물
               </label>
               {[...Array(isPlus)]?.map((v, i) => (
-                <InputWidget key={v1()} keyID={v1()} index={i} />
+                <InputWidget key={v1()} index={i} />
               ))}
 
               <div className="flex items-center">
@@ -179,32 +207,44 @@ const MilestoneModal: FC<Props> = ({ close }) => {
                 htmlFor="name"
                 className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
               >
-                <span className="font-semibold mr-2">마일스톤 중도금</span>
-                <span className="text-xs text-gray-600">( 단위 : BNB )</span>
+                <span className="font-semibold mr-2">마일스톤 중도금 비율</span>
+                <span className="text-xs text-gray-600">( 단위 : % )</span>
               </label>
               <input
                 type="number"
                 value={price}
                 onChange={onChangePrice}
-                className="mb-5 mt-2 px-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
+                className="mt-2 px-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
                 placeholder="10"
               />
+              <p className="text-xs mt-2 mb-5">
+                목표액 달성 시
+                <span className="text-sm font-medium mx-1">
+                  {(totalPrice * price) / 100 > totalPrice
+                    ? totalPrice
+                    : (totalPrice * price) / 100 > 0
+                    ? (totalPrice * price) / 100
+                    : 0}
+                </span>
+                BNB
+              </p>
+
               <label className="text-gray-800 text-sm font-bold leading-tight tracking-normal">
                 <span className="font-semibold mr-2">마일스톤 시작일</span>
               </label>
-              <CalendarWidget
-                isOpen={isOpenStart}
-                date={startDate}
-                setIsOpen={setIsOpenStart}
-                setDate={setStartDate}
-              />
+
+              <div className="mt-2 mb-5 rounded bg-neutral-100 dark:bg-dark-400 dark:border-dark-300 font-medium w-full h-10 flex items-center pl-3 text-sm border-gray-400 border">
+                <AutoSVG src="/media/icons/chart.svg" className="mr-2" />
+                <span>{formatDate(baseDate)}</span>
+              </div>
+              <div></div>
               <label className="text-gray-800 text-sm font-bold leading-tight tracking-normal">
                 <span className="font-semibold mr-2">마일스톤 마감일</span>
               </label>
               <CalendarWidget
-                isOpen={isOpenEnd}
+                isOpen={isOpen}
                 date={expired}
-                setIsOpen={setIsOpenEnd}
+                setIsOpen={setIsOpen}
                 setDate={setExpired}
               />
             </div>

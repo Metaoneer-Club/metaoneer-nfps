@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 /* API */
 import { AddProfileAPI, CheckProfileAPI } from "api";
-import { InitialUserData } from "api/APIModel";
+import { IAddProfileAPI, InitialUserData } from "api/APIModel";
 
 /* Component */
 import { paymentContract, signCaller } from "components/blockchain";
@@ -14,6 +14,7 @@ import { AutoImage, AutoSVG, shortAddress } from "utils";
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import axios from "axios";
 
 interface KeyData {
   key: number;
@@ -36,7 +37,7 @@ const MyPage: NextPage = () => {
     const callProducts = async () => {
       if (!wallet.address) {
         setToastContent({
-          content: "Please connect your wallet first.",
+          content: "먼저 지갑을 연결해 주세요.",
           type: "danger",
         });
         setIsToast(true);
@@ -97,13 +98,20 @@ const MyPage: NextPage = () => {
     console.log(a);
   };
 
-  const imageHandler = async () => {
-    const formData = new FormData();
-    formData.append("file", imageData);
-    await AddProfileAPI({});
-    // image: formData,
-    // nonce: "Metaoneer Service.",
-    // address: wallet.address,
+  const imageHandler = async (e: any) => {
+    const formData: any = new FormData();
+    formData.append("nonce", "Metaoneer Service.");
+    formData.append("image", imageData);
+    formData.append("address", wallet.address);
+
+    await axios({
+      method: "POST",
+      url: "/api/profile",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    });
   };
 
   console.log(imageData);
@@ -125,11 +133,11 @@ const MyPage: NextPage = () => {
                 /> */}
                 <input
                   type="file"
+                  name="img_upload"
                   accept="image/jpg,impge/png,image/jpeg,image/gif"
-                  name="profile_img"
                   onChange={(e: any) => setImageData(e.target.files[0])}
                 />
-                <div
+                <button
                   onClick={imageHandler}
                   className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300"
                 >
@@ -137,7 +145,7 @@ const MyPage: NextPage = () => {
                     src="/media/icons/edit.svg"
                     className="w-8 h-8 p-1.5"
                   />
-                </div>
+                </button>
               </div>
               <div className="text-center p-3">
                 <div className="w-full flex-none text-lg text-gray-800 dark:text-gray-300 font-bold leading-none">

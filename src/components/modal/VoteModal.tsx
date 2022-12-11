@@ -25,7 +25,6 @@ const VoteModal: FC<Props> = ({
   onReject,
   close,
 }) => {
-  console.log(isVoted);
   return (
     <>
       <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
@@ -151,6 +150,14 @@ const VoteModal: FC<Props> = ({
                           </div>
                         </span>
                       )}
+                    </Button>
+
+                    <Button
+                      className="col-span-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
+                      onClick={close}
+                      disabled={isLoading}
+                    >
+                      <span>취소</span>
                     </Button>
                   </>
                 )}

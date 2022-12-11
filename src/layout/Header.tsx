@@ -289,12 +289,12 @@ const navItems: {
     url: "/",
   },
   {
-    name: "펀딩",
-    url: "/funding",
+    name: "펀딩예정",
+    url: "/comming",
   },
   {
-    name: "투표",
-    url: "/vote",
+    name: "펀딩",
+    url: "/funding",
   },
 ];
 

@@ -15,3 +15,13 @@ export const accounting = (balance: number) => {
     ? balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     : 0;
 };
+
+export const zeroCount = (balance: number) => {
+  return balance > 0 ? balance : 0;
+};
+
+export const progressing = (base: number, balance: number) => {
+  return Number(
+    ((replaceBalance(base) / replaceBalance(balance)) * 100).toFixed(5)
+  );
+};

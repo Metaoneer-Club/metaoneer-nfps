@@ -52,3 +52,17 @@ export const signCaller = async (account: string) => {
 
   return sign;
 };
+
+export const getBN = async () => {
+  const bn = await web3.eth.getBlockNumber();
+  return bn;
+};
+
+export const toBN = (bn: number, date: Date) => {
+  date.setDate(date.getDate());
+  date.setHours(9, 0, 0);
+
+  let result: number =
+    bn + Math.floor((date.getTime() - Date.now()) / (3 * 1000));
+  return result;
+};

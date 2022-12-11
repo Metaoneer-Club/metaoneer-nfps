@@ -15,18 +15,22 @@ export interface IImageProfileAPI extends InitialUserData {
   image: any;
 }
 
-export interface ICreateMilestone {
-  description: string;
+export interface ICreateMilestoneAPI {
+  token_id: number;
+  milestone_id: number;
+  status: boolean;
+  address: string;
+}
+
+export interface ICreateFundingAPI {
   image?: any;
-  name: string;
-  external_url: string;
-  attributes: {
-    trait_type: string;
-    value: string | number;
-  }[];
-  milestones: {
-    id: number;
-    name: string;
-    done: boolean;
-  }[][];
+  metadata: IFundingMetadata;
+  address: string;
+  token_id: number;
+}
+
+export interface IFundingMetadata {
+  title: string;
+  content: string;
+  milestones: string[][];
 }
