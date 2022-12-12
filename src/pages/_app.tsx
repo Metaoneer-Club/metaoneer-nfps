@@ -9,8 +9,6 @@ import { Spinner } from "components/loading/Spinner";
 import Layout from "layout/Layout";
 
 /* Style */
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 import "~/styles/globals.css";
 
 const App = ({ Component, pageProps }: AppProps) => {

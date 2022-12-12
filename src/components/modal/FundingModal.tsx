@@ -29,16 +29,16 @@ const FundingModal: FC<Props> = ({
   const [isCheck, setIsCheck] = useState<boolean>(false);
   return (
     <>
-      <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
+      <div className="py-12 bg-gray-700/50 dark:bg-dark-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
         <div className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
-          <div className="relative py-4 px-1 md:px-3 bg-white shadow-md rounded border border-gray-400">
+          <div className="relative py-4 px-1 md:px-3 bg-white dark:bg-dark-500 shadow-md rounded border dark:border-dark-300 border-gray-400">
             <div className="py-4 px-4 md:px-7">
               <div className="text-center">
                 <div className="mt-2 mb-5 text-2xl font-bold">
                   펀딩 직전 유의사항
                 </div>
 
-                <div className="mt-3 mb-5 text-left text-sm px-4 py-2 border border-gray-400 rounded">
+                <div className="mt-3 mb-5 text-left text-sm px-4 py-2 border dark:text-gray-400 dark:border-dark-300 border-gray-400 rounded">
                   <p className="mt-1 leading-loose">
                     NPFS는 중앙화된 중개인이 없는 블록체인 탈중앙 플랫폼으로
                     사용자는 스스로의 책임과 판단으로 다른 사용자들이 생성한
@@ -55,7 +55,7 @@ const FundingModal: FC<Props> = ({
               <div className="mt-2">
                 <label
                   htmlFor="name"
-                  className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                  className="text-gray-800 dark:text-gray-400 text-sm font-bold leading-tight tracking-normal"
                 >
                   펀딩 금액<span className="ml-2 text-xs">( 단위 : BNB )</span>
                 </label>
@@ -63,7 +63,7 @@ const FundingModal: FC<Props> = ({
                   type="number"
                   value={amount}
                   onChange={onChangeAmount}
-                  className="mb-5 mt-2 px-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
+                  className="mb-5 mt-2 px-2 text-gray-600 dark:bg-dark-400 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
                   placeholder="0"
                 />
               </div>
@@ -73,7 +73,7 @@ const FundingModal: FC<Props> = ({
                   onClick={() => {
                     !isLoading && setIsCheck(!isCheck);
                   }}
-                  className="mb-5 px-2 cursor-pointer text-gray-700 flex items-center pl-3 text-sm border-gray-400 rounded border"
+                  className="mb-5 px-2 cursor-pointer text-gray-700 dark:text-gray-400 flex items-center pl-3 text-sm dark:border-dark-300 border-gray-400 rounded border"
                 >
                   <input
                     type="checkbox"
@@ -91,7 +91,7 @@ const FundingModal: FC<Props> = ({
 
               <div className="mt-6 flex justify-center text-sm">
                 <Button
-                  className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
+                  className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 dark:border-dark-300 disabled:bg-gray-400"
                   onClick={close}
                   disabled={isLoading}
                 >

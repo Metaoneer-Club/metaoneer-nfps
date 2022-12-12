@@ -34,6 +34,7 @@ const Header: FC<Props> = ({ active }) => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
   useEffect(() => {
     buttonRef.current?.classList.add("animate__fadeIn");
 
@@ -107,9 +108,6 @@ const Header: FC<Props> = ({ active }) => {
     <>
       <div className="bg-white dark:bg-dark-500 border-b dark:border-dark-600">
         <div className="flex max-w-[1200px] px-6 py-3 mx-auto items-center justify-end">
-          <p className="text-white font-bold text-sm mr-8">
-            다크모드는 현재 미완성입니다.
-          </p>
           <button
             ref={buttonRef}
             type="button"

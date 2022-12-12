@@ -4,6 +4,8 @@
 
 @layer utilities {
   @import url("./calendar.css");
+  @import url("./markdown.css");
+  @import url("./mdEditor.css");
 
   .pause {
     animation-play-state: paused;

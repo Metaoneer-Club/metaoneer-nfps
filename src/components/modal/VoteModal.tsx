@@ -27,16 +27,16 @@ const VoteModal: FC<Props> = ({
 }) => {
   return (
     <>
-      <div className="py-12 bg-gray-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
+      <div className="py-12 bg-gray-700/50 dark:bg-dark-700/50 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
         <div className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
-          <div className="relative py-4 px-1 md:px-3 bg-white shadow-md rounded border border-gray-400">
+          <div className="relative py-4 px-1 md:px-3 bg-white dark:bg-dark-500 shadow-md rounded border border-gray-400 dark:border-dark-300">
             <div className="py-4 px-4 md:px-7">
               <div className="text-center">
                 <div className="mt-2 mb-5 text-2xl font-bold">
                   투표 직전 유의사항
                 </div>
 
-                <div className="mt-3 mb-5 text-left text-sm px-4 py-2 border border-gray-400 rounded">
+                <div className="mt-3 mb-5 text-left text-sm px-4 py-2 dark:text-gray-300 dark:border-dark-300 border border-gray-400 rounded">
                   <p className="mt-1 leading-loose">
                     본 투표는 각 마일스톤 단계가 마감될 때마다 진행됩니다.
                     <br></br>

@@ -108,19 +108,30 @@ const MyPage: NextPage = () => {
   };
 
   const imageHandler = async (e: any) => {
+    const url = `${process.env.NEXT_PUBLIC_HOST_API_URL}/api/profile`;
     const formData: any = new FormData();
-    formData.append("nonce", "Metaoneer Service.");
     formData.append("image", imageData);
-    formData.append("address", wallet.address);
 
-    await axios({
+    // await axios({
+    //   method: "POST",
+    //   url: "/api/profile",
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //     Authorization: process.env.NEXT_PUBLIC_HEADER_TOKEN,
+    //   },
+    //   data: formData,
+    // });
+    const response = await fetch(url, {
       method: "POST",
-      url: "/api/profile",
+      body: formData,
       headers: {
-        "Content-Type": "multipart/form-data",
+        Authorization:
+          "eyJ3YWxsZXRUeXBlIjoibWV0YW1hc2siLCJjaGFpbklkIjo4MjE3LCJub25jZSI6Ik5GVCBWZXJpZmllciBOZWVkIFlvdXIgU2lnbi4iLCJhZGRyZXNzIjoiMHg4ZmM0YTVmYTI2MmEwYWEzMTIxZGU0YTdiYzEzZGNhNTk1MmQ2NGIyIiwic2lnbmF0dXJlIjoiMHgwYmVhMGE0OWMwMGU3ODk4MDUyZDI0ZDJmYWU2MTU2YzZiMGJlNjEzODkyMzYzZjM1OWNjYzhkMjdlOGIxN2FjMDFjYTdkZmE5ZGJkMmU3NzliN2Y0MWEzZGE0OGFiMzlkM2RlNTM3M2NmYTk2NDliNGU0Y2NhNzIzMmNjMDVhYjFiIn0",
+        //'Content-Type': 'application/json',
+        //'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryIn@@@@@@@@@@@@',
       },
-      data: formData,
     });
+    console.log(response);
   };
 
   console.log(imageData);
@@ -140,13 +151,19 @@ const MyPage: NextPage = () => {
                   alt="profile"
                   className="scale-110 w-32 h-32 object-cover rounded-2xl"
                 /> */}
-                <input
-                  type="file"
-                  name="img_upload"
-                  accept="image/jpg,impge/png,image/jpeg,image/gif"
-                  onChange={(e: any) => setImageData(e.target.files[0])}
-                />
+                <form
+                  action={`${process.env.NEXT_PUBLIC_HOST_API_URL}/api/profile`}
+                  method="POST"
+                >
+                  <input
+                    type="file"
+                    name="img_upload"
+                    accept="image/jpg,impge/png,image/jpeg,image/gif"
+                    onChange={(e: any) => setImageData(e.target.files[0])}
+                  />
+                </form>
                 <button
+                  type="submit"
                   onClick={imageHandler}
                   className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300"
                 >

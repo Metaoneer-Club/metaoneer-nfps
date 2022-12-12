@@ -8,7 +8,7 @@ import React, {
 
 /* Component */
 import { Button } from "components/asset/button";
-import { getBN, Wallet } from "components/blockchain";
+import { Wallet } from "components/blockchain";
 import { Editor } from "components/editor/Editor";
 import { CalendarWidget } from "components/calendar/CalendarWidget";
 import { Milestone } from "components/milestone/Milestone";
@@ -198,7 +198,7 @@ const Create01: FC<Props> = ({
           </div>
           <Button
             onClick={() => setIsOpen(true)}
-            className="inline-flex mt-4 group cursor-pointer border dark:border-dark-300 shadow px-4 py-3 rounded-lg bg-indigo-600 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 text-white"
+            className="inline-flex mt-4 group cursor-pointer shadow px-4 py-3 rounded-lg bg-indigo-600 dark:bg-indigo-700 transition-all duration-300 items-center text-sm mr-2 hover:bg-indigo-700 dark:hover:bg-indigo-800 text-white"
           >
             <AutoSVG className="w-6 h-6 mr-1" src="/media/icons/plus.svg" />
             <span className="pr-1">마일스톤 추가</span>

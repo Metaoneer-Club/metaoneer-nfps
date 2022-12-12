@@ -8,7 +8,7 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { fundContract, getBN, nftContract, web3 } from "components/blockchain";
+import { fundContract, getBN, nftContract } from "components/blockchain";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { FundingTable } from "components/table/FundingTable";
 import { FundingModal } from "components/modal/FundingModal";
@@ -162,7 +162,6 @@ const Product = () => {
     //   setIsStatus(1);
     // } else if (blockNumber > project.fundingEnd) {
     //   setIsStatus(2);
-    // }
 
     return () => {
       clearInterval(timer);
@@ -276,37 +275,59 @@ const Product = () => {
   };
 
   const interHandler = async () => {
-    console.log("테스트 시작");
-    let beforeBalance = await web3.eth.getBalance(wallet.address);
-    beforeBalance = replaceBalance(beforeBalance);
+    try {
+      await fundContract.methods
+        .interMediatePayment(router.query.id, mileStoneStep)
+        .send({
+          from: wallet.address,
+          gas: 1000000,
+        });
+    } catch (err) {
+      console.log(err);
+      setToastContent({
+        content: "중도금 출금이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      setIsLoadingVote(false);
+      return;
+    }
 
-    await fundContract.methods.interMediatePayment(1, 1).send({
-      from: wallet.address,
-      gas: 1000000,
+    setToastContent({
+      content: "중도금 출금이 완료되었습니다.",
+      type: "success",
     });
 
-    let afterBalance = await web3.eth.getBalance(wallet.address);
-    afterBalance = replaceBalance(afterBalance);
-
-    console.log("이전", beforeBalance);
-    console.log("이후", afterBalance);
+    setUPDATES(UPDATES + 1);
+    setIsToast(true);
+    return;
   };
 
   const refundHandler = async () => {
-    console.log("테스트 시작");
-    let beforeBalance = await web3.eth.getBalance(wallet.address);
-    beforeBalance = replaceBalance(beforeBalance);
+    try {
+      await fundContract.methods.Refund(router.query.id).send({
+        from: wallet.address,
+        gas: 1000000,
+      });
+    } catch (err) {
+      console.log(err);
+      setToastContent({
+        content: "환불이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      setIsLoadingVote(false);
+      return;
+    }
 
-    await fundContract.methods.Refund(1).send({
-      from: wallet.address,
-      gas: 1000000,
+    setToastContent({
+      content: "환불이 완료되었습니다.",
+      type: "success",
     });
 
-    let afterBalance = await web3.eth.getBalance(wallet.address);
-    afterBalance = replaceBalance(afterBalance);
-
-    console.log("이전", beforeBalance);
-    console.log("이후", afterBalance);
+    setUPDATES(UPDATES + 1);
+    setIsToast(true);
+    return;
   };
 
   const statusChanger = (e: any) => {
@@ -342,21 +363,21 @@ const Product = () => {
         <div className="max-w-[1200px] mx-auto pt-16 pb-40">
           <div className="flex justify-between items-center">
             <div className="text-3xl text-center font-bold flex items-center">
-              <span className="px-4 py-2 border rounded-xl text-lg bg-primary-active text-white mr-6">
+              <span className="px-4 py-2 rounded-lg text-lg bg-primary-active text-white mr-6">
                 NFT
               </span>
               <span>프로젝트 제목 {router.query.id}</span>
 
               <input
                 type="number"
-                className="text-sm w-14 text-center mx-4 border p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+                className="text-sm w-14 text-center mx-4 border dark:border-dark-300 p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
                 value={test}
                 onChange={statusChanger}
               />
 
               <button
                 type="button"
-                className="text-sm border mr-4 p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+                className="text-sm border mr-4 p-2 rounded dark:border-dark-300 bg-gray-500 text-white hover:bg-gray-600"
                 onClick={() => setIsOwner(!isOwner)}
               >
                 임시 버튼 (오너)
@@ -579,7 +600,7 @@ const Product = () => {
                   ""
                 )}
               </nav>
-              <Card className="border p-6 bg-white dark:bg-dark dark:border-dark-300 rounded-tl-none rounded-xl">
+              <Card className="border p-6 bg-white dark:text-gray-300 dark:bg-dark dark:border-dark-300 rounded-tl-none rounded-xl">
                 {tabIndex === 0 ? (
                   <p className="leading-relaxed">
                     BNB Smart Chain (BSC) supports the most popular programming
@@ -624,7 +645,7 @@ const Product = () => {
               <h3 className="text-xs font-medium text-gray-dark:text-gray-400 px-6 pt-4">
                 프로젝트 생성자 정보
               </h3>
-              <div className="mt-3 px-6 pb-4 border-b">
+              <div className="mt-3 px-6 pb-4 border-b dark:border-dark-300">
                 <div className="flex items-center">
                   <div className="relative w-7 h-7 mr-2">
                     <AutoImage
@@ -643,7 +664,7 @@ const Product = () => {
                 </p>
               </div>
               <div className="grid grid-cols-2 text-center">
-                <div className="border-r">
+                <div className="border-r dark:border-dark-300">
                   <p className="text-xs my-2">프로젝트 수</p>
                   <p className="pb-3">{projectCount || 1}</p>
                 </div>

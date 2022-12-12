@@ -56,13 +56,13 @@ const Create02: FC<Props> = ({
   return (
     <div>
       <div className="mt-8 px-8">
-        <div>
+        <div className={isOpen === 0 ? "dark:bg-dark-600" : ""}>
           <div
             className={clsx(
               "flex justify-between shadow p-4 transition-colors duration-300",
               isOpen === 0
-                ? "rounded bg-dark text-white"
-                : "hover:bg-gray-700 hover:text-white"
+                ? "rounded bg-dark dark:bg-black/50 text-white"
+                : "hover:bg-gray-700 dark:hover:bg-dark-300 hover:text-white"
             )}
             onClick={() => {
               openHandler(0);
@@ -81,7 +81,7 @@ const Create02: FC<Props> = ({
           {isOpen === 0 ? (
             <div
               className={clsx(
-                "my-2 w-4/5 mx-auto h-56 animate__animated animate__fast",
+                "py-8 w-4/5 mx-auto animate__animated animate__fast",
                 isOpen === 0 ? "animate__fadeIn" : "animate__fadeOut"
               )}
             >
@@ -100,13 +100,13 @@ const Create02: FC<Props> = ({
             ""
           )}
         </div>
-        <div>
+        <div className={isOpen === 1 ? "dark:bg-dark-600" : ""}>
           <div
             className={clsx(
               "flex justify-between shadow p-4 transition-colors duration-300",
               isOpen === 1
-                ? "rounded bg-dark text-white"
-                : "hover:bg-gray-700 hover:text-white"
+                ? "rounded bg-dark dark:bg-black/50 text-white"
+                : "hover:bg-gray-700 dark:hover:bg-dark-300 hover:text-white"
             )}
             onClick={() => openHandler(1)}
           >
@@ -124,7 +124,7 @@ const Create02: FC<Props> = ({
           {isOpen === 1 ? (
             <div
               className={clsx(
-                "w-72 mx-auto group cursor-pointer my-4 animate__animated animate__fast",
+                "py-8 w-72 mx-auto group cursor-pointer my-4 animate__animated animate__fast",
                 isOpen === 1 ? "animate__fadeIn" : "animate__fadeOut"
               )}
             >
@@ -143,13 +143,13 @@ const Create02: FC<Props> = ({
             ""
           )}
         </div>
-        <div>
+        <div className={isOpen === 2 ? "dark:bg-dark-600" : ""}>
           <div
             className={clsx(
               "flex justify-between shadow p-4 transition-colors duration-300",
               isOpen === 2
-                ? "rounded bg-dark text-white"
-                : "hover:bg-gray-700 hover:text-white"
+                ? "rounded bg-dark dark:bg-black/50 text-white"
+                : "hover:bg-gray-700 dark:hover:bg-dark-300 hover:text-white"
             )}
             onClick={() => openHandler(2)}
           >
@@ -166,13 +166,13 @@ const Create02: FC<Props> = ({
           {isOpen === 2 ? (
             <div
               className={clsx(
-                "my-4 animate__animated animate__fast",
+                "px-4 py-8 animate__animated animate__fast",
                 isOpen === 2 ? "animate__fadeIn" : "animate__fadeOut"
               )}
             >
               <div className="flex justify-between items-center">
                 <div className="text-lg text-center font-bold flex items-center">
-                  <span className="px-4 py-2 text-xs border rounded-lg bg-primary-active text-white mr-4">
+                  <span className="px-4 py-2 text-xs rounded-lg bg-primary-active text-white mr-4">
                     NFT
                   </span>
                   <span className="text-lg">{dummy.title}</span>
@@ -188,36 +188,49 @@ const Create02: FC<Props> = ({
                     />
                   </div>
                 </div>
-                <div className="col-span-2 flex flex-col text-center rounded-xl border bg-white">
+                <div className="col-span-2 flex flex-col text-center rounded-xl border bg-white dark:bg-dark dark:border-dark-300">
                   <div className="grid grid-cols-2 gap-4 p-4 items-center text-sm">
                     <div className="mt-4">
-                      <label className="text-gray-600">펀딩 금액</label>
+                      <label className="text-xs text-gray-600 dark:text-gray-400">
+                        펀딩 금액
+                      </label>
                       <p className="mt-2">
                         <span className="text-xl mr-1">
                           {accounting(0) || 0}
                         </span>
-                        <span className="text-gray-600">BNB</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          BNB
+                        </span>
                       </p>
                     </div>
                     <div className="mt-4">
-                      <label className="text-gray-600">후원자 수</label>
+                      <label className="text-xs text-gray-600 dark:text-gray-400">
+                        후원자 수
+                      </label>
                       <p className="mt-2">
                         <span className="text-xl mr-1">
                           {accounting(0) || 0}
                         </span>
-                        <span className="text-gray-600">명</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          명
+                        </span>
                       </p>
                     </div>
                     <div className="mt-2">
-                      <label className="text-gray-600">펀딩 종료까지</label>
-                      <div className="text-gray-600 mt-1">
-                        <span className="text-black text-xl mr-1">30</span>일
+                      <label className="text-xs text-gray-600 dark:text-gray-400">
+                        펀딩 종료까지
+                      </label>
+                      <div className="text-gray-600 dark:text-gray-400 mt-1">
+                        <span className="text-black dark:text-white text-xl mr-1">
+                          30
+                        </span>
+                        일
                         <div className="mt-2">
                           <a
                             target="_blank"
                             rel="noreferrer"
                             href="https://bscscan.com/blocks"
-                            className="text-gray-500 hover:text-blue-500 hover:underline"
+                            className="text-gray-500 text-xs hover:text-blue-500 hover:underline"
                           >
                             {accounting(86400)}
                           </a>
@@ -226,7 +239,9 @@ const Create02: FC<Props> = ({
                       </div>
                     </div>
                     <div className="mt-2">
-                      <label className="text-gray-600">펀딩 달성률</label>
+                      <label className="text-xs text-gray-600 dark:text-gray-400">
+                        펀딩 달성률
+                      </label>
                       <p className="mt-3">
                         <span className="text-blue-600 text-xl mr-1">30</span>%
                       </p>
@@ -234,7 +249,6 @@ const Create02: FC<Props> = ({
                         <div className="w-full h-3 mb-1 bg-blue-200 rounded-sm">
                           <div
                             style={{
-                              // width: progress >= 100 ? "100%" : `${progress}%`,
                               width: "30%",
                             }}
                             className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
@@ -244,12 +258,12 @@ const Create02: FC<Props> = ({
                     </div>
                   </div>
                   <div className="grid grid-cols-5 gap-4 px-8">
-                    <div className="col-span-2 text-xs text-center">
+                    <div className="col-span-2 text-[8px] text-center">
                       <p>펀딩 목표액</p>
                       <p className="mt-1">현재 단계</p>
                       <p className="mt-1">펀딩 기간</p>
                     </div>
-                    <div className="col-span-3 text-left text-gray-600 text-xs">
+                    <div className="col-span-3 text-[8px] text-left text-gray-600 dark:text-gray-400 text-xs">
                       <p>{accounting(2000)} BNB</p>
                       <p className="mt-1">펀딩 진행중</p>
                       <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
@@ -269,12 +283,12 @@ const Create02: FC<Props> = ({
 
               <div className="grid grid-cols-3 gap-6 pt-4">
                 <div className="col-span-2 -mt-12">
-                  <nav className="inline-flex flex-row bg-white border border-b-0 rounded rounded-b-none">
+                  <nav className="inline-flex flex-row bg-white dark:bg-dark dark:border-dark-300 border border-b-0 rounded rounded-b-none">
                     <button
                       type="button"
                       onClick={() => setTabIndex(0)}
                       className={clsx(
-                        "text-gray-600 text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                        "text-gray-600 dark:text-white text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                         tabIndex === 0 &&
                           "font-medium border-b-2 border-blue-500"
                       )}
@@ -285,7 +299,7 @@ const Create02: FC<Props> = ({
                       type="button"
                       onClick={() => setTabIndex(1)}
                       className={clsx(
-                        "text-gray-600 text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                        "text-gray-600 dark:text-white text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                         tabIndex === 1 &&
                           "font-medium border-b-2 border-blue-500"
                       )}
@@ -293,7 +307,7 @@ const Create02: FC<Props> = ({
                       마일스톤
                     </button>
                   </nav>
-                  <Card className="border p-6 bg-white rounded-tl-none text-sm rounded-xl">
+                  <Card className="border p-6 bg-white dark:text-gray-300 dark:bg-dark dark:border-dark-300 rounded-tl-none text-sm rounded-xl">
                     {tabIndex === 0 ? (
                       <p className="leading-relaxed">
                         BNB Smart Chain (BSC) supports the most popular
@@ -325,11 +339,11 @@ const Create02: FC<Props> = ({
                     )}
                   </Card>
                 </div>
-                <Card className="self-start border mt-1 bg-white rounded-xl">
-                  <h3 className="text-xs font-medium text-gray-600 px-6 pt-4">
+                <Card className="self-start border mt-1 bg-white dark:bg-dark dark:border-dark-300 rounded-xl">
+                  <h3 className="text-xs font-medium text-gray-600 dark:text-gray-400 px-6 pt-4">
                     프로젝트 생성자 정보
                   </h3>
-                  <div className="mt-3 px-6 pb-4 border-b">
+                  <div className="mt-3 px-6 pb-4 border-b dark:border-dark-300">
                     <div className="flex items-center">
                       <div className="relative w-7 h-7 mr-2">
                         <AutoImage
@@ -349,7 +363,7 @@ const Create02: FC<Props> = ({
                     </p>
                   </div>
                   <div className="grid grid-cols-2 text-center">
-                    <div className="border-r">
+                    <div className="border-r dark:border-dark-300">
                       <p className="text-xs my-2">프로젝트 수</p>
                       <p className="text-sm pb-3">5</p>
                     </div>

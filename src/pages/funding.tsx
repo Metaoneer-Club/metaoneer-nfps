@@ -71,7 +71,7 @@ const Funding: NextPage = () => {
             <select
               onChange={(e: any) => setStatusFilter(e.target.value)}
               value={statusFilter}
-              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32"
+              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] dark:border-dark-300 dark:bg-dark-400 appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32"
             >
               <option value={0}>펀딩 비율</option>
               <option value={1}>펀딩 비용</option>
@@ -83,7 +83,7 @@ const Funding: NextPage = () => {
             <select
               onChange={(e: any) => setDetailFilter(e.target.value)}
               value={detailFilter}
-              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] appearance-none text-sm border border-gray-400 rounded px-6 py-2"
+              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] dark:border-dark-300 dark:bg-dark-400 appearance-none text-sm border border-gray-400 rounded px-6 py-2"
             >
               {filterItems[statusFilter].option.map((opt, i) => (
                 <option key={opt} value={i}>
@@ -111,7 +111,7 @@ const Funding: NextPage = () => {
                 />
               ))
             ) : (
-              <div className="bg-white p-4 border rounded flex items-center justify-between">
+              <div className="bg-white dark:bg-dark dark:border-dark-300 p-4 border rounded flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="w-1 h-5 mr-2 bg-dark rounded-sm" />
                   <p className="">로딩중 입니다...</p>

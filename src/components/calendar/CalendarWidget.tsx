@@ -19,9 +19,14 @@ interface Props {
 const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
   return (
     <div className="mt-2 mb-5">
-      <div className={clsx("relative mt-2", !isOpen && "mb-5")}>
+      <div
+        className={clsx(
+          "relative mt-2 dark:bg-dark-400 dark:border-dark-300",
+          !isOpen && "mb-5"
+        )}
+      >
         <div
-          className="absolute right-0 text-gray-600 flex items-center pr-3 h-full cursor-pointer"
+          className="absolute right-0 text-gray-600 dark:text-white flex items-center pr-3 h-full cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           <AutoSVG
@@ -35,7 +40,7 @@ const CalendarWidget: FC<Props> = ({ isOpen, date, setIsOpen, setDate }) => {
         </div>
         <div
           className={clsx(
-            "text-gray-600 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 border",
+            "text-gray-600 dark:text-white font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 dark:border-dark-300 border",
             isOpen ? " rounded-t" : "rounded"
           )}
         >

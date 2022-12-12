@@ -36,13 +36,13 @@ const Milestone: FC<IMilestone> = ({
           className="group-hover:text-danger"
         />
       </div>
-      <div className="rounded-lg border shadow bg-white">
-        <div className="mt-1 px-6 py-4 border-b">
+      <div className="rounded-lg border shadow bg-white dark:bg-dark dark:border-dark-300">
+        <div className="mt-1 px-6 py-4 border-b dark:border-dark-300">
           <div className="flex items-center">
             <Badge className="w-16 text-center bg-blue-600 mr-3">시작 전</Badge>
             <div className="w-full text-xl font-medium truncate">{title}</div>
           </div>
-          <div className="text-gray-500 text-sm mt-4">
+          <div className="text-gray-500 dark:text-gray-400 text-sm mt-4">
             <div className="h-20 grid grid-cols-2 gap-x-4 px-4">
               {content.map((v: any) => (
                 <p key={v1()} className="truncate">
@@ -59,7 +59,7 @@ const Milestone: FC<IMilestone> = ({
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 flex justify-between items-center text-gray-500 text-sm">
+        <div className="px-6 py-4 flex justify-between items-center text-gray-500 dark:text-gray-400 text-sm">
           <span>{formatDateSlash(new Date(startDate))}</span>
           <span>~</span>
           <span>{formatDateSlash(new Date(expired))}</span>

@@ -30,7 +30,7 @@ const InputWidget: FC<Props> = ({ index }) => {
       type="text"
       value={milestoneContent.get(index) || ""}
       onChange={changeData}
-      className="mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 rounded border"
+      className="mt-2 dark:bg-dark-400 text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 dark:border-dark-300 rounded border"
       placeholder="M2E 앱 안드로이드 출시"
     />
   );

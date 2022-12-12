@@ -57,7 +57,7 @@ const MilestoneUser: FC<Props> = ({
                 </div>
                 <div
                   onClick={() => setIsOpen(true)}
-                  className="rounded-lg border dark:bg-dark-500 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none"
+                  className="rounded-lg border dark:bg-dark-700 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none"
                 >
                   <div className="flex justify-between items-center">
                     <div>

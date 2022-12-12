@@ -61,6 +61,7 @@
 .react-calendar__tile:disabled {
   background-color: #777;
 }
+
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
   background-color: #f1f1f1;
