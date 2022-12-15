@@ -1,10 +1,19 @@
 import { web3 } from "components/blockchain";
 import { replaceBalance } from "utils";
+import sigPacker from "signature-packer";
 
 export interface Wallet {
   address: string;
   balance: number;
   network: number;
+}
+
+export interface Packer {
+  wallet: string;
+  nonce: string;
+  address: string;
+  network: number;
+  signature: number;
 }
 
 export const setMetamaskAccount = async () => {
@@ -41,14 +50,10 @@ export const changeNetwork = async (chainId: number) => {
 export const signCaller = async (account: string) => {
   const { ethereum } = window;
 
-  const sign = await ethereum
-    .request({
-      method: "personal_sign",
-      params: ["Metaoneer Service.", account],
-    })
-    .catch(() => {
-      throw new Error("Sign has been Canceled.");
-    });
+  const sign = await ethereum.request({
+    method: "personal_sign",
+    params: ["Metaoneer Service.", account],
+  });
 
   return sign;
 };
@@ -65,4 +70,16 @@ export const toBN = (bn: number, date: Date) => {
   let result: number =
     bn + Math.floor((date.getTime() - Date.now()) / (3 * 1000));
   return result;
+};
+
+export const tokenPacker = (args: Packer) => {
+  let token = sigPacker.encode(
+    args.wallet,
+    args.nonce,
+    args.network,
+    args.address,
+    args.signature
+  );
+
+  return token;
 };

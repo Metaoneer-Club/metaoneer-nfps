@@ -63,7 +63,9 @@ const ProductCard: FC<Product> = ({
                 </strong>
                 <span>{amount} BNB</span>
               </div>
-              {toDate(expired) >= 1 ? (
+              {expired <= 0 ? (
+                <strong className="text-gray-500">펀딩 종료됨</strong>
+              ) : toDate(expired) >= 1 ? (
                 <strong className="text-gray-500">
                   {zeroCount(toDate(expired))}일 남음
                 </strong>

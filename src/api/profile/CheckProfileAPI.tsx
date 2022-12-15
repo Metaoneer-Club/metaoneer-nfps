@@ -3,7 +3,7 @@ import { InitialUserData } from "api/APIModel";
 
 const CheckProfileAPI = async (args: InitialUserData) => {
   const request = await axios
-    .get(`?chain_id=${args.chain_id}&address=${args.address}`)
+    .get(`/api/profile/${args.chain_id}/${args.address}?_=${Date.now()}`)
     .then((res) => res.data);
 
   return request;

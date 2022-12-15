@@ -3,16 +3,10 @@ export interface InitialUserData {
   chain_id?: number;
 }
 
-export interface IAddProfileAPI extends InitialUserData {
-  nonce?: string;
-  image?: any;
-  signature?: string;
-  nickname?: string;
-  content?: string;
-}
-
-export interface IImageProfileAPI extends InitialUserData {
-  image: any;
+export interface IAddProfileAPI {
+  token: string;
+  nickname: string;
+  content: string;
 }
 
 export interface ICreateMilestoneAPI {

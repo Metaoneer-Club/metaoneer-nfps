@@ -167,9 +167,9 @@ const Header: FC<Props> = ({ active }) => {
               <div className="flex mr-4 items-center">
                 <Button
                   className={clsx(
-                    "group flex items-center text-sm border dark:border-dark-300 shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white",
+                    "group flex items-center text-sm border dark:border-dark-300 shadow hover:bg-dark dark:hover:bg-dark-400 hover:text-white",
                     router.asPath === "/create" &&
-                      "bg-gray-800 dark:bg-dark-600 text-white"
+                      "bg-gray-800 dark:bg-dark-400 text-white"
                   )}
                   onClick={moveCreateHandler}
                 >
@@ -186,9 +186,9 @@ const Header: FC<Props> = ({ active }) => {
               <div className="relative">
                 <Button
                   className={clsx(
-                    "flex items-center w-40 text-sm border dark:border-dark-300 shadow rounded-2xl py-3.5 group disabled:bg-gray-400 disabled:text-white hover:bg-dark dark:hover:bg-dark-600 hover:text-white",
+                    "flex items-center w-40 text-sm border dark:border-dark-300 shadow rounded-2xl py-3.5 group disabled:bg-gray-400 disabled:text-white hover:bg-dark dark:hover:bg-dark-400 hover:text-white",
                     router.asPath === "/my" &&
-                      "bg-gray-800 dark:bg-dark-600 text-white"
+                      "bg-gray-800 dark:bg-dark-400 text-white"
                   )}
                   onClick={() => {
                     Boolean(!wallet.address)

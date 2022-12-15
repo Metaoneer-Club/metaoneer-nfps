@@ -104,6 +104,8 @@ const Product = () => {
 
       const voter = await fundContract.methods.daoView(router.query.id).call(); // [[찬성], [반대]]
 
+      console.log(funding, funder, milestone, milestep, voter);
+
       const milestoneList: any = [];
       for (let m = 0; m < milestone[1].length; m++) {
         const milestoneData = [];

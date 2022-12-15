@@ -6,17 +6,12 @@ const AddProfileAPI = async (args: IAddProfileAPI) => {
     .post(
       `/api/profile`,
       {
-        nonce: args.nonce,
-        address: args.address,
-        chain_id: args.chain_id,
-        signature: args.signature,
-        image: args.image,
         nickname: args.nickname,
         content: args.content,
       },
       {
         headers: {
-          "Content-type": "multipart/form-data",
+          Authorization: args.token,
         },
       }
     )

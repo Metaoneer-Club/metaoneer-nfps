@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useQuery } from "react-query";
 import axios from "axios";
 
 /* API */
@@ -12,8 +13,10 @@ import {
   getBN,
   nftContract,
   signCaller,
+  tokenPacker,
 } from "components/blockchain";
 import { Product, ProductCard } from "components/card/ProductCard";
+import { Button } from "components/asset/button";
 import {
   AutoImage,
   AutoSVG,
@@ -29,10 +32,24 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 const MyPage: NextPage = () => {
   const router = useRouter();
   const wallet = useRecoilValue(walletState);
+  const { isLoading: loadingProfile, data } = useQuery(
+    ["Profile"],
+    async () => {
+      const res = await CheckProfileAPI({
+        address: wallet.address,
+        chain_id: wallet.network,
+      });
+
+      return res;
+    },
+    {
+      staleTime: 500,
+    }
+  );
   const [projectAry, setProjectAry] = useState<Product[]>([]);
   const [blockNumber, setBlockNumber] = useState<number>(0);
-  const [imageData, setImageData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -78,17 +95,34 @@ const MyPage: NextPage = () => {
   }, [router, setIsToast, setToastContent, wallet.address]);
 
   const editProfileHandler = async () => {
-    const sign = await signCaller(wallet.address);
+    setIsUpdate(true);
+    const sign = await signCaller(wallet.address).catch(() => {
+      setToastContent({
+        content: "서명이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+    });
+
+    let token = tokenPacker({
+      wallet: "metamask",
+      nonce: "Metaoneer Service.",
+      network: wallet.network,
+      address: wallet.address,
+      signature: sign,
+    });
+
     try {
       await AddProfileAPI({
-        nonce: "Metaoneer Service.",
-        address: wallet.address,
-        chain_id: wallet.network,
-        signature: sign,
-        image: imageData,
+        token: token,
         nickname: "Orbit",
         content: "하이용",
       });
+      setToastContent({
+        content: "프로필이 성공적으로 업데이트 되었습니다.",
+        type: "success",
+      });
+      setIsToast(true);
     } catch (err) {
       setToastContent({
         content: "프로필 업데이트에 실패하였습니다.",
@@ -96,128 +130,153 @@ const MyPage: NextPage = () => {
       });
       setIsToast(true);
     }
-  };
-
-  const testHandler = async () => {
-    const a = await CheckProfileAPI({
-      address: wallet.address,
-      chain_id: wallet.network,
-    });
-
-    console.log(a);
+    setIsUpdate(false);
   };
 
   const imageHandler = async (e: any) => {
-    const url = `${process.env.NEXT_PUBLIC_HOST_API_URL}/api/profile`;
-    const formData: any = new FormData();
-    formData.append("image", imageData);
-
-    // await axios({
-    //   method: "POST",
-    //   url: "/api/profile",
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //     Authorization: process.env.NEXT_PUBLIC_HEADER_TOKEN,
-    //   },
-    //   data: formData,
-    // });
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization:
-          "eyJ3YWxsZXRUeXBlIjoibWV0YW1hc2siLCJjaGFpbklkIjo4MjE3LCJub25jZSI6Ik5GVCBWZXJpZmllciBOZWVkIFlvdXIgU2lnbi4iLCJhZGRyZXNzIjoiMHg4ZmM0YTVmYTI2MmEwYWEzMTIxZGU0YTdiYzEzZGNhNTk1MmQ2NGIyIiwic2lnbmF0dXJlIjoiMHgwYmVhMGE0OWMwMGU3ODk4MDUyZDI0ZDJmYWU2MTU2YzZiMGJlNjEzODkyMzYzZjM1OWNjYzhkMjdlOGIxN2FjMDFjYTdkZmE5ZGJkMmU3NzliN2Y0MWEzZGE0OGFiMzlkM2RlNTM3M2NmYTk2NDliNGU0Y2NhNzIzMmNjMDVhYjFiIn0",
-        //'Content-Type': 'application/json',
-        //'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryIn@@@@@@@@@@@@',
-      },
+    setIsUpdate(true);
+    let sign = await signCaller(wallet.address).catch(() => {
+      setToastContent({
+        content: "서명이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return;
     });
-    console.log(response);
+
+    let token = tokenPacker({
+      wallet: "metamask",
+      nonce: "Metaoneer Service.",
+      network: wallet.network,
+      address: wallet.address,
+      signature: sign,
+    });
+
+    const formData: any = new FormData();
+    formData.append("image", e.target.files[0]);
+
+    try {
+      await axios({
+        method: "POST",
+        url: "/api/profile",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
+        data: formData,
+      });
+      setToastContent({
+        content: "프로필 이미지가 성공적으로 업데이트 되었습니다.",
+        type: "success",
+      });
+      setIsToast(true);
+    } catch (err) {
+      console.log(err);
+      setToastContent({
+        content: "프로필 이미지 업데이트에 실패하였습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+    }
+    setIsUpdate(false);
   };
 
-  console.log(imageData);
+  if (isLoading || loadingProfile) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
+        <div className="max-w-[1200px] mx-auto pt-12 pb-40">
+          <div className="text-center mt-8">
+            <div className="relative w-12 h-12 animate-spin mx-auto">
+              <AutoImage src="/media/icons/spinner.svg" alt="loading" />
+            </div>
+            <h2 className="mt-4">로딩중 입니다...</h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
-        <button type="button" onClick={testHandler}>
-          임시 버튼
-        </button>
         <div className="flex flex-col w-2/5 mx-auto">
           <div className="flex bg-white dark:bg-dark border border-white dark:border-dark-300 shadow-lg rounded-xl">
             <div className="border-r dark:border-dark-300 p-4">
-              <div className="relative h-32 w-32">
-                {/* <AutoImage
-                  src="/team/Orbit.png"
-                  alt="profile"
-                  className="scale-110 w-32 h-32 object-cover rounded-2xl"
-                /> */}
-                <form
-                  action={`${process.env.NEXT_PUBLIC_HOST_API_URL}/api/profile`}
-                  method="POST"
-                >
+              <div className="relative w-40">
+                <div className="relative w-28 h-28 mx-auto">
+                  <AutoImage
+                    src={data.image_url || "/media/avatars/blank.svg"}
+                    alt="profile"
+                    className="object-cover rounded-full"
+                  />
+                  {isUpdate && (
+                    <div className="absolute p-9">
+                      <div className="animate-spin">
+                        <AutoSVG
+                          className="w-12 h-12 text-gray-300"
+                          src="/media/icons/spinner.svg"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="absolute group cursor-pointer bottom-0 right-3">
                   <input
                     type="file"
-                    name="img_upload"
+                    className="absolute inset-0 text-sm text-slate-500 opacity-0 w-8 h-8 rounded-full"
                     accept="image/jpg,impge/png,image/jpeg,image/gif"
-                    onChange={(e: any) => setImageData(e.target.files[0])}
+                    onChange={imageHandler}
                   />
-                </form>
-                <button
-                  type="submit"
-                  onClick={imageHandler}
-                  className="absolute cursor-pointer right-0 bottom-2 -ml-3p-1 text-xs bg-gray-400 hover:bg-indigo-500 font-medium tracking-wider rounded-full transition-colors duration-300"
-                >
-                  <AutoSVG
-                    src="/media/icons/edit.svg"
-                    className="w-8 h-8 p-1.5"
-                  />
-                </button>
+                  <button className="text-xs bg-gray-400 group-hover:bg-indigo-500 rounded-full transition-colors duration-300">
+                    <AutoSVG
+                      src="/media/icons/edit.svg"
+                      className="w-8 h-8 p-1.5"
+                    />
+                  </button>
+                </div>
               </div>
               <div className="text-center p-3">
                 <div className="w-full flex-none text-lg text-gray-800 dark:text-gray-300 font-bold leading-none">
-                  Orbit
+                  {data.nickname || "닉네임"}
                 </div>
-                <div className="mt-1 text-xs text-gray-600">
-                  {shortAddress(wallet.address)}
+                <div className="mt-1 text-xs text-gray-600 truncate-5-lines">
+                  {shortAddress(data.address || wallet.address)}
                 </div>
               </div>
             </div>
-            <div className="text-gray-500 dark:text-gray-400 text-sm p-4 my-4">
-              <span>안녕하세요, 뉴비 개발자 오르빗입니다.</span>
+            <div className="w-full text-gray-500 dark:text-gray-400 text-sm p-4">
+              <div className="w-full h-3/4">
+                <label className="font-medium text-xs">프로필 소개</label>
+                <div className="mt-1">{data.content || "프로필 소개란"}</div>
+              </div>
+              <div className="h-1/4 flex justify-end">
+                <Button onClick={editProfileHandler} className="border">
+                  내용 수정하기
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        <>
-          {isLoading ? (
-            <div className="text-center mt-8">
-              <div className="relative w-12 h-12 animate-spin mx-auto">
-                <AutoImage src="/media/icons/spinner.svg" alt="loading" />
-              </div>
-              <h2 className="mt-4">로딩중 입니다...</h2>
-            </div>
-          ) : (
-            <div className="grid grid-cols-4 gap-6 mt-12">
-              {projectAry?.map((v: any) => (
-                <ProductCard
-                  key={v.keyID}
-                  keyID={v.keyID}
-                  title={v.title}
-                  content="BNB Smart Chain (BSC) supports the most popular
+        <div className="grid grid-cols-4 gap-6 mt-12">
+          {projectAry?.map((v: any) => (
+            <ProductCard
+              key={v.keyID}
+              keyID={v.keyID}
+              title="엄청난 제목"
+              content="BNB Smart Chain (BSC) supports the most popular
               programming languages, flexible tools, and comes with
               clear and canonical documentation. You can quickly start
               and deploy your application on a blockchain designed with
               real use in mind."
-                  imgURI="/temp.png"
-                  category="NFT"
-                  creator={v.owner}
-                  progress={progressing(v[1], v[0])}
-                  amount={replaceBalance(v[0])}
-                  expired={v[3] - blockNumber}
-                />
-              ))}
-            </div>
-          )}
-        </>
+              imgURI="/temp.png"
+              category="NFT"
+              creator={v.owner}
+              progress={progressing(v[1], v[0])}
+              amount={replaceBalance(v[0])}
+              expired={v[3] - blockNumber}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
