@@ -64,18 +64,21 @@ const MyPage: NextPage = () => {
         router.push("/");
         return;
       }
-      const count = await nftContract.methods.totalSupply().call();
+      const count = await nftContract.methods.balanceOf(wallet.address).call();
       const bn = await getBN();
 
       const promises: Promise<void>[] = [];
       const projects: any = [];
       for (let id = 1; id <= count; id++) {
         const promise = async (index: number) => {
-          const project = await fundContract.methods.fundingView(index).call();
-          const owner = await nftContract.methods.ownerOf(index).call();
+          const tokenId = await nftContract.methods
+            .tokenOfOwnerByIndex(wallet.address, index - 1)
+            .call();
+          const project = await fundContract.methods
+            .fundingView(tokenId)
+            .call();
           projects.push({
             ...project,
-            owner,
             index,
           });
         };
@@ -83,11 +86,8 @@ const MyPage: NextPage = () => {
       }
 
       await Promise.all(promises);
-      const after = projects.filter(
-        (v: any) => v.owner.toUpperCase() === wallet.address.toUpperCase()
-      );
-      after.sort((a: any, b: any) => a[1] - b[1]);
-      setProjectAry(after);
+      projects.sort((a: any, b: any) => a[1] - b[1]);
+      setProjectAry(projects);
       setBlockNumber(bn);
       setIsLoading(false);
     };
@@ -270,7 +270,7 @@ const MyPage: NextPage = () => {
               real use in mind."
               imgURI="/temp.png"
               category="NFT"
-              creator={v.owner}
+              creator={wallet.address}
               progress={progressing(v[1], v[0])}
               amount={replaceBalance(v[0])}
               expired={v[3] - blockNumber}
