@@ -1,4 +1,4 @@
-import React, { FC, Dispatch, SetStateAction, useState } from "react";
+import React, { FC, useState, MouseEventHandler } from "react";
 import { v1 } from "uuid";
 
 /* Component */
@@ -16,7 +16,10 @@ interface Props {
   content: string[];
   price: number;
   isOwner: boolean;
-  close: Dispatch<SetStateAction<boolean>>;
+  isIndex: number;
+  startBN: number;
+  endBN: number;
+  close: MouseEventHandler<HTMLButtonElement>;
 }
 
 const MilestoneUserModal: FC<Props> = ({
@@ -25,12 +28,12 @@ const MilestoneUserModal: FC<Props> = ({
   content,
   price,
   isOwner,
+  isIndex,
+  startBN,
+  endBN,
   close,
 }) => {
   const [isCheck, setIsCheck] = useState<boolean>(false);
-  const setIsToast = useSetRecoilState(isToastState);
-  const setToastContent = useSetRecoilState(toastContentState);
-
   return (
     <>
       <div className="py-12 bg-gray-700/50 dark:bg-black/60 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
@@ -40,7 +43,7 @@ const MilestoneUserModal: FC<Props> = ({
               <div className="w-full flex items-center text-gray-600 dark:text-gray-300 mb-3">
                 <Badge className="bg-info-active mr-2">진행중</Badge>
                 <h1 className="text-gray-800 dark:text-gray-300 text-lg font-bold">
-                  {dummyData.title} {id}
+                  {dummyData.title} {isIndex + 1}
                 </h1>
               </div>
               <div className="mt-6 text-gray-800 dark:text-gray-300 font-medium">
@@ -66,36 +69,35 @@ const MilestoneUserModal: FC<Props> = ({
                 ))}
               </div>
               <div className="mt-2 w-full h-10 flex items-center">
-                <span className="text-gray-800 dark:text-gray-300 text-sm font-medium mr-20">
-                  중도금
+                <span className="text-gray-800 dark:text-gray-300 text-sm font-medium mr-12">
+                  중도금 비율
                 </span>
                 <div>
                   <span className="text-2xl font-medium mr-1 text-indigo-700">
-                    {dummyData.price}
+                    {price}
                   </span>
-                  <span className="text-sm">BNB</span>
+                  <span className="text-sm">%</span>
                 </div>
               </div>
               <div className="text-gray-800 dark:text-gray-300">
                 <div className="flex items-center">
                   <span className="text-sm font-medium mr-5">
-                    마일스톤 시작일
+                    마일스톤 시작 블럭
                   </span>
-                  <span className="">{formatDateSlash(new Date())}</span>
+                  <span className="">{startBN}</span>
                 </div>
                 <div className="mt-2 flex items-center">
                   <span className="text-sm font-medium mr-5">
-                    마일스톤 마감일
+                    마일스톤 마감 블럭
                   </span>
-                  <span className="">{formatDateSlash(new Date())}</span>
+                  <span className="">{endBN}</span>
                 </div>
               </div>
             </div>
             <div className="mt-4 pb-2 flex justify-center text-sm">
               <Button
                 className="w-28 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
-                onClick={() => close(false)}
-              >
+                onClick={close}>
                 <span>확인</span>
               </Button>
             </div>
@@ -116,5 +118,4 @@ const dummyData: any = {
     "현대백화점 스크린에 대형 광고",
     "와우 챌린지 참여 인원 500명 달성",
   ],
-  price: 80,
 };

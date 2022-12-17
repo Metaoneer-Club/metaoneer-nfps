@@ -27,9 +27,14 @@ const MilestoneUser: FC<Props> = ({
   milestones,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isIndex, setIsIndex] = useState<number>(0);
+
+  const openModalHandler = (index: number) => {
+    setIsOpen(true);
+    setIsIndex(index);
+  };
 
   console.log(milestones);
-  console.log(blockNumber);
 
   return (
     <>
@@ -38,9 +43,12 @@ const MilestoneUser: FC<Props> = ({
           id={id}
           title={title}
           content={content}
-          price={price}
+          price={Number(milestones[isIndex][3])}
+          startBN={Number(milestones[isIndex][0])}
+          endBN={Number(milestones[isIndex][1])}
           isOwner={isOwner}
-          close={setIsOpen}
+          isIndex={isIndex}
+          close={() => setIsOpen(false)}
         />
       ) : (
         ""
@@ -56,9 +64,8 @@ const MilestoneUser: FC<Props> = ({
                   </h1>
                 </div>
                 <div
-                  onClick={() => setIsOpen(true)}
-                  className="rounded-lg border dark:bg-dark-700 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none"
-                >
+                  onClick={() => openModalHandler(i)}
+                  className="rounded-lg border dark:bg-dark-700 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none">
                   <div className="flex justify-between items-center">
                     <div>
                       {blockNumber < v[0] ? (
@@ -111,8 +118,7 @@ const MilestoneUser: FC<Props> = ({
                           target="_blank"
                           rel="noreferrer"
                           href="https://bscscan.com/blocks"
-                          className="text-gray-500 hover:text-blue-500 hover:underline"
-                        >
+                          className="text-gray-500 hover:text-blue-500 hover:underline">
                           {accounting(zeroCount(v[0] - blockNumber))}
                         </a>
                         <span className="text-sm ml-1">블록</span>

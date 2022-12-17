@@ -28,6 +28,9 @@ import {
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import useInput from "~/hooks/useInput";
+import clsx from "clsx";
+import { v1 } from "uuid";
 
 const MyPage: NextPage = () => {
   const router = useRouter();
@@ -48,8 +51,11 @@ const MyPage: NextPage = () => {
   );
   const [projectAry, setProjectAry] = useState<Product[]>([]);
   const [blockNumber, setBlockNumber] = useState<number>(0);
+  const [nickname, , onChangeNickname] = useInput<string>("");
+  const [info, , onChangeInfo] = useInput<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const [isModify, setIsModify] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -96,7 +102,8 @@ const MyPage: NextPage = () => {
 
   const editProfileHandler = async () => {
     setIsUpdate(true);
-    const sign = await signCaller(wallet.address).catch(() => {
+    const nonce = "프로필 내용을 변경합니다.";
+    const sign = await signCaller(nonce, wallet.address).catch(() => {
       setToastContent({
         content: "서명이 취소되었습니다.",
         type: "danger",
@@ -106,17 +113,18 @@ const MyPage: NextPage = () => {
 
     let token = tokenPacker({
       wallet: "metamask",
-      nonce: "Metaoneer Service.",
+      nonce: nonce,
       network: wallet.network,
       address: wallet.address,
       signature: sign,
     });
 
+    axios.defaults.headers.common["Authorization"] = token;
+
     try {
       await AddProfileAPI({
-        token: token,
-        nickname: "Orbit",
-        content: "하이용",
+        nickname: nickname,
+        content: info,
       });
       setToastContent({
         content: "프로필이 성공적으로 업데이트 되었습니다.",
@@ -131,11 +139,13 @@ const MyPage: NextPage = () => {
       setIsToast(true);
     }
     setIsUpdate(false);
+    setIsModify(false);
   };
 
   const imageHandler = async (e: any) => {
     setIsUpdate(true);
-    let sign = await signCaller(wallet.address).catch(() => {
+    const nonce = "프로필 이미지를 변경합니다.";
+    let sign = await signCaller(nonce, wallet.address).catch(() => {
       setToastContent({
         content: "서명이 취소되었습니다.",
         type: "danger",
@@ -146,7 +156,7 @@ const MyPage: NextPage = () => {
 
     let token = tokenPacker({
       wallet: "metamask",
-      nonce: "Metaoneer Service.",
+      nonce: nonce,
       network: wallet.network,
       address: wallet.address,
       signature: sign,
@@ -220,25 +230,39 @@ const MyPage: NextPage = () => {
                     </div>
                   )}
                 </div>
-                <div className="absolute group cursor-pointer bottom-0 right-3">
-                  <input
-                    type="file"
-                    className="absolute inset-0 text-sm text-slate-500 opacity-0 w-8 h-8 rounded-full"
-                    accept="image/jpg,impge/png,image/jpeg,image/gif"
-                    onChange={imageHandler}
-                  />
-                  <button className="text-xs bg-gray-400 group-hover:bg-indigo-500 rounded-full transition-colors duration-300">
-                    <AutoSVG
-                      src="/media/icons/edit.svg"
-                      className="w-8 h-8 p-1.5"
+                {isModify ? (
+                  <div className="absolute group cursor-pointer bottom-0 right-3">
+                    <input
+                      type="file"
+                      className="absolute inset-0 text-sm text-slate-500 opacity-0 w-8 h-8 rounded-full"
+                      accept="image/jpg,impge/png,image/jpeg,image/gif"
+                      onChange={imageHandler}
                     />
-                  </button>
-                </div>
+                    <button className="text-xs bg-gray-300 group-hover:bg-blue-200 rounded-full transition-colors duration-300">
+                      <AutoSVG
+                        src="/media/icons/edit.svg"
+                        className="w-8 h-8 p-1.5"
+                      />
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
               <div className="text-center p-3">
-                <div className="w-full flex-none text-lg text-gray-800 dark:text-gray-300 font-bold leading-none">
-                  {data.nickname || "닉네임"}
-                </div>
+                {isModify ? (
+                  <input
+                    className="text-center dark:border-dark-300 dark:bg-dark-400 dark:text-gray-300 w-full rounded border border-gray-400 p-1"
+                    type="text"
+                    value={nickname}
+                    onChange={onChangeNickname}
+                    placeholder="닉네임"
+                  />
+                ) : (
+                  <div className="w-full flex-none text-lg text-gray-800 dark:text-gray-300 font-bold leading-none p-2">
+                    {data.nickname || "닉네임"}
+                  </div>
+                )}
                 <div className="mt-1 text-xs text-gray-600 truncate-5-lines">
                   {shortAddress(data.address || wallet.address)}
                 </div>
@@ -247,12 +271,43 @@ const MyPage: NextPage = () => {
             <div className="w-full text-gray-500 dark:text-gray-400 text-sm p-4">
               <div className="w-full h-3/4">
                 <label className="font-medium text-xs">프로필 소개</label>
-                <div className="mt-1">{data.content || "프로필 소개란"}</div>
+                {isModify ? (
+                  <textarea
+                    className="mt-1 dark:border-dark-300 dark:bg-dark-400 dark:text-gray-300 w-full rounded border border-gray-400 p-1"
+                    value={info}
+                    onChange={onChangeInfo}
+                    placeholder="프로필 소개"
+                  />
+                ) : (
+                  <div className="mt-1">{data.content || "프로필 소개란"}</div>
+                )}
               </div>
               <div className="h-1/4 flex justify-end">
-                <Button onClick={editProfileHandler} className="border">
-                  내용 수정하기
+                <Button
+                  onClick={() => setIsModify(!isModify)}
+                  disabled={isUpdate}
+                  className={clsx(
+                    "text-white",
+                    isModify
+                      ? "bg-danger hover:bg-danger-active disabled:bg-red-400"
+                      : "bg-primary hover:bg-primary-active disabled:bg-blue-400"
+                  )}>
+                  {isModify ? (
+                    <span>수정 취소</span>
+                  ) : (
+                    <span>프로필 수정하기</span>
+                  )}
                 </Button>
+                {isModify ? (
+                  <Button
+                    className="ml-2 bg-primary hover:bg-primary-active disabled:bg-blue-400 text-white"
+                    disabled={isUpdate}
+                    onClick={editProfileHandler}>
+                    수정하기
+                  </Button>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
@@ -260,7 +315,7 @@ const MyPage: NextPage = () => {
         <div className="grid grid-cols-4 gap-6 mt-12">
           {projectAry?.map((v: any) => (
             <ProductCard
-              key={v.keyID}
+              key={v1()}
               keyID={v.keyID}
               title="엄청난 제목"
               content="BNB Smart Chain (BSC) supports the most popular

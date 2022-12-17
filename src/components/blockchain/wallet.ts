@@ -1,6 +1,6 @@
-import { web3 } from "components/blockchain";
-import { replaceBalance } from "utils";
 import sigPacker from "signature-packer";
+import { dateContract, web3 } from "components/blockchain";
+import { replaceBalance } from "utils";
 
 export interface Wallet {
   address: string;
@@ -47,12 +47,12 @@ export const changeNetwork = async (chainId: number) => {
   }
 };
 
-export const signCaller = async (account: string) => {
+export const signCaller = async (nonce: string, account: string) => {
   const { ethereum } = window;
 
   const sign = await ethereum.request({
     method: "personal_sign",
-    params: ["Metaoneer Service.", account],
+    params: [nonce, account],
   });
 
   return sign;
@@ -69,6 +69,11 @@ export const toBN = (bn: number, date: Date) => {
 
   let result: number =
     bn + Math.floor((date.getTime() - Date.now()) / (3 * 1000));
+  return result;
+};
+
+export const toDate = async (ts: number) => {
+  const result = await dateContract.methods._tempDate(ts).call();
   return result;
 };
 

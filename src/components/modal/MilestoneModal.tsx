@@ -113,8 +113,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
 
     const setUp = milestoneContentAry.map((v: any, i: number) => {
       return {
-        id: i,
-        name: v,
+        output_id: i,
         done: false,
       };
     });
@@ -144,8 +143,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
           <div className="relative py-4 px-1 md:px-3 bg-white dark:bg-dark-500 shadow-md rounded border dark:border-dark-300 border-gray-400">
             <div
               ref={divRef}
-              className="custom-scroll scroll-smooth pt-4 px-4 md:px-7 h-[480px] overflow-auto"
-            >
+              className="custom-scroll scroll-smooth pt-4 px-4 md:px-7 h-[480px] overflow-auto">
               <div className="w-full flex items-center text-gray-600 dark:text-gray-400 mb-3">
                 <AutoSVG
                   className="w-8 h-8 text-info mr-2"
@@ -157,8 +155,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
               </div>
               <label
                 htmlFor="name"
-                className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal"
-              >
+                className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal">
                 마일스톤 제목
               </label>
               <input
@@ -170,8 +167,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
               />
               <label
                 htmlFor="content"
-                className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal"
-              >
+                className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal">
                 마일스톤 산출물
               </label>
               {[...Array(isPlus)]?.map((v, i) => (
@@ -181,8 +177,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
               <div className="flex items-center">
                 <Button
                   onClick={() => setIsPlus(isPlus + 1)}
-                  className="inline-flex mt-2 mb-5 group cursor-pointer shadow px-2 py-2.5 rounded-lg bg-indigo-600 dark:bg-indigo-700 transition-all duration-300 items-center text-xs mr-2 hover:bg-indigo-700 dark:hover:bg-indigo-800 text-white"
-                >
+                  className="inline-flex mt-2 mb-5 group cursor-pointer shadow px-2 py-2.5 rounded-lg bg-indigo-600 dark:bg-indigo-700 transition-all duration-300 items-center text-xs mr-2 hover:bg-indigo-700 dark:hover:bg-indigo-800 text-white">
                   <AutoSVG
                     className="w-5 h-5 mr-1"
                     src="/media/icons/plus.svg"
@@ -194,8 +189,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
                     setIsPlus(0);
                     setMilestoneContent(new Map());
                   }}
-                  className="inline-flex mt-2 mb-5 group cursor-pointer shadow px-2 py-2.5 rounded-lg bg-danger dark:bg-danger-active transition-all duration-300 items-center text-xs mr-2 hover:bg-danger-active dark:hover:bg-red-700 text-white"
-                >
+                  className="inline-flex mt-2 mb-5 group cursor-pointer shadow px-2 py-2.5 rounded-lg bg-danger dark:bg-danger-active transition-all duration-300 items-center text-xs mr-2 hover:bg-danger-active dark:hover:bg-red-700 text-white">
                   <AutoSVG
                     className="w-5 h-5 mr-1"
                     src="/media/icons/circle.svg"
@@ -205,8 +199,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
               </div>
               <label
                 htmlFor="name"
-                className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal"
-              >
+                className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal">
                 <span className="font-semibold mr-2">마일스톤 중도금 비율</span>
                 <span className="text-xs text-gray-600 dark:text-gray-400">
                   ( 단위 : % )
@@ -256,14 +249,12 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
                 onClick={() => {
                   close(false);
                   setMilestoneContent(new Map());
-                }}
-              >
+                }}>
                 <span>취소</span>
               </Button>
               <Button
                 className="w-28 rounded text-center font-bold text-white bg-indigo-700 hover:bg-indigo-900 disabled:bg-indigo-400"
-                onClick={addMilestoneHandler}
-              >
+                onClick={addMilestoneHandler}>
                 <span>추가 완료</span>
               </Button>
             </div>

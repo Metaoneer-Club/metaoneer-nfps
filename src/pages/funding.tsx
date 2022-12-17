@@ -4,12 +4,12 @@ import { NextPage } from "next/types";
 /* Component */
 import { ProductCard } from "components/card/ProductCard";
 import { Button } from "components/asset/button";
-import { AutoSVG, progressing, replaceBalance, toDate, zeroCount } from "utils";
+import { fundContract, getBN, nftContract } from "components/blockchain";
+import { AutoSVG, progressing, replaceBalance } from "utils";
 
 /* State */
 import { useSetRecoilState } from "recoil";
 import { isToastState, toastContentState } from "stores";
-import { fundContract, getBN, nftContract } from "~/components/blockchain";
 
 const Funding: NextPage = () => {
   const [projectAry, setProjectAry] = useState([]);
@@ -21,12 +21,13 @@ const Funding: NextPage = () => {
 
   useEffect(() => {
     const getProject = async () => {
-      const count = await nftContract.methods.totalSupply().call();
+      let count: number = await nftContract.methods.totalSupply().call();
       const bn = await getBN();
 
       const promises: Promise<void>[] = [];
       const projects: any = [];
-      for (let id = 1; id <= count; id++) {
+      for (let id = 1; id <= count - 2; id++) {
+        // 임시 -2
         const promise = async (index: number) => {
           const project = await fundContract.methods.fundingView(index).call();
           const owner = await nftContract.methods.ownerOf(index).call();
@@ -71,8 +72,7 @@ const Funding: NextPage = () => {
             <select
               onChange={(e: any) => setStatusFilter(e.target.value)}
               value={statusFilter}
-              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] dark:border-dark-300 dark:bg-dark-400 appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32"
-            >
+              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] dark:border-dark-300 dark:bg-dark-400 appearance-none text-sm border border-gray-400 rounded px-6 py-2 w-32">
               <option value={0}>펀딩 비율</option>
               <option value={1}>펀딩 비용</option>
               <option value={2}>펀딩 생성</option>
@@ -83,8 +83,7 @@ const Funding: NextPage = () => {
             <select
               onChange={(e: any) => setDetailFilter(e.target.value)}
               value={detailFilter}
-              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] dark:border-dark-300 dark:bg-dark-400 appearance-none text-sm border border-gray-400 rounded px-6 py-2"
-            >
+              className="bg-[length:20px_20px] bg-no-repeat bg-[center_right_12px] bg-[url('/media/icons/dropdown.svg')] dark:border-dark-300 dark:bg-dark-400 appearance-none text-sm border border-gray-400 rounded px-6 py-2">
               {filterItems[statusFilter].option.map((opt, i) => (
                 <option key={opt} value={i}>
                   {opt}
@@ -132,8 +131,7 @@ const Funding: NextPage = () => {
                     type: "primary",
                   });
                   setIsToast(true);
-                }}
-              >
+                }}>
                 Read More
               </Button>
             </div>

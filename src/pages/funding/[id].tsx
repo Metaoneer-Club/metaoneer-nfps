@@ -8,7 +8,13 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { fundContract, getBN, nftContract } from "components/blockchain";
+import {
+  fundContract,
+  getBN,
+  nftContract,
+  toDate,
+  web3,
+} from "components/blockchain";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { FundingTable } from "components/table/FundingTable";
 import { FundingModal } from "components/modal/FundingModal";
@@ -27,6 +33,8 @@ import {
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { IProject, isToastState, toastContentState, walletState } from "stores";
+import { useQuery } from "react-query";
+import { CheckFundingAPI } from "~/api";
 
 type Status = 0 | 1 | 2 | 3 | 4 | 5;
 // 0: 펀딩예정
@@ -38,6 +46,10 @@ type Status = 0 | 1 | 2 | 3 | 4 | 5;
 
 const Product = () => {
   const router = useRouter();
+  const { isLoading, data } = useQuery(["Project"], async () => {
+    const res = await CheckFundingAPI(Number(router.query.id));
+    return res;
+  });
   const wallet = useRecoilValue(walletState);
   const [projectCount, setProjectCount] = useState<number>(0);
   const [project, setProject] = useState<IProject>({
@@ -67,7 +79,6 @@ const Product = () => {
   const [UPDATES, setUPDATES] = useState<number>(0);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
-
   const [test, , testCh] = useInput<Status>(0);
 
   useEffect(() => {
@@ -86,14 +97,6 @@ const Product = () => {
         .fundingView(router.query.id)
         .call(); // [목표액, 모금액, 펀딩시작일, 펀딩종료일,[펀더지갑], [펀딩금액]]
 
-      const funder = await fundContract.methods
-        .funderView(
-          router.query.id,
-          0,
-          wallet.address || "0x0000000000000000000000000000000000000000"
-        )
-        .call(); // [대기, 찬성, 반대]
-
       const milestone = await fundContract.methods
         .milestonView(router.query.id)
         .call(); // [마일갯수, [마일시작일], [마일종료일], [마일중도금], [마일중도금비율]]
@@ -102,7 +105,20 @@ const Product = () => {
         .milestonStepView(router.query.id)
         .call(); // 마일스톤 단계
 
+      const funder = await fundContract.methods
+        .funderView(
+          router.query.id,
+          milestep,
+          wallet.address || "0x0000000000000000000000000000000000000000"
+        )
+        .call(); // [대기, 찬성, 반대]
+
       const voter = await fundContract.methods.daoView(router.query.id).call(); // [[찬성], [반대]]
+
+      const nftOwner = await nftContract.methods
+        .ownerOf(router.query.id)
+        .call();
+      const nftCount = await nftContract.methods.balanceOf(nftOwner).call();
 
       console.log(funding, funder, milestone, milestep, voter);
 
@@ -114,6 +130,8 @@ const Product = () => {
         }
         milestoneList.push(milestoneData);
       }
+
+      console.log(milestoneList);
 
       const funders = funding[4]?.map((v: any) => v.toUpperCase());
       const fundingList = funders?.reduce(
@@ -129,10 +147,20 @@ const Product = () => {
         votedAry.filter((v) => v !== "0")[0]
       );
 
-      const nftOwner = await nftContract.methods
-        .ownerOf(router.query.id)
-        .call();
-      const nftCount = await nftContract.methods.balanceOf(nftOwner).call();
+      let startDt = await web3.eth.getBlock(
+        funding[2],
+        async (err: any, data: any) => data.timestamp
+      );
+      // startDt = await toDate(startDt.timestamp);
+
+      let endDt = await web3.eth.getBlock(
+        milestoneList[milestoneList.length - 1][1],
+        async (err: any, data: any) => data.timestamp
+      );
+      // endDt = await toDate(endDt.timestamp);
+
+      console.log(funding[2], milestoneList[milestoneList.length - 1][1]);
+      console.log(startDt, endDt);
 
       setProject({
         limitprice: funding[0] || 0,
@@ -157,13 +185,6 @@ const Product = () => {
     const timer = setTimeout(() => {
       blockNumber < project.fundingEnd && setBlockNumber(blockNumber + 1);
     }, 3000);
-
-    // if (blockNumber < project.fundingStart) {
-    //   setIsStatus(0);
-    // } else if (blockNumber <= project.fundingEnd) {
-    //   setIsStatus(1);
-    // } else if (blockNumber > project.fundingEnd) {
-    //   setIsStatus(2);
 
     return () => {
       clearInterval(timer);
@@ -202,9 +223,9 @@ const Product = () => {
       content: "펀딩이 완료되었습니다.",
       type: "success",
     });
+    setIsToast(true);
 
     setUPDATES(UPDATES + 1);
-    setIsToast(true);
     setIsLoadingFund(false);
     setIsOpenFund(false);
     setAmount(0);
@@ -214,7 +235,7 @@ const Product = () => {
   const passHandler = async (id: string) => {
     setIsLoadingVote(true);
     try {
-      await fundContract.methods.DAOMilestonPass(id, 0).send({
+      await fundContract.methods.DAOMilestonPass(id, mileStoneStep).send({
         from: wallet.address,
         gas: 10000000,
       });
@@ -244,7 +265,7 @@ const Product = () => {
   const rejectHandler = async (id: string) => {
     setIsLoadingVote(true);
     try {
-      await fundContract.methods.DAOMilestonReject(id, 0).send({
+      await fundContract.methods.DAOMilestonReject(id, mileStoneStep).send({
         from: wallet.address,
         gas: 10000000,
       });
@@ -337,6 +358,23 @@ const Product = () => {
     setIsStatus(e.target.value);
   };
 
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
+        <div className="max-w-[1200px] mx-auto pt-16 pb-40">
+          <div className="w-1/4 bg-white dark:bg-dark dark:border-dark-300 p-4 border rounded flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-1 h-5 mr-2 bg-dark rounded-sm" />
+              <p className="">로딩중 입니다...</p>
+            </div>
+            <div className="animate-spin">
+              <AutoSVG className="w-6 h-6" src="/media/icons/spinner.svg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
   return (
     <>
       {isOpenFund && (
@@ -380,8 +418,7 @@ const Product = () => {
               <button
                 type="button"
                 className="text-sm border mr-4 p-2 rounded dark:border-dark-300 bg-gray-500 text-white hover:bg-gray-600"
-                onClick={() => setIsOwner(!isOwner)}
-              >
+                onClick={() => setIsOwner(!isOwner)}>
                 임시 버튼 (오너)
               </button>
             </div>
@@ -391,8 +428,7 @@ const Product = () => {
                 onClick={() => {
                   if (Number(router.query.id) > 0)
                     router.push(`/funding/${Number(router.query.id) - 1}`);
-                }}
-              >
+                }}>
                 <AutoSVG className="mr-2" src="/media/icons/arrow-left.svg" />
                 <span className="pr-1">이전</span>
               </Button>
@@ -408,8 +444,7 @@ const Product = () => {
                     });
                     setIsToast(true);
                   }
-                }}
-              >
+                }}>
                 <span className="pl-1">다음</span>
                 <AutoSVG className="ml-2" src="/media/icons/arrow-right.svg" />
               </Button>
@@ -501,8 +536,7 @@ const Product = () => {
                   <Button
                     className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
                     onClick={() => {}}
-                    disabled
-                  >
+                    disabled>
                     <span>펀딩대기</span>
                   </Button>
                 ) : (
@@ -511,8 +545,7 @@ const Product = () => {
                 {Number(isStatus) === 1 ? (
                   <Button
                     className="bg-blue-600 text-white w-full hover:bg-blue-700"
-                    onClick={() => setIsOpenFund(true)}
-                  >
+                    onClick={() => setIsOpenFund(true)}>
                     <span>펀딩하기</span>
                   </Button>
                 ) : (
@@ -524,8 +557,7 @@ const Product = () => {
                       className="bg-blue-600 text-white w-full hover:bg-blue-700"
                       onClick={() => {
                         isOwner ? interHandler() : setIsOpenVote(true);
-                      }}
-                    >
+                      }}>
                       <span>{isOwner ? "중도금 받기" : "투표하기"}</span>
                     </Button>
                   </>
@@ -538,8 +570,7 @@ const Product = () => {
                     onClick={() => {
                       isOwner ? interHandler() : "";
                     }}
-                    disabled={!isOwner}
-                  >
+                    disabled={!isOwner}>
                     <span>{isOwner ? "자금받기" : "프로젝트 완료"}</span>
                   </Button>
                 ) : (
@@ -551,8 +582,7 @@ const Product = () => {
                     onClick={() => {
                       isOwner ? "" : refundHandler();
                     }}
-                    disabled={isOwner}
-                  >
+                    disabled={isOwner}>
                     <span>{isOwner ? "환불 진행중" : "환불받기"}</span>
                   </Button>
                 ) : (
@@ -571,8 +601,7 @@ const Product = () => {
                     "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                     tabIndex === 0 &&
                       "font-medium border-b-2 border-blue-500 dark:border-primary"
-                  )}
-                >
+                  )}>
                   프로젝트 소개
                 </button>
                 <button
@@ -582,8 +611,7 @@ const Product = () => {
                     "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                     tabIndex === 1 &&
                       "font-medium border-b-2 border-blue-500 dark:border-primary"
-                  )}
-                >
+                  )}>
                   마일스톤
                 </button>
                 {isOwner ? (
@@ -594,8 +622,7 @@ const Product = () => {
                       "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                       tabIndex === 2 &&
                         "font-medium border-b-2 border-blue-500 dark:border-primary"
-                    )}
-                  >
+                    )}>
                     펀딩 현황
                   </button>
                 ) : (
@@ -674,9 +701,7 @@ const Product = () => {
                   <p className="text-xs my-2">받은 펀딩 금액</p>
                   <p className="pb-3">
                     {Number(
-                      (
-                        32.4 + (replaceBalance(project.totalFundamount) || 0)
-                      ).toFixed(5)
+                      (replaceBalance(project.totalFundamount) || 0).toFixed(5)
                     )}{" "}
                     BNB
                   </p>

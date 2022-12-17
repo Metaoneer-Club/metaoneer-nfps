@@ -10,7 +10,14 @@ import { CreateFundingAPI } from "api";
 import useInput from "hooks/useInput";
 
 /* Component */
-import { fundContract, getBN, nftContract, toBN } from "components/blockchain";
+import {
+  fundContract,
+  getBN,
+  nftContract,
+  signCaller,
+  toBN,
+  tokenPacker,
+} from "components/blockchain";
 import { Create01, Create02, Create03 } from "components/section";
 import { hexBalance } from "utils";
 
@@ -22,6 +29,7 @@ import {
   toastContentState,
   walletState,
 } from "stores";
+import axios from "axios";
 
 const Create: NextPage = () => {
   const wallet = useRecoilValue(walletState);
@@ -39,8 +47,6 @@ const Create: NextPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
-
-  console.log(mileStoneArray);
 
   useEffect(() => {
     let stDt = new Date();
@@ -139,6 +145,8 @@ const Create: NextPage = () => {
     );
     const milestonePrice = mileStoneArray.map((v) => v.price);
 
+    let lastToken;
+
     try {
       await fundContract.methods
         .FundRegister(
@@ -156,7 +164,7 @@ const Create: NextPage = () => {
       const balanceOf = await nftContract.methods
         .balanceOf(wallet.address)
         .call();
-      const lastToken = await nftContract.methods
+      lastToken = await nftContract.methods
         .tokenOfOwnerByIndex(wallet.address, Number(balanceOf - 1))
         .call();
       setCurrentKey(lastToken);
@@ -170,20 +178,32 @@ const Create: NextPage = () => {
       setIsLoading(false);
       return false;
     }
-    return true;
+    return lastToken;
   };
 
-  const uploadBackend = async () => {
-    const mileStoneContent: any = mileStoneArray.map((v) => v.content);
+  const uploadBackend = async (tokenId: number) => {
+    const mileStoneContent: any = mileStoneArray.map((v, i) => {
+      const contentAry = v.content.map((v) => {
+        return {
+          title: v,
+        };
+      });
+      return {
+        order: i,
+        title: v.title,
+        output: contentAry,
+      };
+    });
+
     const fundingData: ICreateFundingAPI = {
-      address: wallet.address,
-      metadata: {
-        title: title,
-        content: String(content),
-        milestones: [mileStoneContent],
-      },
-      token_id: Number(currentKey),
+      token_id: 12,
+      title: title,
+      content: String(content),
+      milestone: mileStoneContent,
     };
+
+    console.log("마일스톤 ㄷㅇㅌ", mileStoneContent);
+    console.log("펀딩 ㄷㅇㅌ", fundingData);
 
     try {
       await CreateFundingAPI(fundingData);
@@ -207,11 +227,35 @@ const Create: NextPage = () => {
 
   const registerHandler = async () => {
     if (!checkRule()) return;
-
     setIsLoading(true);
+
+    const nonce = "펀딩을 생성합니다.";
+    let sign;
+    try {
+      sign = await signCaller(nonce, wallet.address);
+    } catch (err) {
+      setToastContent({
+        content: "서명이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      setIsLoading(false);
+      return;
+    }
+
+    let token = tokenPacker({
+      wallet: "metamask",
+      nonce: nonce,
+      network: wallet.network,
+      address: wallet.address,
+      signature: sign,
+    });
+
+    axios.defaults.headers.common["Authorization"] = token;
+
     const contract = await uploadContract();
-    // const backend = contract && (await uploadBackend());
-    if (contract) {
+    const backend = await uploadBackend(contract);
+    if (backend) {
       setTitle("");
       setContent("");
       setPrice(0);
@@ -227,6 +271,7 @@ const Create: NextPage = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
         <div className="grid grid-cols-7 content-center font-manrope">
+          <div onClick={() => uploadBackend(12)}>hi</div>
           <div className="rounded-xl col-start-2 col-span-5 border shadow bg-white dark:bg-dark dark:border-dark-300">
             <div className="grid grid-cols-8 gx-4 break-words font-bold border-b dark:border-dark-300 p-8">
               {chapter.map((v, i) => (
@@ -238,8 +283,7 @@ const Create: NextPage = () => {
                         isTap === i
                           ? "bg-indigo-700 border-indigo-700"
                           : "bg-indigo-400 border-indigo-400"
-                      )}
-                    >
+                      )}>
                       {i + 1}
                     </div>
                     <div className="mt-2 text-center text-sm py-2 whitespace-pre-wrap">

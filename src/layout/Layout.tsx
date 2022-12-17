@@ -20,7 +20,7 @@ interface Props {
 }
 
 const Layout: FC<Props> = ({ children }) => {
-  const auth = useAuth();
+  useAuth();
   const [scrollY, setScrollY] = useState(0);
   const [scrollActive, setScrollActive] = useState(false);
   const [isToast, setIsToast] = useRecoilState(isToastState);
@@ -38,9 +38,7 @@ const Layout: FC<Props> = ({ children }) => {
     const scrollListener = () => {
       window.addEventListener("scroll", handleScroll);
     };
-    setTimeout(() => {
-      scrollListener();
-    }, 20);
+    scrollListener();
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };

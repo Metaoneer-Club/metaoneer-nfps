@@ -3,11 +3,10 @@ import { ICreateFundingAPI } from "api/APIModel";
 
 const CreateFundingAPI = async (args: ICreateFundingAPI) => {
   const request = await axios
-    .post("/create", {
-      image: args.image,
-      metadata: args.metadata,
-      address: args.address,
-      token_id: args.token_id,
+    .post(`/api/funding/${args.token_id}`, {
+      title: args.title,
+      content: args.content,
+      milestone: args.milestone,
     })
     .then((res) => res.data);
 

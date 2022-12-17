@@ -4,7 +4,6 @@ export interface InitialUserData {
 }
 
 export interface IAddProfileAPI {
-  token: string;
   nickname: string;
   content: string;
 }
@@ -17,14 +16,28 @@ export interface ICreateMilestoneAPI {
 }
 
 export interface ICreateFundingAPI {
-  image?: any;
-  metadata: IFundingMetadata;
-  address: string;
   token_id: number;
-}
-
-export interface IFundingMetadata {
   title: string;
   content: string;
-  milestones: string[][];
+  milestone: IMilestone[];
+}
+
+export interface IMilestone {
+  order: number;
+  title: string;
+  output: {
+    title: string;
+  }[];
+}
+
+export interface IFundingOutputAPI {
+  token_id: number;
+  output_id: number;
+  done: boolean;
+}
+
+export interface ImageUpload {
+  token: string;
+  formData: any;
+  tokenId?: number;
 }

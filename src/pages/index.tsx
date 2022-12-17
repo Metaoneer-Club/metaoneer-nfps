@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { NextPage } from "next/types";
 
 /* Component */
@@ -9,12 +8,10 @@ import { Product } from "components/card/ProductCard";
 import { AutoImage } from "utils";
 
 const Home: NextPage = () => {
-  const router = useRouter();
-
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-dark-600">
       <Carousel />
-      <div className="max-w-[1200px] mx-auto pt-28 ">
+      <div className="max-w-[1200px] mx-auto pt-28">
         <div className="flex items-center">
           <h2 className="text-2xl font-bold mr-4">인기있는 프로젝트</h2>
           <div className="relative w-8 h-8">

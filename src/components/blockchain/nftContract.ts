@@ -1,7 +1,5 @@
 import { web3, WALLET_NETWORK } from "components/blockchain/web3";
 
-type CA = "0xAE69ac11990EDc7798f0BA62bb2c2381b2051575" | "";
-
 const abi: any = [
   {
     inputs: [
@@ -627,12 +625,12 @@ const abi: any = [
   },
 ];
 
-let nftContract: any, NFT_CONTRACT_ADDRESS: CA;
+let nftContract: any, NFT_CONTRACT_ADDRESS;
 if (typeof window !== "undefined") {
   NFT_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"
-      ? "0xAE69ac11990EDc7798f0BA62bb2c2381b2051575"
-      : "0xAE69ac11990EDc7798f0BA62bb2c2381b2051575";
+      ? process.env.NEXT_PUBLIC_MAIN_NFT_CONTRACT
+      : process.env.NEXT_PUBLIC_TEST_NFT_CONTRACT;
   nftContract = new web3.eth.Contract(abi, NFT_CONTRACT_ADDRESS);
 }
 

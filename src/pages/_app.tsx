@@ -5,8 +5,8 @@ import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 /* Component */
-import { Spinner } from "components/loading/Spinner";
 import Layout from "layout/Layout";
+import { Spinner } from "components/loading/Spinner";
 
 /* Style */
 import "~/styles/globals.css";

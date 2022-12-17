@@ -1,9 +1,9 @@
 import axios from "axios";
 import { ImageUpload } from "api/APIModel";
 
-const AddProfileImageAPI = async (args: ImageUpload) => {
+const AddFundingImageFundingAPI = async (args: ImageUpload) => {
   const request = await axios
-    .post(`/api/profile`, args.formData, {
+    .post(`/api/funding/${args.tokenId}`, args.formData, {
       headers: {
         "Content-type": "multipart/form-data",
         Authorization: args.token,
@@ -14,4 +14,4 @@ const AddProfileImageAPI = async (args: ImageUpload) => {
   return request;
 };
 
-export { AddProfileImageAPI };
+export { AddFundingImageFundingAPI };

@@ -9,11 +9,11 @@ const useAuth = () => {
   const [auth, setAuth] = useRecoilState(authState);
 
   useEffect(() => {
-    const connect = sessionStorage.getItem("CONNECT");
-    connect ? setAuth(true) : setAuth(false);
-
     const token = sessionStorage.getItem("ACCESS_TOKEN");
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_HOST_API_URL;
+    axios.defaults.headers.common["Authorization"] = token || "";
+
+    token ? setAuth(true) : setAuth(false);
   }, [auth, setAuth]);
 
   return auth;

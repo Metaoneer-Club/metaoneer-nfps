@@ -46,7 +46,7 @@ const Header: FC<Props> = ({ active }) => {
   const moveCreateHandler = () => {
     if (wallet.address === "") {
       setToastContent({
-        content: "Please connect the wallet first.",
+        content: "먼저 지갑을 연결해 주세요.",
         type: "danger",
       });
       setIsToast(true);
@@ -79,7 +79,7 @@ const Header: FC<Props> = ({ active }) => {
       });
     } else {
       setToastContent({
-        content: "Metamask Wallet is required.",
+        content: "메타마스크 지갑이 필요합니다.",
         type: "danger",
       });
       setIsToast(true);
@@ -112,8 +112,7 @@ const Header: FC<Props> = ({ active }) => {
             ref={buttonRef}
             type="button"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="text-xs font-medium dark:text-slate-50 animate__animated animate__faster"
-          >
+            className="text-xs font-medium dark:text-slate-50 animate__animated animate__faster">
             <span className="flex items-center">
               <AutoSVG
                 className="w-4 h-4 mr-2"
@@ -130,13 +129,11 @@ const Header: FC<Props> = ({ active }) => {
         className={clsx(
           active ? "shadow" : "shadow-lg",
           "sticky bg-white dark:bg-dark-500 w-full top-0 left-0 z-20 transition-shadow duration-300"
-        )}
-      >
+        )}>
         <header className="flex max-w-[1200px] px-6 py-2 mx-auto transition-all items-center justify-between">
           <div
             className="flex items-center mr-12 cursor-pointer"
-            onClick={() => router.push("/")}
-          >
+            onClick={() => router.push("/")}>
             <div className="relative w-[180px] h-16">
               <AutoImage
                 src="/media/logos/logo.png"
@@ -156,8 +153,7 @@ const Header: FC<Props> = ({ active }) => {
                       (router.asPath === v.url ||
                         (i !== 0 && checkIsActive(router.asPath, v.url))) &&
                         "underline underline-offset-4 decoration-2"
-                    )}
-                  >
+                    )}>
                     <Link href={v.url}>{v.name}</Link>
                   </li>
                 ))}
@@ -171,8 +167,7 @@ const Header: FC<Props> = ({ active }) => {
                     router.asPath === "/create" &&
                       "bg-gray-800 dark:bg-dark-400 text-white"
                   )}
-                  onClick={moveCreateHandler}
-                >
+                  onClick={moveCreateHandler}>
                   <div className="relative w-6 h-6 mr-1 transition-transform group-hover:rotate-[360deg]">
                     <AutoSVG
                       src="/media/icons/block.svg"
@@ -195,8 +190,7 @@ const Header: FC<Props> = ({ active }) => {
                       ? walletConnectHandler()
                       : setIsDrop(!isDrop);
                   }}
-                  disabled={isLoading}
-                >
+                  disabled={isLoading}>
                   {isLoading ? (
                     <div className="flex items-center mx-auto">
                       <span className="mr-2">연결중...</span>
@@ -246,8 +240,7 @@ const Header: FC<Props> = ({ active }) => {
               className={clsx(
                 "absolute top-0 p-2 cursor-pointer transition-all duration-150",
                 isOpen ? "rotate-90 opacity-0" : ""
-              )}
-            >
+              )}>
               <AutoSVG src="/media/icons/hamburger.svg" className="w-8 h-8" />
             </div>
             <div
@@ -255,8 +248,7 @@ const Header: FC<Props> = ({ active }) => {
               className={clsx(
                 "absolute top-0 p-2 opacity-0 cursor-pointer transition-all duration-150",
                 isOpen ? "-rotate-90 opacity-100" : ""
-              )}
-            >
+              )}>
               <AutoSVG src="/media/icons/close.svg" className="w-8 h-8" />
             </div>
           </div>
