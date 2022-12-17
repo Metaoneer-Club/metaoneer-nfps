@@ -288,7 +288,7 @@ const Create02: FC<Props> = ({
                       type="button"
                       onClick={() => setTabIndex(0)}
                       className={clsx(
-                        "text-gray-600 dark:text-white text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                        "text-gray-600 dark:text-white text-xs w-32 py-2 px-3 block hover:text-blue-500 focus:outline-none",
                         tabIndex === 0 &&
                           "font-medium border-b-2 border-blue-500"
                       )}
@@ -299,7 +299,7 @@ const Create02: FC<Props> = ({
                       type="button"
                       onClick={() => setTabIndex(1)}
                       className={clsx(
-                        "text-gray-600 dark:text-white text-sm w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
+                        "text-gray-600 dark:text-white text-xs w-32 py-2 px-3 block hover:text-blue-500 focus:outline-none",
                         tabIndex === 1 &&
                           "font-medium border-b-2 border-blue-500"
                       )}
@@ -327,11 +327,9 @@ const Create02: FC<Props> = ({
                       </p>
                     ) : (
                       <MilestoneUser
-                        id="0"
-                        blockNumber={86400}
-                        title={""}
-                        content={[]}
-                        price={0}
+                        id={undefined}
+                        mileData={[]}
+                        blockNumber={0}
                         isOwner={false}
                         dao={[]}
                         milestones={[]}
@@ -353,19 +351,15 @@ const Create02: FC<Props> = ({
                         />
                       </div>
                       <div className="text-xs">
-                        {shortAddress(
-                          "0x12A60872B053C009452cdb95178144c8fFbDeA4D"
-                        )}
+                        {shortAddress(wallet.address) || "Connect Wallet"}
                       </div>
                     </div>
-                    <p className="mt-2 text-xs">
-                      BNB 체인의 랜드마크가 되겠습니다!
-                    </p>
+                    <p className="mt-2 text-xs">프로필 소개</p>
                   </div>
                   <div className="grid grid-cols-2 text-center">
                     <div className="border-r dark:border-dark-300">
                       <p className="text-xs my-2">프로젝트 수</p>
-                      <p className="text-sm pb-3">5</p>
+                      <p className="text-sm pb-3">0</p>
                     </div>
                     <div>
                       <p className="text-xs my-2">받은 펀딩 금액</p>

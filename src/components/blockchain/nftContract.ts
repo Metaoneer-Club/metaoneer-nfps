@@ -625,7 +625,7 @@ const abi: any = [
   },
 ];
 
-let nftContract: any, NFT_CONTRACT_ADDRESS;
+let nftContract: any, NFT_CONTRACT_ADDRESS: string | undefined;
 if (typeof window !== "undefined") {
   NFT_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"

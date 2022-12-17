@@ -4,16 +4,11 @@ import { v1 } from "uuid";
 /* Component */
 import { Button } from "components/asset/button";
 import { Badge } from "components/asset/badge";
-import { AutoSVG, formatDateSlash } from "utils";
-
-/* State */
-import { useSetRecoilState } from "recoil";
-import { isToastState, toastContentState } from "stores";
+import { AutoSVG } from "utils";
+import { IMileData } from "api/APIModel";
 
 interface Props {
-  id: string | string[] | undefined;
-  title: string;
-  content: string[];
+  mileData: IMileData;
   price: number;
   isOwner: boolean;
   isIndex: number;
@@ -23,9 +18,7 @@ interface Props {
 }
 
 const MilestoneUserModal: FC<Props> = ({
-  id,
-  title,
-  content,
+  mileData,
   price,
   isOwner,
   isIndex,
@@ -43,28 +36,34 @@ const MilestoneUserModal: FC<Props> = ({
               <div className="w-full flex items-center text-gray-600 dark:text-gray-300 mb-3">
                 <Badge className="bg-info-active mr-2">진행중</Badge>
                 <h1 className="text-gray-800 dark:text-gray-300 text-lg font-bold">
-                  {dummyData.title} {isIndex + 1}
+                  {mileData.title}
                 </h1>
               </div>
               <div className="mt-6 text-gray-800 dark:text-gray-300 font-medium">
                 산출물 리스트
               </div>
-              <div className="mt-3 mb-4">
-                {dummyData.content.map((v: any) => (
+              <div className="mt-3 mb-4 min-h-[80px]">
+                {mileData.output.map((v: any) => (
                   <div key={v1()} className="flex items-center mt-2">
                     {isOwner ? (
                       <input
                         type="checkbox"
                         className="w-5 h-5 mr-2"
+                        checked={v.done}
                         onClick={() => setIsCheck(!isCheck)}
                       />
-                    ) : (
+                    ) : v.done ? (
                       <AutoSVG
                         src="/media/icons/check.svg"
                         className="w-5 h-5 text-primary-active mr-2"
                       />
+                    ) : (
+                      <AutoSVG
+                        src="/media/icons/warning.svg"
+                        className="w-5 h-5 text-danger-active mr-2"
+                      />
                     )}
-                    <span>{v}</span>
+                    <span>{v.title}</span>
                   </div>
                 ))}
               </div>
@@ -97,7 +96,8 @@ const MilestoneUserModal: FC<Props> = ({
             <div className="mt-4 pb-2 flex justify-center text-sm">
               <Button
                 className="w-28 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
-                onClick={close}>
+                onClick={close}
+              >
                 <span>확인</span>
               </Button>
             </div>

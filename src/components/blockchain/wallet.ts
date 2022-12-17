@@ -72,11 +72,6 @@ export const toBN = (bn: number, date: Date) => {
   return result;
 };
 
-export const toDate = async (ts: number) => {
-  const result = await dateContract.methods._tempDate(ts).call();
-  return result;
-};
-
 export const tokenPacker = (args: Packer) => {
   let token = sigPacker.encode(
     args.wallet,

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 /* Component */
 import { Button } from "components/asset/button";
 import { AutoSVG, shortAddress } from "utils";
-import { NFT_CONTRACT_ADDRESS } from "../blockchain";
+import { NFT_CONTRACT_ADDRESS } from "components/blockchain";
 
 interface Props {
   currentKey: string;
@@ -38,13 +38,18 @@ const Create03: FC<Props> = ({ currentKey }) => {
           <div className="mt-6 w-96 mx-auto border border-gray-400 rounded-lg text-sm">
             <div className="flex border-b border-gray-400 items-center">
               <div className="w-1/2 p-4 border-r border-gray-400">
-                NFT TOKEN_ID (KEY)
+                SBT TOKEN_ID (KEY)
               </div>
-              <div className="w-1/2 p-4">{currentKey || "Error"}</div>
+              <div
+                onClick={() => router.push(`/funding/${currentKey}`)}
+                className="w-1/2 p-4 cursor-pointer underline hover:text-indigo-600"
+              >
+                {currentKey || "Error"}
+              </div>
             </div>
             <div className="flex items-center">
               <div className="w-1/2 p-4 border-r border-gray-400">
-                펀딩 NFT 계약 주소
+                펀딩 SBT 계약 주소
               </div>
               <div className="w-1/2 p-4">
                 <span
@@ -55,7 +60,7 @@ const Create03: FC<Props> = ({ currentKey }) => {
                   }
                   className="cursor-pointer underline hover:text-indigo-600"
                 >
-                  {shortAddress(NFT_CONTRACT_ADDRESS)}
+                  {shortAddress(String(NFT_CONTRACT_ADDRESS))}
                 </span>
               </div>
             </div>

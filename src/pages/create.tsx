@@ -3,8 +3,8 @@ import { NextPage } from "next/types";
 import clsx from "clsx";
 
 /* API */
-import { ICreateFundingAPI } from "api/APIModel";
-import { CreateFundingAPI } from "api";
+import { ICreateFundingAPI, ImageUpload } from "api/APIModel";
+import { AddFundingImageFundingAPI, CreateFundingAPI } from "api";
 
 /* Hook */
 import useInput from "hooks/useInput";
@@ -44,7 +44,10 @@ const Create: NextPage = () => {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [lastDate, setLastDate] = useState<Date>(new Date());
+  const [imageData, setImageData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSigned, setIsSigned] = useState<boolean>(false);
+  const [isSigning, setIsSigning] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -54,6 +57,7 @@ const Create: NextPage = () => {
     stDt.setDate(stDt.getDate() + 1);
     endDt.setDate(endDt.getDate() + 2);
 
+    sessionStorage.getItem("FUNDING_TOKEN") && setIsSigned(true);
     setStartDate(stDt);
     setEndDate(endDt);
   }, []);
@@ -65,7 +69,6 @@ const Create: NextPage = () => {
         .reduce((prev, curr) =>
           new Date(prev).getTime() <= new Date(curr).getTime() ? curr : prev
         );
-      console.log(dates);
       setLastDate(dates);
     } else {
       setLastDate(endDate);
@@ -132,6 +135,43 @@ const Create: NextPage = () => {
     }
   };
 
+  const tokenHandler = async () => {
+    if (!wallet.address) {
+      setToastContent({
+        content: "먼저 지갑을 연결해 주세요.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return;
+    }
+    setIsSigning(true);
+    const nonce = "본 서명을 통해 사용자를 식별하고 펀딩을 생성할 수 있습니다.";
+    let sign;
+    try {
+      sign = await signCaller(nonce, wallet.address);
+    } catch (err) {
+      setToastContent({
+        content: "서명이 취소되었습니다.",
+        type: "danger",
+      });
+      setIsToast(true);
+      setIsSigning(false);
+      return;
+    }
+
+    let token = tokenPacker({
+      wallet: "metamask",
+      nonce: nonce,
+      network: wallet.network,
+      address: wallet.address,
+      signature: sign,
+    });
+
+    sessionStorage.setItem("FUNDING_TOKEN", token);
+    setIsSigned(true);
+    setIsSigning(false);
+  };
+
   const uploadContract = async () => {
     const blockNumber = await getBN();
     const stdt = toBN(blockNumber, startDate);
@@ -195,18 +235,27 @@ const Create: NextPage = () => {
       };
     });
 
+    const token = sessionStorage.getItem("FUNDING_TOKEN");
+    axios.defaults.headers.common["Authorization"] = token;
+
     const fundingData: ICreateFundingAPI = {
-      token_id: 12,
+      token_id: tokenId,
       title: title,
       content: String(content),
       milestone: mileStoneContent,
     };
 
-    console.log("마일스톤 ㄷㅇㅌ", mileStoneContent);
-    console.log("펀딩 ㄷㅇㅌ", fundingData);
-
     try {
       await CreateFundingAPI(fundingData);
+      await axios({
+        method: "POST",
+        url: `/api/funding/${tokenId}`,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
+        data: imageData,
+      });
       setToastContent({
         content: "프로젝트가 성공적으로 등록되었습니다.",
         type: "success",
@@ -229,30 +278,6 @@ const Create: NextPage = () => {
     if (!checkRule()) return;
     setIsLoading(true);
 
-    const nonce = "펀딩을 생성합니다.";
-    let sign;
-    try {
-      sign = await signCaller(nonce, wallet.address);
-    } catch (err) {
-      setToastContent({
-        content: "서명이 취소되었습니다.",
-        type: "danger",
-      });
-      setIsToast(true);
-      setIsLoading(false);
-      return;
-    }
-
-    let token = tokenPacker({
-      wallet: "metamask",
-      nonce: nonce,
-      network: wallet.network,
-      address: wallet.address,
-      signature: sign,
-    });
-
-    axios.defaults.headers.common["Authorization"] = token;
-
     const contract = await uploadContract();
     const backend = await uploadBackend(contract);
     if (backend) {
@@ -271,7 +296,6 @@ const Create: NextPage = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
       <div className="max-w-[1200px] mx-auto pt-12 pb-40">
         <div className="grid grid-cols-7 content-center font-manrope">
-          <div onClick={() => uploadBackend(12)}>hi</div>
           <div className="rounded-xl col-start-2 col-span-5 border shadow bg-white dark:bg-dark dark:border-dark-300">
             <div className="grid grid-cols-8 gx-4 break-words font-bold border-b dark:border-dark-300 p-8">
               {chapter.map((v, i) => (
@@ -283,7 +307,8 @@ const Create: NextPage = () => {
                         isTap === i
                           ? "bg-indigo-700 border-indigo-700"
                           : "bg-indigo-400 border-indigo-400"
-                      )}>
+                      )}
+                    >
                       {i + 1}
                     </div>
                     <div className="mt-2 text-center text-sm py-2 whitespace-pre-wrap">
@@ -304,6 +329,8 @@ const Create: NextPage = () => {
             {isTap === 0 ? (
               <Create01
                 wallet={wallet}
+                isSigned={isSigned}
+                isSigning={isSigning}
                 title={title}
                 content={content}
                 price={price}
@@ -315,7 +342,9 @@ const Create: NextPage = () => {
                 onChangePrice={onChangePrice}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
+                setImageData={setImageData}
                 continueHandler={continueHandler}
+                tokenHandler={tokenHandler}
               />
             ) : (
               ""
@@ -341,7 +370,7 @@ const Create: NextPage = () => {
 const chapter = [
   "프로젝트 정보를 입력해 주세요.",
   "프로젝트 데모를 확인해 주세요.",
-  "펀딩 NFT 생성 완료!\n프로젝트를 확인해 보세요.",
+  "펀딩 SBT 생성 완료!\n프로젝트를 확인해 보세요.",
 ];
 
 export default Create;

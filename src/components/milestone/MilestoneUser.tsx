@@ -4,12 +4,11 @@ import { v1 } from "uuid";
 /* Component */
 import { MilestoneUserModal } from "components/modal/MilestoneUserModal";
 import { accounting, toDate, zeroCount } from "utils";
+import { IMileData } from "api/APIModel";
 
 interface Props {
   id: string | string[] | undefined;
-  title: string;
-  content: string[];
-  price: number;
+  mileData: IMileData[];
   blockNumber: number;
   isOwner: boolean;
   dao: string[][];
@@ -18,9 +17,7 @@ interface Props {
 
 const MilestoneUser: FC<Props> = ({
   id,
-  title,
-  content,
-  price,
+  mileData,
   blockNumber,
   isOwner,
   dao,
@@ -40,9 +37,7 @@ const MilestoneUser: FC<Props> = ({
     <>
       {isOpen ? (
         <MilestoneUserModal
-          id={id}
-          title={title}
-          content={content}
+          mileData={mileData[isIndex]}
           price={Number(milestones[isIndex][3])}
           startBN={Number(milestones[isIndex][0])}
           endBN={Number(milestones[isIndex][1])}
@@ -54,9 +49,10 @@ const MilestoneUser: FC<Props> = ({
         ""
       )}
       <div className="relative">
-        <div className="left-3 absolute border-opacity-20 border-indigo-400 h-full border-4" />
-        {milestones.length > 0
-          ? milestones.map((v: any, i: number) => (
+        {milestones.length > 0 ? (
+          <>
+            <div className="left-3 absolute border-opacity-20 border-indigo-400 h-full border-4" />
+            {milestones.map((v: any, i: number) => (
               <div key={v1()} className="my-4 flex items-center">
                 <div className="z-10 flex mr-12 items-center bg-indigo-600 shadow-xl w-8 h-8 rounded-full">
                   <h1 className="mx-auto font-semibold text-lg text-white">
@@ -65,7 +61,8 @@ const MilestoneUser: FC<Props> = ({
                 </div>
                 <div
                   onClick={() => openModalHandler(i)}
-                  className="rounded-lg border dark:bg-dark-700 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none">
+                  className="rounded-lg border dark:bg-dark-700 dark:border-dark-300 shadow-lg w-2/3 p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-600 hover:shadow-none"
+                >
                   <div className="flex justify-between items-center">
                     <div>
                       {blockNumber < v[0] ? (
@@ -118,7 +115,8 @@ const MilestoneUser: FC<Props> = ({
                           target="_blank"
                           rel="noreferrer"
                           href="https://bscscan.com/blocks"
-                          className="text-gray-500 hover:text-blue-500 hover:underline">
+                          className="text-gray-500 hover:text-blue-500 hover:underline"
+                        >
                           {accounting(zeroCount(v[0] - blockNumber))}
                         </a>
                         <span className="text-sm ml-1">블록</span>
@@ -126,11 +124,7 @@ const MilestoneUser: FC<Props> = ({
                     </div>
                   </div>
                   <p className="mt-3 text-sm leading-snug tracking-wide text-gray-900 dark:text-dark-300 truncate-3-lines">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry`s
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book.
+                    {mileData[i].title}
                   </p>
                   <div className="mt-3 flex items-center text-gray-600">
                     <div className="font-medium mr-2">중도금의</div>
@@ -139,8 +133,16 @@ const MilestoneUser: FC<Props> = ({
                   </div>
                 </div>
               </div>
-            ))
-          : "test"}
+            ))}
+          </>
+        ) : (
+          <div className="bg-white dark:bg-dark  p-4 rounded flex items-center">
+            <div className="flex items-center">
+              <div className="w-1 h-5 mr-2 bg-dark rounded-sm" />
+              <p>마일스톤이 없습니다...</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

@@ -2,9 +2,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 const metaData = {
-  title: "Metaoneer NFPS",
-  siteName: "Metaoneer NFPS",
-  description: "NFT Funding Payment Solution ",
+  title: "Metaoneer OPFS",
+  siteName: "Metaoneer OPFS",
+  description: "On-Chain Project Funding Solution",
   url: "https://nfps.metaoneer.club/",
   robots: "follow, index",
   image: "banner.png",

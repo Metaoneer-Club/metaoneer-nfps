@@ -37,7 +37,19 @@ export interface IFundingOutputAPI {
 }
 
 export interface ImageUpload {
-  token: string;
   formData: any;
-  tokenId?: number;
+  token_id?: number;
+}
+
+export interface IMileData {
+  id: number;
+  title: string;
+  order: number;
+  output: IOutput[];
+}
+
+export interface IOutput {
+  id: number;
+  title: string;
+  done: boolean;
 }

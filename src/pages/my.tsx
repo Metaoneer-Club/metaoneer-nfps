@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import axios from "axios";
 
 /* API */
-import { AddProfileAPI, CheckProfileAPI } from "api";
+import { AddProfileAPI, AddProfileImageAPI, CheckProfileAPI } from "api";
 
 /* Component */
 import {
@@ -165,15 +165,10 @@ const MyPage: NextPage = () => {
     const formData: any = new FormData();
     formData.append("image", e.target.files[0]);
 
+    axios.defaults.headers.common["Authorization"] = token;
     try {
-      await axios({
-        method: "POST",
-        url: "/api/profile",
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: token,
-        },
-        data: formData,
+      await AddProfileImageAPI({
+        formData,
       });
       setToastContent({
         content: "프로필 이미지가 성공적으로 업데이트 되었습니다.",
@@ -235,7 +230,7 @@ const MyPage: NextPage = () => {
                     <input
                       type="file"
                       className="absolute inset-0 text-sm text-slate-500 opacity-0 w-8 h-8 rounded-full"
-                      accept="image/jpg,impge/png,image/jpeg,image/gif"
+                      accept="image/jpg,impge/png,image/jpeg"
                       onChange={imageHandler}
                     />
                     <button className="text-xs bg-gray-300 group-hover:bg-blue-200 rounded-full transition-colors duration-300">
@@ -291,7 +286,8 @@ const MyPage: NextPage = () => {
                     isModify
                       ? "bg-danger hover:bg-danger-active disabled:bg-red-400"
                       : "bg-primary hover:bg-primary-active disabled:bg-blue-400"
-                  )}>
+                  )}
+                >
                   {isModify ? (
                     <span>수정 취소</span>
                   ) : (
@@ -302,7 +298,8 @@ const MyPage: NextPage = () => {
                   <Button
                     className="ml-2 bg-primary hover:bg-primary-active disabled:bg-blue-400 text-white"
                     disabled={isUpdate}
-                    onClick={editProfileHandler}>
+                    onClick={editProfileHandler}
+                  >
                     수정하기
                   </Button>
                 ) : (

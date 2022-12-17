@@ -49,7 +49,7 @@ const StatusCard: FC<Props> = ({
           <span className="text-3xl mr-1">
             {Number(replaceBalance(project?.totalFundamount).toFixed(5))}
           </span>
-          <span className="text-gray-600 dark:text-gray-400">BNB</span>
+          <span className="text-gray-600 dark:text-gray-400">BUSD</span>
         </p>
       </div>
       <div className="mt-4">

@@ -23,8 +23,6 @@ const Milestone: FC<IMilestone> = ({
     setMilestoneArray(milestoneArray.filter((v) => v.keyID !== keyID));
   };
 
-  console.log(milestoneArray);
-
   return (
     <div className="relative">
       <div

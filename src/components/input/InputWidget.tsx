@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
 
 /* Hook */
 import useInput from "hooks/useInput";
@@ -9,13 +9,18 @@ import { milestoneContentState } from "stores";
 
 interface Props {
   index: number;
+  setValue: Dispatch<SetStateAction<string>>;
 }
 
-const InputWidget: FC<Props> = ({ index }) => {
-  const [, , onChangeInputValue] = useInput<string>("");
+const InputWidget: FC<Props> = ({ index, setValue }) => {
+  const [value, , onChangeInputValue] = useInput<string>("");
   const [milestoneContent, setMilestoneContent] = useRecoilState(
     milestoneContentState
   );
+
+  useEffect(() => {
+    setValue(value);
+  }, [setValue, value]);
 
   const changeData = (e: any) => {
     onChangeInputValue(e);

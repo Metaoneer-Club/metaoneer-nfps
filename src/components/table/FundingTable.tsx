@@ -68,7 +68,7 @@ const FundingTable: FC<Props> = ({ fundingList }) => {
             <div className="bg-white dark:bg-dark  p-4 rounded flex items-center">
               <div className="flex items-center">
                 <div className="w-1 h-5 mr-2 bg-dark rounded-sm" />
-                <p className="">후원자가 없습니다...</p>
+                <p>후원자가 없습니다...</p>
               </div>
             </div>
           )}

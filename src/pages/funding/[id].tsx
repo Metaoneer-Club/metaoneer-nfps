@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import clsx from "clsx";
+import { useQuery } from "react-query";
 
 /* Hook */
 import useInput from "hooks/useInput";
@@ -8,13 +10,7 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import {
-  fundContract,
-  getBN,
-  nftContract,
-  toDate,
-  web3,
-} from "components/blockchain";
+import { fundContract, getBN, nftContract } from "components/blockchain";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { FundingTable } from "components/table/FundingTable";
 import { FundingModal } from "components/modal/FundingModal";
@@ -25,16 +21,20 @@ import {
   accounting,
   AutoImage,
   AutoSVG,
+  formatDateDot,
   hexBalance,
   replaceBalance,
   shortAddress,
 } from "utils";
+import { CheckFundingAPI, CheckProfileAPI } from "api";
 
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { IProject, isToastState, toastContentState, walletState } from "stores";
-import { useQuery } from "react-query";
-import { CheckFundingAPI } from "~/api";
+
+const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
+  ssr: false,
+});
 
 type Status = 0 | 1 | 2 | 3 | 4 | 5;
 // 0: 펀딩예정
@@ -50,6 +50,21 @@ const Product = () => {
     const res = await CheckFundingAPI(Number(router.query.id));
     return res;
   });
+  const { isLoading: loadingProfile, data: profileData } = useQuery(
+    ["Profile"],
+    async () => {
+      const res = await CheckProfileAPI({
+        address: project.owner,
+        chain_id: 97,
+      });
+
+      return res;
+    },
+    {
+      staleTime: 500,
+    }
+  );
+
   const wallet = useRecoilValue(walletState);
   const [projectCount, setProjectCount] = useState<number>(0);
   const [project, setProject] = useState<IProject>({
@@ -131,8 +146,6 @@ const Product = () => {
         milestoneList.push(milestoneData);
       }
 
-      console.log(milestoneList);
-
       const funders = funding[4]?.map((v: any) => v.toUpperCase());
       const fundingList = funders?.reduce(
         (obj: any, key: any, index: number) => ({
@@ -146,21 +159,6 @@ const Product = () => {
       const checkVoted: any = votedAry.indexOf(
         votedAry.filter((v) => v !== "0")[0]
       );
-
-      let startDt = await web3.eth.getBlock(
-        funding[2],
-        async (err: any, data: any) => data.timestamp
-      );
-      // startDt = await toDate(startDt.timestamp);
-
-      let endDt = await web3.eth.getBlock(
-        milestoneList[milestoneList.length - 1][1],
-        async (err: any, data: any) => data.timestamp
-      );
-      // endDt = await toDate(endDt.timestamp);
-
-      console.log(funding[2], milestoneList[milestoneList.length - 1][1]);
-      console.log(startDt, endDt);
 
       setProject({
         limitprice: funding[0] || 0,
@@ -358,7 +356,16 @@ const Product = () => {
     setIsStatus(e.target.value);
   };
 
-  if (isLoading)
+  const stats = [
+    "펀딩 예정",
+    "펀딩중",
+    "마일스톤 중",
+    "완료",
+    "환불중",
+    "환불중",
+  ];
+
+  if (isLoading || loadingProfile)
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
         <div className="max-w-[1200px] mx-auto pt-16 pb-40">
@@ -402,11 +409,16 @@ const Product = () => {
       <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
         <div className="max-w-[1200px] mx-auto pt-16 pb-40">
           <div className="flex justify-between items-center">
-            <div className="text-3xl text-center font-bold flex items-center">
-              <span className="px-4 py-2 rounded-lg text-lg bg-primary-active text-white mr-6">
-                NFT
+            <div className="text-3xl text-center font-medium flex items-center">
+              <span
+                className={clsx(
+                  "px-4 py-2 w-28 rounded-lg text-base text-white mr-6",
+                  isStatus <= 3 ? "bg-primary-active" : "bg-danger-active"
+                )}
+              >
+                {stats[isStatus]}
               </span>
-              <span>프로젝트 제목 {router.query.id}</span>
+              <span className="font-bold">{data.title}</span>
 
               <input
                 type="number"
@@ -418,7 +430,8 @@ const Product = () => {
               <button
                 type="button"
                 className="text-sm border mr-4 p-2 rounded dark:border-dark-300 bg-gray-500 text-white hover:bg-gray-600"
-                onClick={() => setIsOwner(!isOwner)}>
+                onClick={() => setIsOwner(!isOwner)}
+              >
                 임시 버튼 (오너)
               </button>
             </div>
@@ -428,7 +441,8 @@ const Product = () => {
                 onClick={() => {
                   if (Number(router.query.id) > 0)
                     router.push(`/funding/${Number(router.query.id) - 1}`);
-                }}>
+                }}
+              >
                 <AutoSVG className="mr-2" src="/media/icons/arrow-left.svg" />
                 <span className="pr-1">이전</span>
               </Button>
@@ -444,7 +458,8 @@ const Product = () => {
                     });
                     setIsToast(true);
                   }
-                }}>
+                }}
+              >
                 <span className="pl-1">다음</span>
                 <AutoSVG className="ml-2" src="/media/icons/arrow-right.svg" />
               </Button>
@@ -454,7 +469,7 @@ const Product = () => {
             <div className="col-span-3">
               <div className="relative w-full h-96">
                 <AutoImage
-                  src="/temp.png"
+                  src={data.image_url || "/temp.png"}
                   alt="bnb"
                   className="object-cover rounded-xl"
                 />
@@ -483,12 +498,15 @@ const Product = () => {
                       {project.limitprice
                         ? accounting(replaceBalance(project.limitprice))
                         : 0}{" "}
-                      BNB
+                      BUSD
                     </p>
                     <p className="mt-1">
                       {Number(isStatus) === 0 ? "펀딩 대기중" : "펀딩 진행중"}
                     </p>
-                    <p className="mt-1">2022.11.24 ~ 2022.12.03</p>
+                    <p className="mt-1">
+                      {formatDateDot(data.created_at)} ~{" "}
+                      {formatDateDot(data.created_at)}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -536,7 +554,8 @@ const Product = () => {
                   <Button
                     className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
                     onClick={() => {}}
-                    disabled>
+                    disabled
+                  >
                     <span>펀딩대기</span>
                   </Button>
                 ) : (
@@ -545,7 +564,8 @@ const Product = () => {
                 {Number(isStatus) === 1 ? (
                   <Button
                     className="bg-blue-600 text-white w-full hover:bg-blue-700"
-                    onClick={() => setIsOpenFund(true)}>
+                    onClick={() => setIsOpenFund(true)}
+                  >
                     <span>펀딩하기</span>
                   </Button>
                 ) : (
@@ -557,7 +577,8 @@ const Product = () => {
                       className="bg-blue-600 text-white w-full hover:bg-blue-700"
                       onClick={() => {
                         isOwner ? interHandler() : setIsOpenVote(true);
-                      }}>
+                      }}
+                    >
                       <span>{isOwner ? "중도금 받기" : "투표하기"}</span>
                     </Button>
                   </>
@@ -570,7 +591,8 @@ const Product = () => {
                     onClick={() => {
                       isOwner ? interHandler() : "";
                     }}
-                    disabled={!isOwner}>
+                    disabled={!isOwner}
+                  >
                     <span>{isOwner ? "자금받기" : "프로젝트 완료"}</span>
                   </Button>
                 ) : (
@@ -582,7 +604,8 @@ const Product = () => {
                     onClick={() => {
                       isOwner ? "" : refundHandler();
                     }}
-                    disabled={isOwner}>
+                    disabled={isOwner}
+                  >
                     <span>{isOwner ? "환불 진행중" : "환불받기"}</span>
                   </Button>
                 ) : (
@@ -601,7 +624,8 @@ const Product = () => {
                     "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                     tabIndex === 0 &&
                       "font-medium border-b-2 border-blue-500 dark:border-primary"
-                  )}>
+                  )}
+                >
                   프로젝트 소개
                 </button>
                 <button
@@ -611,7 +635,8 @@ const Product = () => {
                     "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                     tabIndex === 1 &&
                       "font-medium border-b-2 border-blue-500 dark:border-primary"
-                  )}>
+                  )}
+                >
                   마일스톤
                 </button>
                 {isOwner ? (
@@ -622,7 +647,8 @@ const Product = () => {
                       "text-gray-dark:text-gray-400 w-40 py-4 px-6 block hover:text-blue-500 focus:outline-none",
                       tabIndex === 2 &&
                         "font-medium border-b-2 border-blue-500 dark:border-primary"
-                    )}>
+                    )}
+                  >
                     펀딩 현황
                   </button>
                 ) : (
@@ -631,30 +657,16 @@ const Product = () => {
               </nav>
               <Card className="border p-6 bg-white dark:text-gray-300 dark:bg-dark dark:border-dark-300 rounded-tl-none rounded-xl">
                 {tabIndex === 0 ? (
-                  <p className="leading-relaxed">
-                    BNB Smart Chain (BSC) supports the most popular programming
-                    languages, flexible tools, and comes with clear and
-                    canonical documentation. You can quickly start and deploy
-                    your application on a blockchain designed with real use in
-                    mind. BNB Smart Chain (BSC) supports the most popular
-                    programming languages, flexible tools, and comes with clear
-                    and canonical documentation. You can quickly start and
-                    deploy your application on a blockchain designed with real
-                    use in mind. BNB Smart Chain (BSC) supports the most popular
-                    programming languages, flexible tools, and comes with clear
-                    and canonical documentation. You can quickly start and
-                    deploy your application on a blockchain designed with real
-                    use in mind.
-                  </p>
+                  <div className="leading-relaxed">
+                    <MarkdownPreview source={data.content} />
+                  </div>
                 ) : (
                   ""
                 )}
                 {tabIndex === 1 ? (
                   <MilestoneUser
                     id={router.query.id}
-                    title={""}
-                    content={[]}
-                    price={0}
+                    mileData={data.milestone}
                     blockNumber={blockNumber}
                     isOwner={isOwner}
                     dao={daoAry}
@@ -679,18 +691,19 @@ const Product = () => {
                   <div className="relative w-7 h-7 mr-2">
                     <AutoImage
                       className="rounded-full border"
-                      src="/media/avatars/blank.svg"
+                      src={profileData?.image_url || "/media/avatars/blank.svg"}
                       alt="icon"
                     />
+                  </div>
+                  <div className="text-sm font-medium mr-2">
+                    {profileData?.nickname || "이름없음"}
                   </div>
                   <div className="text-xs">
                     {shortAddress(project?.owner) ||
                       "0x0000000000000000000000000000000000000000"}
                   </div>
                 </div>
-                <p className="mt-2 text-xs">
-                  BNB 체인의 랜드마크가 되겠습니다!
-                </p>
+                <p className="mt-2 text-xs">{profileData?.content}</p>
               </div>
               <div className="grid grid-cols-2 text-center">
                 <div className="border-r dark:border-dark-300">
@@ -703,7 +716,7 @@ const Product = () => {
                     {Number(
                       (replaceBalance(project.totalFundamount) || 0).toFixed(5)
                     )}{" "}
-                    BNB
+                    BUSD
                   </p>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import React, {
   ChangeEvent,
   Dispatch,
   FC,
+  MouseEventHandler,
   SetStateAction,
   useState,
 } from "react";
@@ -17,11 +18,13 @@ import { FormWallet } from "components/wallet/FormWallet";
 import { AutoImage, AutoSVG, formatDate } from "utils";
 
 /* State */
-import { isToastState, milestoneState, toastContentState } from "stores";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { milestoneState } from "stores";
+import { useRecoilValue } from "recoil";
 
 interface Props {
   wallet: Wallet;
+  isSigned: boolean;
+  isSigning: boolean;
   title: string;
   content: string | undefined;
   price: number;
@@ -33,11 +36,15 @@ interface Props {
   onChangePrice: (e?: ChangeEvent) => void;
   setStartDate: Dispatch<SetStateAction<Date>>;
   setEndDate: Dispatch<SetStateAction<Date>>;
+  setImageData: Dispatch<SetStateAction<any>>;
   continueHandler: () => void;
+  tokenHandler: MouseEventHandler<HTMLButtonElement>;
 }
 
 const Create01: FC<Props> = ({
   wallet,
+  isSigned,
+  isSigning,
   title,
   content,
   price,
@@ -49,23 +56,35 @@ const Create01: FC<Props> = ({
   onChangePrice,
   setStartDate,
   setEndDate,
+  setImageData,
   continueHandler,
+  tokenHandler,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenStart, setIsOpenStart] = useState<boolean>(false);
   const [isOpenEnd, setIsOpenEnd] = useState<boolean>(false);
+  const [imageDataSrc, setImageDataSrc] = useState<string>("");
   const mileStoneArray = useRecoilValue(milestoneState);
-  const setIsToast = useSetRecoilState(isToastState);
-  const setToastContent = useSetRecoilState(toastContentState);
 
-  console.log(mileStoneArray);
+  const uploadImageHanlder = (e: any) => {
+    const formData: any = new FormData();
+    formData.append("image", e.target.files[0]);
 
-  const commingSoonHandler = () => {
-    setToastContent({
-      content: "Comming Soon!",
-      type: "primary",
+    const reader = new FileReader();
+
+    try {
+      reader.readAsDataURL(e.target.files[0]);
+    } catch (err) {
+      return;
+    }
+
+    setImageData(formData);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImageDataSrc(String(reader.result));
+        resolve;
+      };
     });
-    setIsToast(true);
   };
 
   return (
@@ -80,27 +99,69 @@ const Create01: FC<Props> = ({
         ""
       )}
       <div className="mt-8 p-8 pt-0 border-b">
-        <div>
-          <div className="flex items-center font-semibold">
-            <span className="mr-4">메인 이미지 업로드</span>
-            <div
-              onClick={commingSoonHandler}
-              className="flex group cursor-pointer transition-colors duration-300 hover:text-indigo-600 underline items-center text-xs mr-2"
+        <div className="mt-6">
+          <div className="font-semibold">사용자 확인</div>
+          <div className="mt-1 flex items-center">
+            <Button
+              className="flex items-center bg-indigo-600 hover:bg-indigo-70 disabled:bg-indigo-400 font-medium text-white mt-1 rounded px-3 py-2"
+              onClick={tokenHandler}
+              disabled={isSigned}
             >
-              <AutoSVG
-                className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300 group-hover:text-indigo-600"
-                src="/media/icons/arrow-top.svg"
-              />
-              <span>Upload</span>
+              <AutoSVG className="w-5 h-5 mr-1" src="/media/icons/edit.svg" />
+
+              {isSigning ? (
+                <span className="flex items-center justify-center">
+                  <span className="mr-2">서명중...</span>
+                  <div className="animate-spin">
+                    <AutoSVG
+                      src="/media/icons/spinner.svg"
+                      className="w-6 h-6"
+                    />
+                  </div>
+                </span>
+              ) : isSigned ? (
+                <span>서명됨</span>
+              ) : (
+                <span>서명하기</span>
+              )}
+            </Button>
+            <div className="ml-2 text-gray-600 dark:text-gray-300">
+              ※ {"<"}필수{">"} 중복 서명을 최소화하며 사용자 식별을 위한
+              과정입니다.
             </div>
           </div>
-          <div className="relative w-full h-80 mt-2">
-            <AutoImage
-              src="/temp.png"
-              className="object-cover rounded"
-              alt="temp"
-            />
+        </div>
+
+        <div className="mt-8">
+          <div className="flex items-center font-semibold">
+            <span className="mr-4">메인 이미지 업로드</span>
           </div>
+          <div className="relative w-11/12 h-96 mt-2 bg-slate-100 dark:bg-dark-400 border dark:border-dark-300 rounded-lg overflow-hidden">
+            <input
+              type="file"
+              onChange={uploadImageHanlder}
+              accept="image/jpg,impge/png,image/jpeg"
+              className="absolute w-full h-full opacity-0 bg-dark z-10"
+            />
+            {imageDataSrc ? (
+              <AutoImage src={imageDataSrc} alt="img" />
+            ) : (
+              <>
+                <div className="absolute text-center top-1/2 left-1/2 trasform -translate-x-1/2 -translate-y-1/2">
+                  <AutoSVG
+                    src="/media/icons/upload.svg"
+                    className="w-24 h-24 dark:text-dark-200 mx-auto"
+                  />
+                  <p className="mt-4 text-gray-600 dark:text-gray-300">
+                    ↑ 이미지를 업로드 해주세요.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+            ※ 이미지 파일은 png, jpg, jpeg 확장자만 가능합니다.
+          </p>
         </div>
 
         <div className="mt-6">
@@ -123,7 +184,7 @@ const Create01: FC<Props> = ({
           <div>
             <span className="font-semibold mr-1">펀딩 목표액</span>
             <span className="text-xs text-gray-600 dark:text-dark-300">
-              (단위 : BNB)
+              (단위 : BUSD)
             </span>
           </div>
           <div>

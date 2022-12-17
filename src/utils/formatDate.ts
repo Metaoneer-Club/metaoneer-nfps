@@ -7,6 +7,11 @@ export const formatDate = (date: Date): string => {
 export const formatDateSlash = (date: Date): string => {
   return date ? moment(date).format("YYYY/MM/DD") : date;
 };
+
+export const formatDateDot = (date: Date): string => {
+  return date ? moment(date).format("YYYY.MM.DD") : date;
+};
+
 export const formatDay = (date: Date): string => {
   return date ? moment(date).format("DD") : date;
 };

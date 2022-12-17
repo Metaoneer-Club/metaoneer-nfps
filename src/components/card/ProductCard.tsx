@@ -61,7 +61,7 @@ const ProductCard: FC<Product> = ({
                 <strong className="text-lg mr-2 text-indigo-600">
                   {progress}%
                 </strong>
-                <span>{amount} BNB</span>
+                <span>{amount} BUSD</span>
               </div>
               {expired <= 0 ? (
                 <strong className="text-gray-500">펀딩 종료됨</strong>
