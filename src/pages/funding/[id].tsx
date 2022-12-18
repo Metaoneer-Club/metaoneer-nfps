@@ -245,15 +245,15 @@ const Product = () => {
       return;
     }
 
+    setIsLoading(false);
+    setUPDATES(UPDATES + 1);
+    setIsOpenFund(false);
+    setAmount(0);
     setToastContent({
       content: "펀딩이 완료되었습니다.",
       type: "success",
     });
     setIsToast(true);
-    setIsLoading(false);
-    setUPDATES(UPDATES + 1);
-    setIsOpenFund(false);
-    setAmount(0);
     return;
   };
 
@@ -276,14 +276,14 @@ const Product = () => {
       return;
     }
 
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
+    setIsOpenVote(false);
     setToastContent({
       content: "찬성 투표가 완료되었습니다.",
       type: "success",
     });
     setIsToast(true);
-    setUPDATES(UPDATES + 1);
-    setIsLoading(false);
-    setIsOpenVote(false);
     return;
   };
 
@@ -306,14 +306,14 @@ const Product = () => {
       return;
     }
 
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
+    setIsOpenVote(false);
     setToastContent({
       content: "반대 투표가 완료되었습니다.",
       type: "danger",
     });
     setIsToast(true);
-    setUPDATES(UPDATES + 1);
-    setIsLoading(false);
-    setIsOpenVote(false);
     return;
   };
 
@@ -338,13 +338,13 @@ const Product = () => {
       return;
     }
 
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
     setToastContent({
       content: "중도금 출금이 완료되었습니다.",
       type: "success",
     });
     setIsToast(true);
-    setUPDATES(UPDATES + 1);
-    setIsLoading(false);
     return;
   };
 
@@ -367,13 +367,13 @@ const Product = () => {
       return;
     }
 
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
     setToastContent({
       content: "환불이 완료되었습니다.",
       type: "success",
     });
     setIsToast(true);
-    setUPDATES(UPDATES + 1);
-    setIsLoading(false);
     return;
   };
 
@@ -659,7 +659,7 @@ const Product = () => {
                   ) : (
                     ""
                   )}
-                  {Number(isStatus) === 4 ? (
+                  {Number(isStatus) >= 4 ? (
                     <span>
                       {isOwner ? (
                         "환불 진행중"
