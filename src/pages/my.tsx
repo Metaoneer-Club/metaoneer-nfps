@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
+import { v1 } from "uuid";
+import clsx from "clsx";
 import axios from "axios";
 
 /* API */
@@ -23,8 +25,10 @@ import {
   signCaller,
   tokenPacker,
 } from "components/blockchain";
-import { Product, ProductCard } from "components/card/ProductCard";
 import { Button } from "components/asset/button";
+import { EmptyCard } from "components/asset/card/EmptyCard";
+import { Product, ProductCard } from "components/card/ProductCard";
+import { LoadingPage } from "components/loading/LoadingPage";
 import {
   AutoImage,
   AutoSVG,
@@ -36,10 +40,6 @@ import {
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import clsx from "clsx";
-import { v1 } from "uuid";
-import { LoadingPage } from "~/components/loading/LoadingPage";
-
 const MyPage: NextPage = () => {
   const router = useRouter();
   const wallet = useRecoilValue(walletState);
@@ -102,7 +102,8 @@ const MyPage: NextPage = () => {
       }
 
       await Promise.all(promises);
-      projects.sort((a: any, b: any) => a[1] - b[1]);
+      const after = projects.filter((v: any) => v.owner === wallet.address);
+      after.sort((a: any, b: any) => a[1] - b[1]);
       setProjectAry(projects);
       setBlockNumber(bn);
       setIsLoading(false);
@@ -307,20 +308,24 @@ const MyPage: NextPage = () => {
           </div>
         </div>
         <div className="grid grid-cols-4 gap-6 mt-12">
-          {projectAry?.map((v: any) => (
-            <ProductCard
-              key={v1()}
-              keyID={v.keyID}
-              name={data.nickname}
-              title={v.title}
-              content={v.content}
-              imgURI={v.image_url || "/dummy/temp.png"}
-              creator={wallet.address}
-              progress={progressing(v[1], v[0])}
-              amount={replaceBalance(v[0])}
-              expired={v[3] - blockNumber}
-            />
-          ))}
+          {projectAry.length > 0 ? (
+            projectAry?.map((v: any) => (
+              <ProductCard
+                key={v1()}
+                keyID={v.keyID}
+                name={data.nickname}
+                title={v.title}
+                content={v.content}
+                imgURI={v.image_url || "/dummy/temp.png"}
+                creator={wallet.address}
+                progress={progressing(v[1], v[0])}
+                amount={replaceBalance(v[0])}
+                expired={v[3] - blockNumber}
+              />
+            ))
+          ) : (
+            <EmptyCard>보유한 프로젝트가 없습니다.</EmptyCard>
+          )}
         </div>
       </div>
     </div>
