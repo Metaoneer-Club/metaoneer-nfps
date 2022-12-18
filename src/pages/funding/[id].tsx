@@ -20,6 +20,7 @@ import { FundingTable } from "components/table/FundingTable";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
 import { VoteModal } from "components/modal/VoteModal";
 import { FundingModal } from "components/modal/FundingModal";
+import { LoadingPage } from "components/loading/LoadingPage";
 
 import {
   accounting,
@@ -34,7 +35,6 @@ import {
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { IProject, isToastState, toastContentState, walletState } from "stores";
-import { LoadingPage } from "~/components/loading/LoadingPage";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -306,9 +306,11 @@ const Product = () => {
   const closeHandler = () => {
     setIsOpenFund(false);
     setAmount(0);
+    return;
   };
 
   const interHandler = async () => {
+    setIsLoadingVote(true);
     try {
       await fundContract.methods
         .interMediatePayment(router.query.id, mileStoneStep)
@@ -334,10 +336,12 @@ const Product = () => {
 
     setUPDATES(UPDATES + 1);
     setIsToast(true);
+    setIsLoadingVote(false);
     return;
   };
 
   const refundHandler = async () => {
+    setIsLoadingVote(true);
     try {
       await fundContract.methods.Refund(router.query.id).send({
         from: wallet.address,
@@ -361,12 +365,14 @@ const Product = () => {
 
     setUPDATES(UPDATES + 1);
     setIsToast(true);
+    setIsLoadingVote(false);
     return;
   };
 
   const statusChanger = (num: number) => {
     if (num + 1 > 6 || num - 1 < -1) return;
     setIsStatus(num);
+    return;
   };
 
   const stats = [
@@ -451,7 +457,7 @@ const Product = () => {
               <Button
                 className="flex items-center bg-white dark:bg-dark shadow hover:bg-dark dark:hover:bg-dark-600 hover:text-white mr-4"
                 onClick={() => {
-                  if (Number(router.query.id) > 0)
+                  if (Number(router.query.id) > 1)
                     router.push(`/funding/${Number(router.query.id) - 1}`);
                 }}
               >
@@ -561,7 +567,7 @@ const Product = () => {
                 ""
               )}
 
-              <div className="p-8 pt-4 mt-auto w-full">
+              <div className="p-8 pb-6 pt-4 mt-auto w-full">
                 {Number(isStatus) === 0 ? (
                   <Button
                     className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
@@ -620,6 +626,15 @@ const Product = () => {
                   >
                     <span>{isOwner ? "환불 진행중" : "환불받기"}</span>
                   </Button>
+                ) : (
+                  ""
+                )}
+
+                {(isOwner && Number(isStatus) === (2 || 3)) ||
+                (!isOwner && Number(isStatus) >= 4) ? (
+                  <span className="mt-2 text-xs ml-2">
+                    ※ 자금을 수령 시 수수료 2.5%를 제하고 받습니다.
+                  </span>
                 ) : (
                   ""
                 )}
