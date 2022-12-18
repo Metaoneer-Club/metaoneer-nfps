@@ -117,7 +117,7 @@ const contactItems: ALink[] = [
   {
     name: "텔레그램",
     src: "telegram",
-    url: "https://t.me/Ramp_me",
+    url: "https://t.me/Metaoneer_Ramp",
   },
   {
     name: "디스코드",

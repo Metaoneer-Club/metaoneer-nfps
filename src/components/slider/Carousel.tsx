@@ -1,6 +1,6 @@
 import { FC } from "react";
 import Slider from "react-slick";
-import { AutoImage } from "~/utils";
+import { AutoImage } from "utils";
 
 const Carousel: FC = () => {
   const settings = {
@@ -14,39 +14,40 @@ const Carousel: FC = () => {
 
   return (
     <Slider {...settings}>
-      <div className="bg-[#011E22]">
-        <div className="relative max-w-[1200px] mx-auto h-80 after:edge-blur-1">
+      <div className="bg-dark">
+        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-2">
           <AutoImage
-            src="/dummy/leave.png"
+            src="/dummy/discord.png"
             className="object-cover"
             alt="leave"
           />
           <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            Fall into the green pattern.
+            Discord Bot connected to On-chain
           </p>
         </div>
       </div>
-      <div className="bg-black">
-        <div className="relative max-w-[1200px] mx-auto h-80 after:edge-blur-2">
+      <div className="bg-dark">
+        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-2">
           <AutoImage
-            src="/dummy/forest.jpg"
+            src="/dummy/imco.png"
             className="object-cover"
             alt="forest"
           />
           <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            Go on a trip to the exciting forest.
+            IMC solutions designed to help market On-chain projects
           </p>
         </div>
       </div>
-      <div className="bg-[#F8C743]">
-        <div className="relative max-w-[1200px] mx-auto h-80 after:edge-blur-3">
+      <div className="bg-white">
+        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-1">
           <AutoImage
-            src="/dummy/instrument.png"
+            src="/dummy/cc2e.png"
             className="object-cover"
             alt="instrument"
           />
-          <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 right-0 transform -translate-x-1/2 -translate-y-1/2">
-            Would you like to indulge in<br></br> a beautiful performance?
+          <p className="absolute text-3xl bg-black p-2 text-white font-bold top-2/3 right-0 transform -translate-x-1/2 -translate-y-1/2">
+            A community that provides valuable talk-nomics<br></br> to users and
+            advertising users
           </p>
         </div>
       </div>

@@ -25,3 +25,7 @@ export const progressing = (base: number, balance: number) => {
     ((replaceBalance(base) / replaceBalance(balance)) * 100).toFixed(5)
   );
 };
+
+export const progressingCSS = (base: number, balance: number) => {
+  return progressing(base, balance) >= 100 ? 100 : progressing(base, balance);
+};

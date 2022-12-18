@@ -1,11 +1,15 @@
-import React, { FC, useState, MouseEventHandler } from "react";
+import React, { FC, MouseEventHandler } from "react";
 import { v1 } from "uuid";
+import { useRouter } from "next/router";
+
+/* API */
+import { IMileData } from "api/APIModel";
+import { FundingOutputAPI } from "api";
 
 /* Component */
 import { Button } from "components/asset/button";
 import { Badge } from "components/asset/badge";
 import { AutoSVG } from "utils";
-import { IMileData } from "api/APIModel";
 
 interface Props {
   mileData: IMileData;
@@ -21,12 +25,20 @@ const MilestoneUserModal: FC<Props> = ({
   mileData,
   price,
   isOwner,
-  isIndex,
   startBN,
   endBN,
   close,
 }) => {
-  const [isCheck, setIsCheck] = useState<boolean>(false);
+  const router = useRouter();
+
+  const outputHandler = async (id: number, done: boolean) => {
+    await FundingOutputAPI({
+      token_id: Number(router.query.id),
+      output_id: id,
+      done: !done,
+    });
+  };
+
   return (
     <>
       <div className="py-12 bg-gray-700/50 dark:bg-black/60 transition duration-150 ease-in-out z-30 fixed top-0 right-0 bottom-0 left-0">
@@ -50,7 +62,7 @@ const MilestoneUserModal: FC<Props> = ({
                         type="checkbox"
                         className="w-5 h-5 mr-2"
                         checked={v.done}
-                        onClick={() => setIsCheck(!isCheck)}
+                        onClick={() => outputHandler(v.output_id, v.done)}
                       />
                     ) : v.done ? (
                       <AutoSVG
@@ -109,13 +121,3 @@ const MilestoneUserModal: FC<Props> = ({
 };
 
 export { MilestoneUserModal };
-
-const dummyData: any = {
-  title: "프로젝트 제목",
-  content: [
-    "M2E 안드로이드 어플리케이션 프로토타입 시연",
-    "홈페이지 내 커뮤니티 게시판 생성",
-    "현대백화점 스크린에 대형 광고",
-    "와우 챌린지 참여 인원 500명 달성",
-  ],
-};

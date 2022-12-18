@@ -10,7 +10,6 @@ interface Props {
   isVoted: number;
   isLoading: boolean;
   voting: number;
-  onChangeAmount: ChangeEventHandler<HTMLInputElement>;
   onPass: any;
   onReject: any;
   close: MouseEventHandler<HTMLButtonElement>;

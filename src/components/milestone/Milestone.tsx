@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { v1 } from "uuid";
 
 /* Component */
 import { Badge } from "components/asset/badge";
@@ -7,7 +8,6 @@ import { AutoSVG, formatDateSlash } from "utils";
 /* State */
 import { useRecoilState } from "recoil";
 import { IMilestone, milestoneState } from "stores";
-import { v1 } from "uuid";
 
 const Milestone: FC<IMilestone> = ({
   keyID,
@@ -41,11 +41,12 @@ const Milestone: FC<IMilestone> = ({
             <div className="w-full text-xl font-medium truncate">{title}</div>
           </div>
           <div className="text-gray-500 dark:text-gray-400 text-sm mt-4">
-            <div className="h-20 grid grid-cols-2 gap-x-4 px-4">
+            <div className="h-20 grid grid-cols-2 gap-x-4 px-2">
               {content.map((v: any) => (
-                <p key={v1()} className="truncate">
-                  - {v}
-                </p>
+                <div key={v1()} className="flex items-center">
+                  <div className="w-1 h-4 bg-black mr-2 rounded" />
+                  <div className="truncate">{v}</div>
+                </div>
               ))}
             </div>
             <div className="text-sm">

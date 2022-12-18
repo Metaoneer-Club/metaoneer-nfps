@@ -14,7 +14,6 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Button } from "components/asset/button";
 import { CalendarWidget } from "components/calendar/CalendarWidget";
-import { InputWidget } from "components/input/InputWidget";
 import { AutoSVG, formatDate } from "utils";
 
 /* State */
@@ -22,7 +21,6 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   IMilestone,
   isToastState,
-  milestoneContentState,
   milestoneState,
   toastContentState,
 } from "stores";
@@ -40,12 +38,8 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
   const [price, setPrice, onChangePrice] = useInput<number>(0);
   const [expired, setExpired] = useState<Date>(new Date());
   const [milestoneArray, setMilestoneArray] = useRecoilState(milestoneState);
-  const [milestoneContent, setMilestoneContent] = useRecoilState(
-    milestoneContentState
-  );
-  const [milestoneContentAry, setMilestoneContentAry] = useState<any>([]);
-  const [value, setValue] = useState<string>("");
-  const [isPlus, setIsPlus] = useState(0);
+  const [milestoneContent, setMilestoneContent] = useState<string[]>([]);
+  const [value, setValue, onChangeInputValue] = useInput<string>("");
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
@@ -54,12 +48,6 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
     temp.setDate(temp.getDate() + 1);
     setExpired(temp);
   }, [baseDate]);
-
-  useEffect(() => {
-    let temp = Array.from(milestoneContent.values());
-
-    setMilestoneContentAry(temp);
-  }, [milestoneContent, value]);
 
   useEffect(() => {
     if (isOpen) {
@@ -77,7 +65,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
       return false;
     }
 
-    if (milestoneContentAry.length === 0) {
+    if (milestoneContent.length === 0) {
       setToastContent({
         content: "최소 1개의 산출물을 입력해 주세요.",
         type: "danger",
@@ -113,7 +101,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
     const inputData: IMilestone = {
       keyID: `ms${v1()}`,
       title: title,
-      content: milestoneContentAry,
+      content: milestoneContent,
       price: price,
       startDate: baseDate,
       expired: expired,
@@ -121,8 +109,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
 
     setMilestoneArray([...milestoneArray, inputData]);
     setTitle("");
-    setMilestoneContent(new Map());
-    setMilestoneContentAry([]);
+    setMilestoneContent([]);
     setPrice(0);
     setExpired(new Date());
     close(false);
@@ -165,13 +152,33 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
               >
                 마일스톤 산출물
               </label>
-              {[...Array(isPlus)]?.map((v, i) => (
-                <InputWidget setValue={setValue} key={v1()} index={i} />
-              ))}
+
+              {milestoneContent.length > 0
+                ? milestoneContent.map((v, i) => (
+                    <div
+                      key={v1()}
+                      className="dark:bg-dark-400 text-gray-600 dark:text-gray-400 font-normal w-full h-10 flex items-center pl-1 text-sm"
+                    >
+                      <div className="w-1 h-4 bg-black mr-2 rounded" />
+                      <span>{v}</span>
+                    </div>
+                  ))
+                : ""}
+
+              <input
+                type="text"
+                value={value}
+                onChange={onChangeInputValue}
+                className="mt-2 dark:bg-dark-400 text-gray-600 dark:text-gray-400 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-400 dark:border-dark-300 rounded border"
+                placeholder="M2E 앱 안드로이드 출시"
+              />
 
               <div className="flex items-center">
                 <Button
-                  onClick={() => setIsPlus(isPlus + 1)}
+                  onClick={() => {
+                    milestoneContent.push(value);
+                    setValue("");
+                  }}
                   className="inline-flex mt-2 mb-5 group cursor-pointer shadow px-2 py-2.5 rounded-lg bg-indigo-600 dark:bg-indigo-700 transition-all duration-300 items-center text-xs mr-2 hover:bg-indigo-700 dark:hover:bg-indigo-800 text-white"
                 >
                   <AutoSVG
@@ -182,8 +189,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
                 </Button>
                 <Button
                   onClick={() => {
-                    setIsPlus(0);
-                    setMilestoneContent(new Map());
+                    setMilestoneContent([]);
                   }}
                   className="inline-flex mt-2 mb-5 group cursor-pointer shadow px-2 py-2.5 rounded-lg bg-danger dark:bg-danger-active transition-all duration-300 items-center text-xs mr-2 hover:bg-danger-active dark:hover:bg-red-700 text-white"
                 >
@@ -219,7 +225,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
                     ? (totalPrice * price) / 100
                     : 0}
                 </span>
-                BNB
+                BUSD
               </p>
 
               <label className="text-gray-800 dark:text-white text-sm font-bold leading-tight tracking-normal">
@@ -246,7 +252,7 @@ const MilestoneModal: FC<Props> = ({ baseDate, totalPrice, close }) => {
                 className="w-20 mr-2 rounded text-center font-bold text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400"
                 onClick={() => {
                   close(false);
-                  setMilestoneContent(new Map());
+                  setMilestoneContent([]);
                 }}
               >
                 <span>취소</span>

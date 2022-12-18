@@ -7,7 +7,6 @@ import { accounting, toDate, zeroCount } from "utils";
 import { IMileData } from "api/APIModel";
 
 interface Props {
-  id: string | string[] | undefined;
   mileData: IMileData[];
   blockNumber: number;
   isOwner: boolean;
@@ -16,7 +15,6 @@ interface Props {
 }
 
 const MilestoneUser: FC<Props> = ({
-  id,
   mileData,
   blockNumber,
   isOwner,
@@ -30,8 +28,6 @@ const MilestoneUser: FC<Props> = ({
     setIsOpen(true);
     setIsIndex(index);
   };
-
-  console.log(milestones);
 
   return (
     <>
@@ -66,7 +62,7 @@ const MilestoneUser: FC<Props> = ({
                   <div className="flex justify-between items-center">
                     <div>
                       {blockNumber < v[0] ? (
-                        <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-primary dark:bg-priamry-active mr-2 text-white">
+                        <div className="inline px-3 py-1.5 text-sm font-medium rounded bg-primary dark:bg-primary-active mr-2 text-white">
                           시작 전
                         </div>
                       ) : (

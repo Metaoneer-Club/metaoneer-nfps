@@ -7,10 +7,10 @@ import { AutoImage, shortAddress, toDate, toHours, zeroCount } from "utils";
 
 export interface Product {
   keyID?: number;
+  name: string;
   title: string;
   content: string;
   imgURI: string;
-  category: string;
   creator: string;
   progress: number;
   amount: number;
@@ -19,10 +19,10 @@ export interface Product {
 
 const ProductCard: FC<Product> = ({
   keyID,
+  name,
   title,
   content,
   imgURI,
-  category,
   creator,
   progress,
   amount,
@@ -48,12 +48,12 @@ const ProductCard: FC<Product> = ({
           </div>
           <div className="mt-2 px-4 pb-4">
             <label className="text-gray-600 text-xs">
-              <span>{category}</span>
+              <span>{name}</span>
               <span className="mx-1">|</span>
               <span>{shortAddress(creator)}</span>
             </label>
             <h2 className="mt-1 truncate">{title}</h2>
-            <p className="mt-2 text-gray-500 text-xs break-words truncate-3-lines">
+            <p className="mt-2 text-gray-500 text-xs break-words truncate-3-lines h-12">
               {content}
             </p>
             <div className="mt-3 mx-1 flex items-center justify-between text-sm">

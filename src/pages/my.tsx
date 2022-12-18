@@ -5,7 +5,15 @@ import { useQuery } from "react-query";
 import axios from "axios";
 
 /* API */
-import { AddProfileAPI, AddProfileImageAPI, CheckProfileAPI } from "api";
+import {
+  AddProfileAPI,
+  AddProfileImageAPI,
+  CheckFundingAPI,
+  CheckProfileAPI,
+} from "api";
+
+/* Hooks */
+import useInput from "hooks/useInput";
 
 /* Component */
 import {
@@ -28,9 +36,9 @@ import {
 /* State */
 import { isToastState, toastContentState, walletState } from "stores";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import useInput from "~/hooks/useInput";
 import clsx from "clsx";
 import { v1 } from "uuid";
+import { LoadingPage } from "~/components/loading/LoadingPage";
 
 const MyPage: NextPage = () => {
   const router = useRouter();
@@ -83,8 +91,10 @@ const MyPage: NextPage = () => {
           const project = await fundContract.methods
             .fundingView(tokenId)
             .call();
+          const funding = await CheckFundingAPI(index);
           projects.push({
             ...project,
+            ...funding,
             index,
           });
         };
@@ -186,20 +196,7 @@ const MyPage: NextPage = () => {
     setIsUpdate(false);
   };
 
-  if (isLoading || loadingProfile) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
-        <div className="max-w-[1200px] mx-auto pt-12 pb-40">
-          <div className="text-center mt-8">
-            <div className="relative w-12 h-12 animate-spin mx-auto">
-              <AutoImage src="/media/icons/spinner.svg" alt="loading" />
-            </div>
-            <h2 className="mt-4">로딩중 입니다...</h2>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (isLoading || loadingProfile) return <LoadingPage />;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
@@ -314,14 +311,10 @@ const MyPage: NextPage = () => {
             <ProductCard
               key={v1()}
               keyID={v.keyID}
-              title="엄청난 제목"
-              content="BNB Smart Chain (BSC) supports the most popular
-              programming languages, flexible tools, and comes with
-              clear and canonical documentation. You can quickly start
-              and deploy your application on a blockchain designed with
-              real use in mind."
-              imgURI="/temp.png"
-              category="NFT"
+              name={data.nickname}
+              title={v.title}
+              content={v.content}
+              imgURI={v.image_url || "/dummy/temp.png"}
               creator={wallet.address}
               progress={progressing(v[1], v[0])}
               amount={replaceBalance(v[0])}

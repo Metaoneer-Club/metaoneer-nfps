@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import {
   accounting,
   progressing,
+  progressingCSS,
   replaceBalance,
   toDate,
   toHours,
@@ -27,7 +28,15 @@ const StatusCard: FC<Props> = ({
   const baseBN = () => {
     if (status === 0) return project.fundingStart;
     if (status === 1) return project.fundingEnd;
-    if (status === 2) return Number(milestones[milestep][1]);
+    if (status === 2) {
+      let num;
+      try {
+        num = Number(milestones[milestep][1]);
+      } catch {
+        num = blockNumber;
+      }
+      return num;
+    }
     if (status >= 3) return blockNumber;
     return 0;
   };
@@ -108,17 +117,10 @@ const StatusCard: FC<Props> = ({
             <div className="w-full h-3 mb-1 bg-blue-200 rounded-sm">
               <div
                 style={{
-                  width: `${
-                    progressing(
-                      project?.totalFundamount,
-                      project?.limitprice
-                    ) >= 100
-                      ? "100%"
-                      : progressing(
-                          project?.totalFundamount,
-                          project?.limitprice
-                        )
-                  }%`,
+                  width: `${progressingCSS(
+                    project?.totalFundamount,
+                    project?.limitprice
+                  )}%`,
                 }}
                 className="h-full text-center text-xs text-white bg-blue-600 rounded-sm"
               />

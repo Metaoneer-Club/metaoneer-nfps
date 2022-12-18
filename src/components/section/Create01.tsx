@@ -31,12 +31,14 @@ interface Props {
   startDate: Date;
   endDate: Date;
   lastDate: Date;
+  imageDataSrc: string;
   onChangeTitle: (e?: ChangeEvent) => void;
   onChangeContent: Dispatch<SetStateAction<string | undefined>>;
   onChangePrice: (e?: ChangeEvent) => void;
   setStartDate: Dispatch<SetStateAction<Date>>;
   setEndDate: Dispatch<SetStateAction<Date>>;
   setImageData: Dispatch<SetStateAction<any>>;
+  setImageDataSrc: Dispatch<SetStateAction<string>>;
   continueHandler: () => void;
   tokenHandler: MouseEventHandler<HTMLButtonElement>;
 }
@@ -51,19 +53,20 @@ const Create01: FC<Props> = ({
   startDate,
   endDate,
   lastDate,
+  imageDataSrc,
   onChangeTitle,
   onChangeContent,
   onChangePrice,
   setStartDate,
   setEndDate,
   setImageData,
+  setImageDataSrc,
   continueHandler,
   tokenHandler,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenStart, setIsOpenStart] = useState<boolean>(false);
   const [isOpenEnd, setIsOpenEnd] = useState<boolean>(false);
-  const [imageDataSrc, setImageDataSrc] = useState<string>("");
   const mileStoneArray = useRecoilValue(milestoneState);
 
   const uploadImageHanlder = (e: any) => {

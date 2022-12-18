@@ -1,5 +1,5 @@
 import sigPacker from "signature-packer";
-import { dateContract, web3 } from "components/blockchain";
+import { web3 } from "components/blockchain";
 import { replaceBalance } from "utils";
 
 export interface Wallet {

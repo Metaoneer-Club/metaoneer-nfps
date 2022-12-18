@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import clsx from "clsx";
+import { useTheme } from "next-themes";
 import { useQuery } from "react-query";
+
+/* API */
+import { CheckFundingAPI, CheckProfileAPI } from "api";
 
 /* Hook */
 import useInput from "hooks/useInput";
@@ -11,11 +15,11 @@ import useInput from "hooks/useInput";
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
 import { fundContract, getBN, nftContract } from "components/blockchain";
-import { MilestoneUser } from "components/milestone/MilestoneUser";
-import { FundingTable } from "components/table/FundingTable";
-import { FundingModal } from "components/modal/FundingModal";
-import { VoteModal } from "components/modal/VoteModal";
 import { StatusCard } from "components/card/StatusCard";
+import { FundingTable } from "components/table/FundingTable";
+import { MilestoneUser } from "components/milestone/MilestoneUser";
+import { VoteModal } from "components/modal/VoteModal";
+import { FundingModal } from "components/modal/FundingModal";
 
 import {
   accounting,
@@ -26,11 +30,11 @@ import {
   replaceBalance,
   shortAddress,
 } from "utils";
-import { CheckFundingAPI, CheckProfileAPI } from "api";
 
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { IProject, isToastState, toastContentState, walletState } from "stores";
+import { LoadingPage } from "~/components/loading/LoadingPage";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -45,23 +49,13 @@ type Status = 0 | 1 | 2 | 3 | 4 | 5;
 // 5: 펀딩 중단됨
 
 const Product = () => {
+  const { theme } = useTheme();
   const router = useRouter();
-  const { isLoading, data } = useQuery(["Project"], async () => {
-    const res = await CheckFundingAPI(Number(router.query.id));
-    return res;
-  });
-  const { isLoading: loadingProfile, data: profileData } = useQuery(
-    ["Profile"],
+  const { isLoading: isLoadingProject, data } = useQuery(
+    ["Project"],
     async () => {
-      const res = await CheckProfileAPI({
-        address: project.owner,
-        chain_id: 97,
-      });
-
+      const res = await CheckFundingAPI(Number(router.query.id));
       return res;
-    },
-    {
-      staleTime: 500,
     }
   );
 
@@ -80,11 +74,17 @@ const Product = () => {
   const [mileStoneAry, setMileStoneAry] = useState([]);
   const [mileStoneStep, setMileStoneStep] = useState<number>(0);
   const [daoAry, setDaoAry] = useState([]);
-  const [isStatus, setIsStatus] = useState<Status>(0);
+  const [profileData, setProfileData] = useState({
+    image_url: "",
+    nickname: "",
+    content: "",
+  });
+  const [isStatus, setIsStatus] = useState<Status | number>(0);
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [amount, setAmount, onChangeAmount] = useInput<number>(0);
   const [blockNumber, setBlockNumber] = useState<number>(0);
   const [isCount, setIsCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingFund, setIsLoadingFund] = useState<boolean>(false);
   const [isLoadingVote, setIsLoadingVote] = useState<boolean>(false);
   const [isOpenFund, setIsOpenFund] = useState<boolean>(false);
@@ -94,20 +94,28 @@ const Product = () => {
   const [UPDATES, setUPDATES] = useState<number>(0);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
-  const [test, , testCh] = useInput<Status>(0);
 
   useEffect(() => {
     const getData = async () => {
+      if (!project.fundingStart) return;
       const bn = await getBN();
       const count = await nftContract.methods.totalSupply().call();
+      if (bn < project.fundingStart) {
+        setIsStatus(0);
+      } else if (bn < project.fundingEnd) {
+        setIsStatus(1);
+      } else if (bn > project.fundingEnd) {
+        setIsStatus(2);
+      }
       setBlockNumber(bn);
       setIsCount(count);
     };
     getData();
-  }, []);
+  }, [project.fundingStart, project.fundingEnd]);
 
   useEffect(() => {
     const projectData = async () => {
+      setIsLoading(true);
       const funding = await fundContract.methods
         .fundingView(router.query.id)
         .call(); // [목표액, 모금액, 펀딩시작일, 펀딩종료일,[펀더지갑], [펀딩금액]]
@@ -135,7 +143,10 @@ const Product = () => {
         .call();
       const nftCount = await nftContract.methods.balanceOf(nftOwner).call();
 
-      console.log(funding, funder, milestone, milestep, voter);
+      const res = await CheckProfileAPI({
+        address: project.owner,
+        chain_id: wallet.network || 97,
+      });
 
       const milestoneList: any = [];
       for (let m = 0; m < milestone[1].length; m++) {
@@ -166,8 +177,8 @@ const Product = () => {
         fundingStart: funding[2] || 0,
         fundingEnd: funding[3] || 0,
         fundingList: fundingList || {},
-        daoPass: voter[0][milestep], // [0번, 1번, 2번 찬성]
-        daoReject: voter[1][milestep], // [0번, 1번, 2번 반대]
+        daoPass: voter[0][milestep],
+        daoReject: voter[1][milestep],
         owner: nftOwner,
       });
       setMileStoneAry(milestoneList);
@@ -175,9 +186,11 @@ const Product = () => {
       setMileStoneStep(milestep);
       setProjectCount(nftCount);
       setIsVoted(checkVoted < 0 ? 0 : checkVoted);
+      setProfileData(res);
+      setIsLoading(false);
     };
     projectData();
-  }, [router.query.id, wallet.address, UPDATES]);
+  }, [router.query.id, wallet.address, wallet.network, project.owner, UPDATES]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -187,7 +200,7 @@ const Product = () => {
     return () => {
       clearInterval(timer);
     };
-  }, [blockNumber, project.fundingEnd, project.fundingStart]);
+  }, [blockNumber, project.fundingEnd]);
 
   const fundingHandler = async (id: string) => {
     if (amount === 0) {
@@ -351,9 +364,9 @@ const Product = () => {
     return;
   };
 
-  const statusChanger = (e: any) => {
-    testCh(e);
-    setIsStatus(e.target.value);
+  const statusChanger = (num: number) => {
+    if (num + 1 > 6 || num - 1 < -1) return;
+    setIsStatus(num);
   };
 
   const stats = [
@@ -365,22 +378,7 @@ const Product = () => {
     "환불중",
   ];
 
-  if (isLoading || loadingProfile)
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-dark-600">
-        <div className="max-w-[1200px] mx-auto pt-16 pb-40">
-          <div className="w-1/4 bg-white dark:bg-dark dark:border-dark-300 p-4 border rounded flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="w-1 h-5 mr-2 bg-dark rounded-sm" />
-              <p className="">로딩중 입니다...</p>
-            </div>
-            <div className="animate-spin">
-              <AutoSVG className="w-6 h-6" src="/media/icons/spinner.svg" />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  if (isLoading || isLoadingProject) return <LoadingPage />;
 
   return (
     <>
@@ -400,7 +398,6 @@ const Product = () => {
           id={router.query.id}
           isVoted={isVoted}
           voting={project.fundingList[wallet.address.toUpperCase()]}
-          onChangeAmount={onChangeAmount}
           onPass={passHandler}
           onReject={rejectHandler}
           close={() => setIsOpenVote(false)}
@@ -420,12 +417,27 @@ const Product = () => {
               </span>
               <span className="font-bold">{data.title}</span>
 
-              <input
-                type="number"
-                className="text-sm w-14 text-center mx-4 border dark:border-dark-300 p-2 rounded bg-gray-500 text-white hover:bg-gray-600"
-                value={test}
-                onChange={statusChanger}
-              />
+              <div className="grid grid-cols-3 place-items-center py-0.5 bg-gray-500 text-white mx-6 rounded text-sm">
+                <div
+                  className="cursor-pointer hover:bg-gray-600 h-full pt-2 text-white"
+                  onClick={() => statusChanger(Number(isStatus) - 1)}
+                >
+                  <AutoSVG
+                    className="w-4 h-4 mx-1"
+                    src="/media/icons/arrow-bottom.svg"
+                  />
+                </div>
+                <span className="p-1.5">{isStatus}</span>
+                <div
+                  className="cursor-pointer hover:bg-gray-600 h-full pt-2 text-white"
+                  onClick={() => statusChanger(Number(isStatus) + 1)}
+                >
+                  <AutoSVG
+                    className="rotate-180 w-4 h-4 mx-1"
+                    src="/media/icons/arrow-bottom.svg"
+                  />
+                </div>
+              </div>
 
               <button
                 type="button"
@@ -469,7 +481,7 @@ const Product = () => {
             <div className="col-span-3">
               <div className="relative w-full h-96">
                 <AutoImage
-                  src={data.image_url || "/temp.png"}
+                  src={data.image_url || "/dummy/temp.png"}
                   alt="bnb"
                   className="object-cover rounded-xl"
                 />
@@ -504,8 +516,8 @@ const Product = () => {
                       {Number(isStatus) === 0 ? "펀딩 대기중" : "펀딩 진행중"}
                     </p>
                     <p className="mt-1">
-                      {formatDateDot(data.created_at)} ~{" "}
-                      {formatDateDot(data.created_at)}
+                      {formatDateDot(data.created_at || new Date())} ~{" "}
+                      {formatDateDot(data.created_at || new Date())}
                     </p>
                   </div>
                 </div>
@@ -655,9 +667,14 @@ const Product = () => {
                   ""
                 )}
               </nav>
-              <Card className="border p-6 bg-white dark:text-gray-300 dark:bg-dark dark:border-dark-300 rounded-tl-none rounded-xl">
+              <Card
+                className={clsx(
+                  "border p-6 bg-white dark:text-gray-300 dark:border-dark-300 rounded-tl-none rounded-xl",
+                  tabIndex === 0 ? "dark:bg-dark-400" : "dark:bg-dark"
+                )}
+              >
                 {tabIndex === 0 ? (
-                  <div className="leading-relaxed">
+                  <div className="leading-relaxed" data-color-mode={theme}>
                     <MarkdownPreview source={data.content} />
                   </div>
                 ) : (
@@ -665,7 +682,6 @@ const Product = () => {
                 )}
                 {tabIndex === 1 ? (
                   <MilestoneUser
-                    id={router.query.id}
                     mileData={data.milestone}
                     blockNumber={blockNumber}
                     isOwner={isOwner}
@@ -690,7 +706,7 @@ const Product = () => {
                 <div className="flex items-center">
                   <div className="relative w-7 h-7 mr-2">
                     <AutoImage
-                      className="rounded-full border"
+                      className="rounded-full object-cover border"
                       src={profileData?.image_url || "/media/avatars/blank.svg"}
                       alt="icon"
                     />

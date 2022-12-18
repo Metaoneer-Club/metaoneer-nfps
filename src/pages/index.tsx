@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-dark-600">
       <Carousel />
-      <div className="max-w-[1200px] mx-auto pt-28">
+      <div className="max-w-[1200px] mx-auto pt-28 pb-40">
         <div className="flex items-center">
           <h2 className="text-2xl font-bold mr-4">인기있는 프로젝트</h2>
           <div className="relative w-8 h-8">
@@ -26,31 +26,7 @@ const Home: NextPage = () => {
               title={v.title}
               content={v.content}
               imgURI={v.imgURI}
-              category={v.category}
-              creator={v.creator}
-              progress={v.progress}
-              amount={v.amount}
-              expired={v.expired}
-            />
-          ))}
-        </div>
-      </div>
-      <div className="max-w-[1200px] mx-auto pt-28 pb-40">
-        <div className="flex items-center">
-          <h2 className="text-2xl font-bold mr-4">마감 임박 프로젝트</h2>
-          <div className="relative w-8 h-8">
-            <AutoImage src="/media/icons/arrow-right.svg" alt="more" />
-          </div>
-        </div>
-        <div className="grid gap-10 grid-cols-2 mt-10">
-          {productItems.map((v: Product, i) => (
-            <MainCard
-              key={v.title}
-              keyID={i}
-              title={v.title}
-              content={v.content}
-              imgURI={v.imgURI}
-              category={v.category}
+              name={v.name}
               creator={v.creator}
               progress={v.progress}
               amount={v.amount}
@@ -66,51 +42,48 @@ const Home: NextPage = () => {
 const productItems: Product[] = [
   {
     keyID: 1,
-    imgURI: "/dummy/forest.jpg",
-    title: "Awesome Forest",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsu",
-    category: "Land",
+    imgURI: "/dummy/discord.png",
+    title: "Discord Bot",
+    content: "온체인과 연결된 디스코드 봇 입니다",
+    name: "Orbit",
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 1874,
     amount: 23421,
-    expired: 12,
+    expired: 11212,
   },
   {
     keyID: 2,
-    imgURI: "/dummy/instrument.png",
-    title: "Awesome Instrument",
-    content:
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
-    category: "Music",
+    imgURI: "/dummy/imco.png",
+    title: "IMCO",
+    content: "온체인 프로젝트의 마케팅을 돕기위해 제작된 IMC 솔루션 입니다.",
+    name: "Orbit",
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 213,
     amount: 4342,
-    expired: 7,
+    expired: 12212,
   },
   {
     keyID: 3,
-    imgURI: "/dummy/raspberry.png",
-    title: "Awesome Raspberry",
+    imgURI: "/dummy/cc2e.png",
+    title: "CC2E",
     content:
-      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-    category: "Fruit",
+      "유저들과 광고 이용자에게 가치있는 토크노믹스를 제공하는 커뮤니티 입니다.",
+    name: "Orbit",
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 98,
     amount: 2342,
-    expired: 16,
+    expired: 13212,
   },
   {
     keyID: 4,
-    imgURI: "/dummy/musicPlayer.jpg",
-    title: "Awesome Music-Player",
-    content:
-      "Ut imperdiet et urna et tincidunt. Integer tempus tempus nisi, quis hendrerit dui rhoncus ultricies. Fusce at lobortis turpis, vitae aliquam metus. Nunc cursus euismod aliquet. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed venenatis vel sapien vel pretium. Nulla quis varius est, ut feugiat augue.",
-    category: "Music",
+    imgURI: "/dummy/mtor.png",
+    title: "MTOR",
+    content: "메타오니어팀에서 발행될 토큰입니다.",
+    name: "Orbit",
     creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
     progress: 87,
     amount: 1567,
-    expired: 0.7,
+    expired: 14212,
   },
 ];
 

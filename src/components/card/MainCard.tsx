@@ -7,25 +7,22 @@ import { Product } from "components/card/ProductCard";
 import { AutoImage, toDate, toHours, zeroCount } from "utils";
 
 const MainCard: FC<Product> = ({
-  keyID,
   title,
   content,
   imgURI,
-  category,
-  creator,
   progress,
   amount,
   expired,
 }) => {
   const router = useRouter();
   return (
-    <div className="group flex bg-dark text-center text-white h-56 border border-t-0 dark:border-dark-500 rounded-2xl overflow-hidden">
+    <div className="group flex bg-dark text-center text-white h-56 border border-gray-300 dark:border-dark-300 rounded-2xl overflow-hidden">
       <div className="relative w-1/2 h-full">
         <AutoImage src={imgURI} alt={title} className="object-cover" />
       </div>
       <div className="w-1/2 p-6">
         <h2 className="font-bold text-base">{title}</h2>
-        <p className="mt-2 text-gray-400 text-xs break-words truncate-3-lines">
+        <p className="mt-2 text-gray-400 text-xs break-words h-12 truncate-3-lines">
           {content}
         </p>
         <div className="mt-3 mx-1 flex items-center justify-between text-xs">
@@ -60,9 +57,7 @@ const MainCard: FC<Product> = ({
         </div>
         <Button
           className="mt-3 w-full border dark:border-dark-300 text-sm group-hover:border-danger group-hover:text-danger"
-          onClick={() =>
-            Number.isInteger(keyID) && router.push(`/funding/${keyID}`)
-          }
+          onClick={() => router.push(`/comming`)}
         >
           See More
         </Button>

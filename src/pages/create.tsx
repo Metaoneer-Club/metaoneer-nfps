@@ -1,10 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { NextPage } from "next/types";
 import clsx from "clsx";
+import axios from "axios";
 
 /* API */
-import { ICreateFundingAPI, ImageUpload } from "api/APIModel";
-import { AddFundingImageFundingAPI, CreateFundingAPI } from "api";
+import { ICreateFundingAPI } from "api/APIModel";
+import { CreateFundingAPI } from "api";
 
 /* Hook */
 import useInput from "hooks/useInput";
@@ -19,7 +20,7 @@ import {
   tokenPacker,
 } from "components/blockchain";
 import { Create01, Create02, Create03 } from "components/section";
-import { hexBalance } from "utils";
+import { hexBalance, dateGap } from "utils";
 
 /* State */
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
@@ -29,7 +30,6 @@ import {
   toastContentState,
   walletState,
 } from "stores";
-import axios from "axios";
 
 const Create: NextPage = () => {
   const wallet = useRecoilValue(walletState);
@@ -45,6 +45,7 @@ const Create: NextPage = () => {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [lastDate, setLastDate] = useState<Date>(new Date());
   const [imageData, setImageData] = useState<any>(null);
+  const [imageDataSrc, setImageDataSrc] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSigned, setIsSigned] = useState<boolean>(false);
   const [isSigning, setIsSigning] = useState<boolean>(false);
@@ -337,12 +338,14 @@ const Create: NextPage = () => {
                 startDate={startDate}
                 endDate={endDate}
                 lastDate={lastDate}
+                imageDataSrc={imageDataSrc}
                 onChangeTitle={onChangeTitle}
                 onChangeContent={setContent}
                 onChangePrice={onChangePrice}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
                 setImageData={setImageData}
+                setImageDataSrc={setImageDataSrc}
                 continueHandler={continueHandler}
                 tokenHandler={tokenHandler}
               />
@@ -353,6 +356,13 @@ const Create: NextPage = () => {
               <Create02
                 wallet={wallet}
                 isLoading={isLoading}
+                title={title}
+                image={imageDataSrc}
+                content={String(content)}
+                price={price}
+                startDate={startDate}
+                endDate={endDate}
+                expired={Math.floor(dateGap(startDate, new Date()) / 1000)}
                 setIsTap={setIsTap}
                 registerHandler={registerHandler}
               />

@@ -15,11 +15,7 @@ export interface IProject {
 export interface IMilestone {
   keyID: string;
   title: string;
-  content: {
-    id: number;
-    name: string;
-    done: boolean;
-  }[];
+  content: string[];
   price: number;
   startDate: Date;
   expired: Date;
@@ -44,9 +40,4 @@ const milestoneState = atom<IMilestone[]>({
   default: [],
 });
 
-const milestoneContentState = atom<any>({
-  key: `milestoneContentState/${v1()}`,
-  default: new Map(),
-});
-
-export { milestoneState, milestoneContentState };
+export { milestoneState };

@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 
 /* Component */
 import { Button } from "components/asset/button";
+import { SBT_CONTRACT_ADDRESS } from "components/blockchain";
 import { AutoSVG, shortAddress } from "utils";
-import { NFT_CONTRACT_ADDRESS } from "components/blockchain";
 
 interface Props {
   currentKey: string;
@@ -55,12 +55,12 @@ const Create03: FC<Props> = ({ currentKey }) => {
                 <span
                   onClick={() =>
                     window.open(
-                      `https://testnet.bscscan.com/address/${NFT_CONTRACT_ADDRESS}`
+                      `https://testnet.bscscan.com/address/${SBT_CONTRACT_ADDRESS}`
                     )
                   }
                   className="cursor-pointer underline hover:text-indigo-600"
                 >
-                  {shortAddress(String(NFT_CONTRACT_ADDRESS))}
+                  {shortAddress(String(SBT_CONTRACT_ADDRESS))}
                 </span>
               </div>
             </div>
