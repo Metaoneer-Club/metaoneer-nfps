@@ -26,15 +26,18 @@ import {
   accounting,
   AutoImage,
   AutoSVG,
+  bnToDate,
   formatDateDot,
   hexBalance,
   replaceBalance,
   shortAddress,
+  toDate,
 } from "utils";
 
 /* State */
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { IProject, isToastState, toastContentState, walletState } from "stores";
+import { LoadingSpan } from "~/components/loading/LoadingSpan";
 
 const MarkdownPreview = dynamic(() => import("@uiw/react-markdown-preview"), {
   ssr: false,
@@ -85,8 +88,6 @@ const Product = () => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
   const [isCount, setIsCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoadingFund, setIsLoadingFund] = useState<boolean>(false);
-  const [isLoadingVote, setIsLoadingVote] = useState<boolean>(false);
   const [isOpenFund, setIsOpenFund] = useState<boolean>(false);
   const [isOpenVote, setIsOpenVote] = useState<boolean>(false);
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -202,7 +203,21 @@ const Product = () => {
     };
   }, [blockNumber, project.fundingEnd]);
 
+  const checkWallet = () => {
+    if (!wallet.address) {
+      setToastContent({
+        content: "먼저 지갑을 연결해 주세요.",
+        type: "danger",
+      });
+      setIsToast(true);
+      return false;
+    }
+
+    return true;
+  };
+
   const fundingHandler = async (id: string) => {
+    if (!checkWallet()) return;
     if (amount === 0) {
       setToastContent({
         content: "펀딩 금액을 입력해 주세요.",
@@ -212,7 +227,7 @@ const Product = () => {
       return;
     }
 
-    setIsLoadingFund(true);
+    setIsLoading(true);
     try {
       await fundContract.methods.funding(id).send({
         from: wallet.address,
@@ -226,7 +241,7 @@ const Product = () => {
         type: "danger",
       });
       setIsToast(true);
-      setIsLoadingFund(false);
+      setIsLoading(false);
       return;
     }
 
@@ -235,16 +250,16 @@ const Product = () => {
       type: "success",
     });
     setIsToast(true);
-
+    setIsLoading(false);
     setUPDATES(UPDATES + 1);
-    setIsLoadingFund(false);
     setIsOpenFund(false);
     setAmount(0);
     return;
   };
 
   const passHandler = async (id: string) => {
-    setIsLoadingVote(true);
+    if (!checkWallet()) return;
+    setIsLoading(true);
     try {
       await fundContract.methods.DAOMilestonPass(id, mileStoneStep).send({
         from: wallet.address,
@@ -257,7 +272,7 @@ const Product = () => {
         type: "danger",
       });
       setIsToast(true);
-      setIsLoadingVote(false);
+      setIsLoading(false);
       return;
     }
 
@@ -265,16 +280,16 @@ const Product = () => {
       content: "찬성 투표가 완료되었습니다.",
       type: "success",
     });
-
-    setUPDATES(UPDATES + 1);
     setIsToast(true);
-    setIsLoadingVote(false);
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
     setIsOpenVote(false);
     return;
   };
 
   const rejectHandler = async (id: string) => {
-    setIsLoadingVote(true);
+    if (!checkWallet()) return;
+    setIsLoading(true);
     try {
       await fundContract.methods.DAOMilestonReject(id, mileStoneStep).send({
         from: wallet.address,
@@ -287,7 +302,7 @@ const Product = () => {
         type: "danger",
       });
       setIsToast(true);
-      setIsLoadingVote(false);
+      setIsLoading(false);
       return;
     }
 
@@ -295,22 +310,16 @@ const Product = () => {
       content: "반대 투표가 완료되었습니다.",
       type: "danger",
     });
-
-    setUPDATES(UPDATES + 1);
     setIsToast(true);
-    setIsLoadingVote(false);
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
     setIsOpenVote(false);
     return;
   };
 
-  const closeHandler = () => {
-    setIsOpenFund(false);
-    setAmount(0);
-    return;
-  };
-
   const interHandler = async () => {
-    setIsLoadingVote(true);
+    if (!checkWallet()) return;
+    setIsLoading(true);
     try {
       await fundContract.methods
         .interMediatePayment(router.query.id, mileStoneStep)
@@ -325,7 +334,7 @@ const Product = () => {
         type: "danger",
       });
       setIsToast(true);
-      setIsLoadingVote(false);
+      setIsLoading(false);
       return;
     }
 
@@ -333,15 +342,15 @@ const Product = () => {
       content: "중도금 출금이 완료되었습니다.",
       type: "success",
     });
-
-    setUPDATES(UPDATES + 1);
     setIsToast(true);
-    setIsLoadingVote(false);
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
     return;
   };
 
   const refundHandler = async () => {
-    setIsLoadingVote(true);
+    if (!checkWallet()) return;
+    setIsLoading(true);
     try {
       await fundContract.methods.Refund(router.query.id).send({
         from: wallet.address,
@@ -354,7 +363,7 @@ const Product = () => {
         type: "danger",
       });
       setIsToast(true);
-      setIsLoadingVote(false);
+      setIsLoading(false);
       return;
     }
 
@@ -362,10 +371,15 @@ const Product = () => {
       content: "환불이 완료되었습니다.",
       type: "success",
     });
-
-    setUPDATES(UPDATES + 1);
     setIsToast(true);
-    setIsLoadingVote(false);
+    setUPDATES(UPDATES + 1);
+    setIsLoading(false);
+    return;
+  };
+
+  const closeHandler = () => {
+    setIsOpenFund(false);
+    setAmount(0);
     return;
   };
 
@@ -373,6 +387,16 @@ const Product = () => {
     if (num + 1 > 6 || num - 1 < -1) return;
     setIsStatus(num);
     return;
+  };
+
+  const buttonHanlder = async () => {
+    if (Number(isStatus) === 0) return;
+    if (Number(isStatus) === 1) return setIsOpenFund(true);
+    if (Number(isStatus) === 2)
+      return isOwner ? interHandler() : setIsOpenVote(true);
+    if (Number(isStatus) === 3) return isOwner && interHandler();
+
+    return !isOwner && refundHandler();
   };
 
   const stats = [
@@ -384,13 +408,13 @@ const Product = () => {
     "환불중",
   ];
 
-  if (isLoading || isLoadingProject) return <LoadingPage />;
+  if (isLoadingProject) return <LoadingPage />;
 
   return (
     <>
       {isOpenFund && (
         <FundingModal
-          isLoading={isLoadingFund}
+          isLoading={isLoading}
           id={router.query.id}
           amount={amount}
           onChangeAmount={onChangeAmount}
@@ -400,7 +424,7 @@ const Product = () => {
       )}
       {isOpenVote && (
         <VoteModal
-          isLoading={isLoadingVote}
+          isLoading={isLoading}
           id={router.query.id}
           isVoted={isVoted}
           voting={project.fundingList[wallet.address.toUpperCase()]}
@@ -522,8 +546,18 @@ const Product = () => {
                       {Number(isStatus) === 0 ? "펀딩 대기중" : "펀딩 진행중"}
                     </p>
                     <p className="mt-1">
-                      {formatDateDot(data.created_at || new Date())} ~{" "}
-                      {formatDateDot(data.created_at || new Date())}
+                      <span>{formatDateDot(new Date(data.created_at))}</span>
+                      <span className="mx-0.5">~</span>
+                      <span>
+                        <>
+                          {formatDateDot(
+                            bnToDate(
+                              data.created_at,
+                              toDate(project.fundingEnd - project.fundingStart)
+                            ) || new Date()
+                          )}
+                        </>
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -568,68 +602,77 @@ const Product = () => {
               )}
 
               <div className="p-8 pb-6 pt-4 mt-auto w-full">
-                {Number(isStatus) === 0 ? (
-                  <Button
-                    className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
-                    onClick={() => {}}
-                    disabled
-                  >
-                    <span>펀딩대기</span>
-                  </Button>
-                ) : (
-                  ""
-                )}
-                {Number(isStatus) === 1 ? (
-                  <Button
-                    className="bg-blue-600 text-white w-full hover:bg-blue-700"
-                    onClick={() => setIsOpenFund(true)}
-                  >
-                    <span>펀딩하기</span>
-                  </Button>
-                ) : (
-                  ""
-                )}
-                {Number(isStatus) === 2 ? (
-                  <>
-                    <Button
-                      className="bg-blue-600 text-white w-full hover:bg-blue-700"
-                      onClick={() => {
-                        isOwner ? interHandler() : setIsOpenVote(true);
-                      }}
-                    >
-                      <span>{isOwner ? "중도금 받기" : "투표하기"}</span>
-                    </Button>
-                  </>
-                ) : (
-                  ""
-                )}
-                {Number(isStatus) === 3 ? (
-                  <Button
-                    className="bg-blue-600 text-white w-full hover:bg-blue-700 disabled:bg-blue-400"
-                    onClick={() => {
-                      isOwner ? interHandler() : "";
-                    }}
-                    disabled={!isOwner}
-                  >
-                    <span>{isOwner ? "자금받기" : "프로젝트 완료"}</span>
-                  </Button>
-                ) : (
-                  ""
-                )}
-                {Number(isStatus) >= 4 ? (
-                  <Button
-                    className="bg-danger text-white w-full hover:bg-danger-active disabled:bg-red-400"
-                    onClick={() => {
-                      isOwner ? "" : refundHandler();
-                    }}
-                    disabled={isOwner}
-                  >
-                    <span>{isOwner ? "환불 진행중" : "환불받기"}</span>
-                  </Button>
-                ) : (
-                  ""
-                )}
-
+                <Button
+                  className={clsx(
+                    "text-white w-full",
+                    Number(isStatus) >= 4
+                      ? "bg-danger hover:bg-danger-active disabled:bg-red-400"
+                      : "bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400"
+                  )}
+                  onClick={buttonHanlder}
+                  disabled={
+                    Number(isStatus) === 0 ||
+                    (Number(isStatus) === 3 && !isOwner) ||
+                    (Number(isStatus) >= 4 && isOwner) ||
+                    isLoading
+                  }
+                >
+                  {Number(isStatus) === 0 ? <span>펀딩대기</span> : ""}
+                  {Number(isStatus) === 1 ? (
+                    isLoading ? (
+                      <LoadingSpan content="펀딩중..." />
+                    ) : (
+                      <span>펀딩하기</span>
+                    )
+                  ) : (
+                    ""
+                  )}
+                  {Number(isStatus) === 2 ? (
+                    <span>
+                      {isOwner ? (
+                        isLoading ? (
+                          <LoadingSpan content="중도금 받는중..." />
+                        ) : (
+                          "중도금 받기"
+                        )
+                      ) : isLoading ? (
+                        <LoadingSpan content="투표중..." />
+                      ) : (
+                        "투표하기"
+                      )}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {Number(isStatus) === 3 ? (
+                    <span>
+                      {isOwner ? (
+                        isLoading ? (
+                          <LoadingSpan content="자금 받는중..." />
+                        ) : (
+                          "자금 받기"
+                        )
+                      ) : (
+                        "프로젝트 완료"
+                      )}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {Number(isStatus) === 4 ? (
+                    <span>
+                      {isOwner ? (
+                        "환불 진행중"
+                      ) : isLoading ? (
+                        <LoadingSpan content="환불 받는중..." />
+                      ) : (
+                        "환불 받기"
+                      )}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </Button>
                 {(isOwner && Number(isStatus) === (2 || 3)) ||
                 (!isOwner && Number(isStatus) >= 4) ? (
                   <span className="mt-2 text-xs ml-2">

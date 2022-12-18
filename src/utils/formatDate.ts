@@ -36,3 +36,7 @@ export const toDate = (bn: number) => {
 export const toNumber = (date: Date) => {
   return Number(new Date(date));
 };
+
+export const bnToDate = (base: Date, addNum: number) => {
+  return moment(base).add(addNum, "days").toDate();
+};
