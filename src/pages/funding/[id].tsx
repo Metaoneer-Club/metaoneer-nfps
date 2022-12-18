@@ -14,7 +14,7 @@ import useInput from "hooks/useInput";
 /* Component */
 import { Card } from "components/asset/card";
 import { Button } from "components/asset/button";
-import { fundContract, getBN, nftContract } from "components/blockchain";
+import { fundContract, getBN, sbtContract } from "components/blockchain";
 import { StatusCard } from "components/card/StatusCard";
 import { FundingTable } from "components/table/FundingTable";
 import { MilestoneUser } from "components/milestone/MilestoneUser";
@@ -99,7 +99,7 @@ const Product = () => {
     const getData = async () => {
       if (!project.fundingStart) return;
       const bn = await getBN();
-      const count = await nftContract.methods.totalSupply().call();
+      const count = await sbtContract.methods.totalSupply().call();
       if (bn < project.fundingStart) {
         setIsStatus(0);
       } else if (bn < project.fundingEnd) {
@@ -138,10 +138,10 @@ const Product = () => {
 
       const voter = await fundContract.methods.daoView(router.query.id).call(); // [[찬성], [반대]]
 
-      const nftOwner = await nftContract.methods
+      const nftOwner = await sbtContract.methods
         .ownerOf(router.query.id)
         .call();
-      const nftCount = await nftContract.methods.balanceOf(nftOwner).call();
+      const nftCount = await sbtContract.methods.balanceOf(nftOwner).call();
 
       const res = await CheckProfileAPI({
         address: project.owner,

@@ -18,7 +18,11 @@ const MainCard: FC<Product> = ({
   return (
     <div className="group flex bg-dark text-center text-white h-56 border border-gray-300 dark:border-dark-300 rounded-2xl overflow-hidden">
       <div className="relative w-1/2 h-full">
-        <AutoImage src={imgURI} alt={title} className="object-cover" />
+        <AutoImage
+          src={imgURI}
+          alt={title || "title"}
+          className="object-cover"
+        />
       </div>
       <div className="w-1/2 p-6">
         <h2 className="font-bold text-base">{title}</h2>

@@ -14,7 +14,7 @@ import useInput from "hooks/useInput";
 import {
   fundContract,
   getBN,
-  nftContract,
+  sbtContract,
   signCaller,
   toBN,
   tokenPacker,
@@ -202,10 +202,10 @@ const Create: NextPage = () => {
           from: wallet.address,
           gas: 10000000,
         });
-      const balanceOf = await nftContract.methods
+      const balanceOf = await sbtContract.methods
         .balanceOf(wallet.address)
         .call();
-      lastToken = await nftContract.methods
+      lastToken = await sbtContract.methods
         .tokenOfOwnerByIndex(wallet.address, Number(balanceOf - 1))
         .call();
       setCurrentKey(lastToken);

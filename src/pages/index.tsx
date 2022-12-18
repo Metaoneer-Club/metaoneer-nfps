@@ -42,17 +42,6 @@ const Home: NextPage = () => {
 const productItems: Product[] = [
   {
     keyID: 1,
-    imgURI: "/dummy/discord.png",
-    title: "Discord Bot",
-    content: "온체인과 연결된 디스코드 봇 입니다",
-    name: "Orbit",
-    creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
-    progress: 1874,
-    amount: 23421,
-    expired: 11212,
-  },
-  {
-    keyID: 2,
     imgURI: "/dummy/imco.png",
     title: "IMCO",
     content: "온체인 프로젝트의 마케팅을 돕기위해 제작된 IMC 솔루션 입니다.",
@@ -61,6 +50,17 @@ const productItems: Product[] = [
     progress: 213,
     amount: 4342,
     expired: 12212,
+  },
+  {
+    keyID: 2,
+    imgURI: "/dummy/discord.png",
+    title: "Discord Bot",
+    content: "온체인과 연결된 디스코드봇 입니다.",
+    name: "Orbit",
+    creator: "0x12A60872B053C009452cdb95178144c8fFbDeA4D",
+    progress: 1874,
+    amount: 23421,
+    expired: 11212,
   },
   {
     keyID: 3,

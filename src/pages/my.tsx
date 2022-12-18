@@ -19,7 +19,7 @@ import useInput from "hooks/useInput";
 import {
   fundContract,
   getBN,
-  nftContract,
+  sbtContract,
   signCaller,
   tokenPacker,
 } from "components/blockchain";
@@ -78,14 +78,14 @@ const MyPage: NextPage = () => {
         router.push("/");
         return;
       }
-      const count = await nftContract.methods.balanceOf(wallet.address).call();
+      const count = await sbtContract.methods.balanceOf(wallet.address).call();
       const bn = await getBN();
 
       const promises: Promise<void>[] = [];
       const projects: any = [];
       for (let id = 1; id <= count; id++) {
         const promise = async (index: number) => {
-          const tokenId = await nftContract.methods
+          const tokenId = await sbtContract.methods
             .tokenOfOwnerByIndex(wallet.address, index - 1)
             .call();
           const project = await fundContract.methods

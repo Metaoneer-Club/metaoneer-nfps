@@ -59,7 +59,7 @@ const FundingTable: FC<Props> = ({ fundingList }) => {
           </tr>
         </thead>
         <tbody className="text-sm divide-y divide-gray-100 dark:divide-dark-300">
-          {isSuccess ? (
+          {profilesData.length > 0 && isSuccess ? (
             profilesData.map((v: any, i) => (
               <tr key={v}>
                 <td className="p-2 whitespace-nowrap">

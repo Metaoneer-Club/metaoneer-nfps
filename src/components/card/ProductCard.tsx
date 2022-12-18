@@ -42,7 +42,7 @@ const ProductCard: FC<Product> = ({
           <div className="relative h-56 rounded-t-lg overflow-hidden">
             <AutoImage
               src={imgURI}
-              alt={title}
+              alt={title || "title"}
               className="object-cover transition group-hover:scale-110"
             />
           </div>

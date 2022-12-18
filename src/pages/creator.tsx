@@ -62,7 +62,7 @@ const Creator: NextPage = () => {
                               <AutoImage
                                 className="rounded-full"
                                 src={`/team/${v.name}.png`}
-                                alt={v.name}
+                                alt={v.name || "title"}
                               />
                             </div>
                             <div className="font-medium text-gray-800">

@@ -625,13 +625,13 @@ const abi: any = [
   },
 ];
 
-let nftContract: any, SBT_CONTRACT_ADDRESS: string | undefined;
+let sbtContract: any, SBT_CONTRACT_ADDRESS: string | undefined;
 if (typeof window !== "undefined") {
   SBT_CONTRACT_ADDRESS =
     WALLET_NETWORK === "56"
       ? process.env.NEXT_PUBLIC_MAIN_SBT_CONTRACT
       : process.env.NEXT_PUBLIC_TEST_SBT_CONTRACT;
-  nftContract = new web3.eth.Contract(abi, SBT_CONTRACT_ADDRESS);
+  sbtContract = new web3.eth.Contract(abi, SBT_CONTRACT_ADDRESS);
 }
 
-export { nftContract, SBT_CONTRACT_ADDRESS };
+export { sbtContract, SBT_CONTRACT_ADDRESS };

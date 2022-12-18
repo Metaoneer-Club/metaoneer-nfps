@@ -19,7 +19,7 @@ const Carousel: FC = () => {
           <AutoImage
             src="/dummy/discord.png"
             className="object-cover"
-            alt="leave"
+            alt="discord_bot"
           />
           <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             Discord Bot connected to On-chain
@@ -31,7 +31,7 @@ const Carousel: FC = () => {
           <AutoImage
             src="/dummy/imco.png"
             className="object-cover"
-            alt="forest"
+            alt="imco"
           />
           <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             IMC solutions designed to help market On-chain projects
@@ -43,7 +43,7 @@ const Carousel: FC = () => {
           <AutoImage
             src="/dummy/cc2e.png"
             className="object-cover"
-            alt="instrument"
+            alt="cc2e"
           />
           <p className="absolute text-3xl bg-black p-2 text-white font-bold top-2/3 right-0 transform -translate-x-1/2 -translate-y-1/2">
             A community that provides valuable talk-nomics<br></br> to users and

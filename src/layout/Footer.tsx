@@ -79,7 +79,7 @@ const Footer: FC = () => {
                       <AutoImage
                         src={`/media/logos/${v.src?.toLowerCase()}.svg`}
                         className="rounded-full"
-                        alt={v.name}
+                        alt={v.name || "name"}
                       />
                     </div>
                   </External>

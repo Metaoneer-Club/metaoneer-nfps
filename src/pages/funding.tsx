@@ -8,7 +8,7 @@ import { CheckFundingAPI, CheckProfileAPI } from "api";
 /* Component */
 import { ProductCard } from "components/card/ProductCard";
 import { Button } from "components/asset/button";
-import { fundContract, getBN, nftContract } from "components/blockchain";
+import { fundContract, getBN, sbtContract } from "components/blockchain";
 import { LoadingCard } from "components/loading/LoadingCard";
 import { Filter } from "components/filter/Filter";
 import { progressing, replaceBalance, toNumber } from "utils";
@@ -35,7 +35,7 @@ const Funding: NextPage = () => {
 
   useEffect(() => {
     const getProject = async () => {
-      const count: number = await nftContract.methods.totalSupply().call();
+      const count: number = await sbtContract.methods.totalSupply().call();
       const bn = await getBN();
 
       const promises: Promise<void>[] = [];
@@ -43,7 +43,7 @@ const Funding: NextPage = () => {
       for (let id = 1; id <= count; id++) {
         const promise = async (index: number) => {
           const project = await fundContract.methods.fundingView(index).call();
-          const owner = await nftContract.methods.ownerOf(index).call();
+          const owner = await sbtContract.methods.ownerOf(index).call();
           const funding = await CheckFundingAPI(index);
           const profile = await CheckProfileAPI({
             address: owner,
