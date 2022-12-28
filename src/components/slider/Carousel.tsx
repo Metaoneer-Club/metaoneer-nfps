@@ -14,41 +14,31 @@ const Carousel: FC = () => {
 
   return (
     <Slider {...settings}>
-      <div className="bg-dark">
-        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-2">
+      <div className="bg-black">
+        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-1">
           <AutoImage
-            src="/dummy/discord.png"
+            src="/dummy/discord.jpg"
             className="object-cover"
             alt="discord_bot"
           />
-          <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            Discord Bot connected to On-chain
-          </p>
         </div>
       </div>
-      <div className="bg-dark">
-        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-2">
+      <div className="bg-black">
+        <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-1">
           <AutoImage
-            src="/dummy/imco.png"
+            src="/dummy/imco.jpg"
             className="object-cover"
             alt="imco"
           />
-          <p className="absolute text-3xl bg-black p-2 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            IMC solutions designed to help market On-chain projects
-          </p>
         </div>
       </div>
-      <div className="bg-white">
+      <div className="bg-black">
         <div className="relative max-w-[1200px] mx-auto h-96 after:edge-blur-1">
           <AutoImage
-            src="/dummy/cc2e.png"
+            src="/dummy/cc2e.jpg"
             className="object-cover"
             alt="cc2e"
           />
-          <p className="absolute text-3xl bg-black p-2 text-white font-bold top-2/3 right-0 transform -translate-x-1/2 -translate-y-1/2">
-            A community that provides valuable tokenomics<br></br> to users and
-            advertising users
-          </p>
         </div>
       </div>
     </Slider>

@@ -36,6 +36,17 @@
     border-collapse: separate;
     box-shadow: inset 40px 0 40px -16px #fff, inset -40px 0 40px -16px #fff;
   }
+  .edge-blur-1 {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-collapse: separate;
+    box-shadow: inset 40px 0 40px -16px #000, inset -40px 0 40px -16px #000;
+  }
   .edge-blur-2 {
     content: "";
     position: absolute;

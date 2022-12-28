@@ -42,7 +42,7 @@ const Home: NextPage = () => {
 const productItems: Product[] = [
   {
     keyID: 1,
-    imgURI: "/dummy/imco.png",
+    imgURI: "/dummy/imco.jpg",
     title: "IMCO",
     content: "온체인 프로젝트의 마케팅을 돕기위해 제작된 IMC 솔루션 입니다.",
     name: "Orbit",
@@ -53,7 +53,7 @@ const productItems: Product[] = [
   },
   {
     keyID: 2,
-    imgURI: "/dummy/discord.png",
+    imgURI: "/dummy/discord.jpg",
     title: "Discord Bot",
     content: "온체인과 연결된 디스코드봇 입니다.",
     name: "Orbit",
@@ -64,7 +64,7 @@ const productItems: Product[] = [
   },
   {
     keyID: 3,
-    imgURI: "/dummy/cc2e.png",
+    imgURI: "/dummy/cc2e.jpg",
     title: "CC2E",
     content:
       "유저들과 광고 이용자에게 가치있는 토크노믹스를 제공하는 커뮤니티 입니다.",
@@ -76,7 +76,7 @@ const productItems: Product[] = [
   },
   {
     keyID: 4,
-    imgURI: "/dummy/mtor.png",
+    imgURI: "/dummy/mtor.jpg",
     title: "MTOR",
     content: "메타오니어팀에서 발행될 토큰입니다.",
     name: "Orbit",
