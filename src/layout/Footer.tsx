@@ -66,7 +66,7 @@ const Footer: FC = () => {
               <h2 className="font-bold">METAONEER</h2>
             </div>
             <div className="text-sm mt-3">
-              <span className="mr-2">2021 - 2022 &copy;</span>
+              <span className="mr-2">&copy;</span>
               <span>METAONEER. ALL RIGHTS RESERVED.</span>
             </div>
           </div>

@@ -30,11 +30,13 @@ const Comming: NextPage = () => {
   const [statusFilter, setStatusFilter] = useState<number>(0);
   const [detailFilter, setDetailFilter] = useState<number>(0);
   const [blockNumber, setBlockNumber] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setIsToast = useSetRecoilState(isToastState);
   const setToastContent = useSetRecoilState(toastContentState);
 
   useEffect(() => {
     const getProject = async () => {
+      setIsLoading(true);
       const count: number = await sbtContract.methods.totalSupply().call();
       const bn = await getBN();
 
@@ -65,6 +67,7 @@ const Comming: NextPage = () => {
       const after = projects.filter((v: any) => v[2] > bn);
       setProjectAry(after);
       setBlockNumber(bn);
+      setIsLoading(false);
     };
     getProject();
   }, []);
@@ -99,21 +102,30 @@ const Comming: NextPage = () => {
         /> */}
         <div>
           <div className="grid grid-cols-4 gap-6 mt-8">
-            {projectAry.length > 0 ? (
-              projectAry?.map((v: any, i) => (
-                <ProductCard
-                  key={v1()}
-                  keyID={v.index}
-                  name={v.nickname}
-                  title={v.title || "제목없음"}
-                  content={v.content || "내용없음"}
-                  imgURI={v.image_url || "/dummy/temp.png"}
-                  creator={v.owner}
-                  progress={progressing(v[1], v[0])}
-                  amount={replaceBalance(v[0])}
-                  expired={v[2] - blockNumber}
-                />
-              ))
+            {!isLoading ? (
+              projectAry.length > 0 ? (
+                projectAry?.map((v: any, i) => (
+                  <ProductCard
+                    key={v1()}
+                    keyID={v.index}
+                    name={v.nickname}
+                    title={v.title || "제목없음"}
+                    content={v.content || "내용없음"}
+                    imgURI={v.image_url || "/dummy/temp.png"}
+                    creator={v.owner}
+                    progress={progressing(v[1], v[0])}
+                    amount={replaceBalance(v[0])}
+                    expired={v[2] - blockNumber}
+                  />
+                ))
+              ) : (
+                <div className="bg-white dark:bg-dark dark:border-dark-300 p-4 border rounded flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-1 h-5 mr-2 bg-dark rounded-sm" />
+                    <p>펀딩 예정 항목이 없습니다.</p>
+                  </div>
+                </div>
+              )
             ) : (
               <LoadingCard />
             )}
